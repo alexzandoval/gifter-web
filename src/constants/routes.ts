@@ -8,6 +8,7 @@ import Home from 'components/pages/Home'
 import Login from 'components/pages/Login'
 import PageNotFound from 'components/pages/PageNotFound'
 import Register from 'components/pages/Register'
+import Account from 'components/pages/Account'
 
 export type Route = {
   Component: FC
@@ -38,6 +39,10 @@ const routes: { [name: string]: Route } = {
       label: 'About',
       Icon: InfoIcon,
     },
+  },
+  account: {
+    path: '/account',
+    Component: Account,
   },
   emailLogin: {
     path: '/login/email',
