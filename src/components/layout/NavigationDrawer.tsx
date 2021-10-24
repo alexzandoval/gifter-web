@@ -11,7 +11,7 @@ import {
   Toolbar,
   Theme,
 } from '@mui/material'
-import makeStyles from '@mui/styles/makeStyles'
+import { makeStyles } from '@mui/styles'
 import { Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-dom'
 import clsx from 'clsx'
 import routes from 'constants/routes'

@@ -21,10 +21,10 @@ interface AuthContextType {
   user: User | null
   api: AxiosInstance
   authInitialized: boolean
-  signIn: (email: string, password: string) => Promise<UserCredential>
+  signInWithEmail: (email: string, password: string) => Promise<UserCredential>
   signInWithGoogle: () => Promise<UserCredential>
   signOut: () => Promise<void>
-  signUp: (email: string, password: string) => Promise<UserCredential>
+  signUpWithEmail: (email: string, password: string) => Promise<UserCredential>
 }
 
 const noAuthProvider = () => {
@@ -56,10 +56,10 @@ export const AuthContext = createContext<AuthContextType>({
   user: null,
   api,
   authInitialized: false,
-  signIn: noAuthProvider,
+  signInWithEmail: noAuthProvider,
   signInWithGoogle: noAuthProvider,
   signOut: noAuthProvider,
-  signUp: noAuthProvider,
+  signUpWithEmail: noAuthProvider,
 })
 
 export const AuthContextProvider: FC = ({ children }) => {
@@ -86,11 +86,11 @@ export const AuthContextProvider: FC = ({ children }) => {
     user,
     api,
     authInitialized,
-    signIn: async (email: string, password: string) =>
+    signInWithEmail: async (email: string, password: string) =>
       signInWithEmailAndPassword(auth, email, password),
     signInWithGoogle: async () => signInWithPopup(auth, googleAuthProvider),
     signOut: async () => signOut(auth),
-    signUp: async (email: string, password: string) =>
+    signUpWithEmail: async (email: string, password: string) =>
       createUserWithEmailAndPassword(auth, email, password),
   }
   return <AuthContext.Provider value={store}>{children}</AuthContext.Provider>

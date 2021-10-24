@@ -1,18 +1,19 @@
-import { FC } from 'react'
-import { Box, Container, Toolbar } from '@mui/material'
-import makeStyles from '@mui/styles/makeStyles'
+import { FC, ReactNode } from 'react'
+import { Box, Container, Theme, Toolbar } from '@mui/material'
+import { makeStyles } from '@mui/styles'
 import Header from 'components/layout/Header'
 
 interface Props {
-  children: any
+  children: ReactNode
 }
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme: Theme) => ({
   root: {
     display: 'flex',
   },
   content: {
     flexGrow: 1,
+    padding: theme.spacing(4),
   },
 }))
 

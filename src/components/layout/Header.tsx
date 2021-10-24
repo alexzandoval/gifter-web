@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { AppBar, IconButton, Toolbar, Typography, Theme } from '@mui/material'
-import makeStyles from '@mui/styles/makeStyles'
+import { makeStyles } from '@mui/styles'
 import {
   Menu as MenuIcon,
   Brightness7 as SunIcon,
@@ -8,6 +8,7 @@ import {
 } from '@mui/icons-material'
 import NavigationDrawer from 'components/layout/NavigationDrawer'
 import { useColorScheme } from 'context/Theme'
+import { useAuth } from 'context/Auth'
 
 const useStyles = makeStyles((theme: Theme) => ({
   appBar: {
@@ -27,6 +28,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Header = () => {
   const classes = useStyles()
+  const { user } = useAuth()
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const { colorScheme, toggleColorScheme } = useColorScheme()
 
@@ -58,6 +60,7 @@ const Header = () => {
             Header
           </Typography>
           <div className={classes.grow} />
+          {user && <Typography>Hello {user.displayName}</Typography>}
           {themeButton}
         </Toolbar>
       </AppBar>

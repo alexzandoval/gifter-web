@@ -3,14 +3,14 @@ import { makeStyles } from '@mui/styles'
 
 const useStyles = makeStyles((theme: Theme) => ({}))
 
-const Login = () => {
+const Register = () => {
   const classes = useStyles()
 
   return (
     <>
-      <Typography variant="h1">Login</Typography>
+      <Typography variant="h1">Register</Typography>
     </>
   )
 }
 
-export default Login
+export default Register
