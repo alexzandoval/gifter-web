@@ -30,6 +30,10 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   paper: {
     boxSizing: 'border-box',
+    paddingTop: 0,
+    [theme.mixins.drawer.hiddenBreakpoint]: {
+      paddingTop: theme.mixins.header.height,
+    },
   },
 }))
 

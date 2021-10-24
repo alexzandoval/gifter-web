@@ -2,12 +2,13 @@ import { useState, useEffect, useContext, createContext, FC } from 'react'
 import axios, { AxiosInstance } from 'axios'
 import {
   createUserWithEmailAndPassword,
+  FacebookAuthProvider,
   getAuth,
+  GoogleAuthProvider,
   onIdTokenChanged,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
-  OAuthProvider,
   User,
   UserCredential,
 } from 'firebase/auth'
@@ -23,6 +24,7 @@ interface AuthContextType {
   authInitialized: boolean
   signInWithEmail: (email: string, password: string) => Promise<UserCredential>
   signInWithGoogle: () => Promise<UserCredential>
+  signInWithFacebook: () => Promise<UserCredential>
   signOut: () => Promise<void>
   signUpWithEmail: (email: string, password: string) => Promise<UserCredential>
 }
@@ -58,6 +60,7 @@ export const AuthContext = createContext<AuthContextType>({
   authInitialized: false,
   signInWithEmail: noAuthProvider,
   signInWithGoogle: noAuthProvider,
+  signInWithFacebook: noAuthProvider,
   signOut: noAuthProvider,
   signUpWithEmail: noAuthProvider,
 })
@@ -65,7 +68,8 @@ export const AuthContext = createContext<AuthContextType>({
 export const AuthContextProvider: FC = ({ children }) => {
   const [user, setUser] = useState<AuthContextType['user']>(null)
   const [authInitialized, setAuthInitialized] = useState<AuthContextType['authInitialized']>(false)
-  const googleAuthProvider = new OAuthProvider('google.com')
+  const googleAuthProvider = new GoogleAuthProvider()
+  const facebookAuthProvider = new FacebookAuthProvider()
 
   useEffect(() => {
     const unsubscribe = onIdTokenChanged(auth, async (authUser) => {
@@ -89,6 +93,7 @@ export const AuthContextProvider: FC = ({ children }) => {
     signInWithEmail: async (email: string, password: string) =>
       signInWithEmailAndPassword(auth, email, password),
     signInWithGoogle: async () => signInWithPopup(auth, googleAuthProvider),
+    signInWithFacebook: async () => signInWithPopup(auth, facebookAuthProvider),
     signOut: async () => signOut(auth),
     signUpWithEmail: async (email: string, password: string) =>
       createUserWithEmailAndPassword(auth, email, password),

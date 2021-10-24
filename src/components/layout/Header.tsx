@@ -12,8 +12,10 @@ import { useAuth } from 'context/Auth'
 
 const useStyles = makeStyles((theme: Theme) => ({
   appBar: {
-    zIndex: theme.zIndex.drawer + 1,
     display: 'flex',
+    [theme.mixins.drawer.visibleBreakpoint]: {
+      zIndex: theme.zIndex.drawer + 1,
+    },
   },
   grow: {
     flexGrow: 1,
@@ -60,7 +62,7 @@ const Header = () => {
             Header
           </Typography>
           <div className={classes.grow} />
-          {user && <Typography>Hello {user.displayName}</Typography>}
+          {user && <Typography>Hello {user.displayName || user.email}</Typography>}
           {themeButton}
         </Toolbar>
       </AppBar>
