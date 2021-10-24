@@ -14,6 +14,8 @@ export type Route = {
   Component: FC
   path: string
   props?: RouteProps
+  publicOnlyRoute?: boolean
+  protectedRoute?: boolean
   nav?: {
     label: string
     Icon?: FC
@@ -43,26 +45,31 @@ const routes: { [name: string]: Route } = {
   account: {
     path: '/account',
     Component: Account,
+    protectedRoute: true,
   },
   emailLogin: {
     path: '/login/email',
     Component: SignInWithEmail,
-  },
-  emailRegister: {
-    path: '/register/email',
-    Component: SignUpWithEmail,
+    publicOnlyRoute: true,
   },
   login: {
     path: '/login',
     Component: Login,
+    publicOnlyRoute: true,
     nav: {
       label: 'Login',
       Icon: LoginIcon,
     },
   },
+  emailRegister: {
+    path: '/register/email',
+    Component: SignUpWithEmail,
+    publicOnlyRoute: true,
+  },
   register: {
     path: '/register',
     Component: Register,
+    publicOnlyRoute: true,
   },
   // 404 route, must be last
   notFound: {
