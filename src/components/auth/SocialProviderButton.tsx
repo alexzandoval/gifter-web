@@ -18,6 +18,7 @@ type ProviderAttributes = {
 
 const SocialProviderButton: FC<Props> = ({ provider, ...other }) => {
   const theme = useTheme()
+  const isDark = theme.palette.mode === 'dark'
   const providerAttributes: ProviderAttributes = {
     email: {
       Icon: Email,
@@ -28,16 +29,19 @@ const SocialProviderButton: FC<Props> = ({ provider, ...other }) => {
         backgroundColor: theme.palette.common.white,
         color: theme.palette.getContrastText(theme.palette.common.white),
         '&:hover': {
-          backgroundColor: '#ECECEC',
+          backgroundColor: '#E6E6E6',
         },
       },
     },
     apple: {
       Icon: Apple,
       style: {
-        backgroundColor: theme.palette.common.black,
+        backgroundColor: isDark ? theme.palette.common.white : theme.palette.common.black,
+        color: theme.palette.getContrastText(
+          isDark ? theme.palette.common.white : theme.palette.common.black,
+        ),
         '&:hover': {
-          backgroundColor: '#171717',
+          backgroundColor: isDark ? '#E6E6E6' : '#171717',
         },
       },
     },

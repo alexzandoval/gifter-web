@@ -1,9 +1,21 @@
-import { useState } from 'react'
-import { AppBar, IconButton, Toolbar, Typography, Theme, Avatar } from '@mui/material'
+import { MouseEvent, useState } from 'react'
+import {
+  AppBar,
+  IconButton,
+  Toolbar,
+  Typography,
+  Theme,
+  Avatar,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  Divider,
+} from '@mui/material'
 import {
   Menu as MenuIcon,
   Brightness7 as SunIcon,
   Brightness3 as MoonIcon,
+  Logout,
 } from '@mui/icons-material'
 import { makeStyles } from '@mui/styles'
 import { useHistory } from 'react-router-dom'
@@ -33,13 +45,24 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const Header = () => {
   const classes = useStyles()
-  const { user } = useAuth()
+  const { user, signOut } = useAuth()
   const history = useHistory()
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const open = Boolean(anchorEl)
   const { colorScheme, toggleColorScheme } = useColorScheme()
 
-  const handleAvatarClick = () => {
+  const handleAvatarClick = (e: MouseEvent<HTMLElement>) => {
+    setAnchorEl(e.currentTarget)
+  }
+
+  const handleCloseProfileMenu = () => {
+    setAnchorEl(null)
+  }
+
+  const handleProfileClick = () => {
     history.push(routes.account.path)
+    handleCloseProfileMenu()
   }
 
   const handleDrawerToggle = () => {
@@ -80,6 +103,25 @@ const Header = () => {
           onClose: () => setIsDrawerOpen(false),
         }}
       />
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleCloseProfileMenu}
+        onClick={handleCloseProfileMenu}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        <MenuItem onClick={handleProfileClick}>My Profile</MenuItem>
+        <MenuItem>My Gift Exchanges</MenuItem>
+        <MenuItem>My Wishlists</MenuItem>
+        <Divider />
+        <MenuItem onClick={signOut}>
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          Logout
+        </MenuItem>
+      </Menu>
     </>
   )
 }
