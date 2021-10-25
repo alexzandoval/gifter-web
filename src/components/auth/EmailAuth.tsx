@@ -1,8 +1,9 @@
-import { Button, TextField, Theme, Typography } from '@mui/material'
+import { TextField, Theme } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { useAuth } from 'context/Auth'
 import { FC } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import SocialProviderButton from './SocialProviderButton'
 
 interface Props {
   type: 'signIn' | 'signUp'
@@ -18,7 +19,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   form: {
     display: 'flex',
     flexDirection: 'column',
-    maxWidth: 600,
     '& .MuiTextField-root': {
       marginBottom: theme.spacing(2),
     },
@@ -56,9 +56,7 @@ const EmailAuth: FC<Props> = ({ type }) => {
           {...register('confirmPassword')}
         />
       )}
-      <Button type="submit" variant="contained" size="large" sx={{ maxWidth: 300 }}>
-        Submit
-      </Button>
+      <SocialProviderButton provider="email">Sign in with Email</SocialProviderButton>
     </form>
   )
 }
