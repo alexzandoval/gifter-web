@@ -41,7 +41,7 @@ const SocialProviderButton: FC<Props> = ({ provider, ...other }) => {
           isDark ? theme.palette.common.white : theme.palette.common.black,
         ),
         '&:hover': {
-          backgroundColor: isDark ? '#E6E6E6' : '#171717',
+          backgroundColor: isDark ? '#E6E6E6' : '#323232',
         },
       },
     },
@@ -50,7 +50,7 @@ const SocialProviderButton: FC<Props> = ({ provider, ...other }) => {
       style: {
         backgroundColor: '#1777F3',
         '&:hover': {
-          backgroundColor: '#146AD8',
+          backgroundColor: '#135DBF',
         },
       },
     },

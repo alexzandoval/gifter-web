@@ -1,16 +1,5 @@
-import { Theme, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
+import AuthForm from 'components/auth/AuthForm'
 
-const useStyles = makeStyles((theme: Theme) => ({}))
-
-const Register = () => {
-  const classes = useStyles()
-
-  return (
-    <>
-      <Typography variant="h1">Register</Typography>
-    </>
-  )
-}
+const Register = () => <AuthForm type="signUp" />
 
 export default Register

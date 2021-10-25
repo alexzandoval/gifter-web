@@ -1,8 +1,6 @@
 import { FC } from 'react'
 import { Home as HomeIcon, Info as InfoIcon, Login as LoginIcon } from '@mui/icons-material'
 import { RouteProps } from 'react-router-dom'
-import SignInWithEmail from 'components/pages/SignInWithEmail'
-import SignUpWithEmail from 'components/pages/SignUpWithEmail'
 import About from 'components/pages/About'
 import Home from 'components/pages/Home'
 import Login from 'components/pages/Login'
@@ -47,11 +45,6 @@ const routes: { [name: string]: Route } = {
     Component: Account,
     protectedRoute: true,
   },
-  emailLogin: {
-    path: '/login/email',
-    Component: SignInWithEmail,
-    publicOnlyRoute: true,
-  },
   login: {
     path: '/login',
     Component: Login,
@@ -60,11 +53,6 @@ const routes: { [name: string]: Route } = {
       label: 'Login',
       Icon: LoginIcon,
     },
-  },
-  emailRegister: {
-    path: '/register/email',
-    Component: SignUpWithEmail,
-    publicOnlyRoute: true,
   },
   register: {
     path: '/register',
