@@ -3,11 +3,8 @@ import { makeStyles } from '@mui/styles'
 import { useAuth } from 'context/Auth'
 import { FC } from 'react'
 import { FieldError, SubmitHandler, useForm } from 'react-hook-form'
+import { Props } from './AuthForm'
 import SocialProviderButton from './SocialProviderButton'
-
-interface Props {
-  type: 'signIn' | 'signUp'
-}
 
 type FormValues = {
   email: string
@@ -38,8 +35,9 @@ const EmailAuth: FC<Props> = ({ type }) => {
 
   const getErrorMessage = (inputErrors: FieldError | undefined, label: string): string => {
     if (!inputErrors) return ''
-    if (inputErrors.message) return inputErrors.message
-    if (inputErrors.type === 'required') {
+    const { message, type: errorType } = inputErrors
+    if (message) return message
+    if (errorType === 'required') {
       return `${label} is required`
     }
     return ''
@@ -47,10 +45,16 @@ const EmailAuth: FC<Props> = ({ type }) => {
 
   console.log(errors)
   const handleFormSubmit: SubmitHandler<FormValues> = async (data) => {
-    if (isNewSignUp) {
-      console.log('signing up', data)
-    } else {
-      console.log('signing in', data)
+    try {
+      let result
+      if (isNewSignUp) {
+        result = await signUpWithEmail(data.email, data.password)
+      } else {
+        result = await signInWithEmail(data.email, data.password)
+      }
+      console.log(result)
+    } catch (e) {
+      console.log('Error authenticating with email', e)
     }
   }
 
@@ -64,7 +68,7 @@ const EmailAuth: FC<Props> = ({ type }) => {
         helperText={getErrorMessage(errors.email, 'Email')}
         inputProps={{
           ...register('email', {
-            required: true,
+            required: 'Please enter a valid email address',
             pattern: {
               value: /^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/,
               message: 'Please enter a valid email address',
@@ -78,7 +82,12 @@ const EmailAuth: FC<Props> = ({ type }) => {
         label="Password"
         error={Boolean(errors.password)}
         helperText={getErrorMessage(errors.password, 'Password')}
-        inputProps={{ ...register('password', { required: true }) }}
+        inputProps={{
+          ...register('password', {
+            required: 'Please enter a password',
+            minLength: { value: 6, message: 'Password must be at least 6 characters' },
+          }),
+        }}
       />
       {isNewSignUp && (
         <TextField
@@ -89,14 +98,13 @@ const EmailAuth: FC<Props> = ({ type }) => {
           helperText={getErrorMessage(errors.confirmPassword, 'Confirm Password')}
           inputProps={{
             ...register('confirmPassword', {
-              required: true,
               validate: (value) => value === watch('password') || 'Passwords must match',
             }),
           }}
         />
       )}
       <SocialProviderButton provider="email" type="submit">
-        Sign in with Email
+        {isNewSignUp ? 'Sign up with Email' : 'Sign in with Email'}
       </SocialProviderButton>
     </form>
   )
