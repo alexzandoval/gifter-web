@@ -70,6 +70,11 @@ const Header = () => {
     handleCloseProfileMenu()
   }
 
+  const handleWishlistsClick = () => {
+    history.push(routes.wishlists.path)
+    handleCloseProfileMenu()
+  }
+
   const handleDrawerToggle = () => {
     setIsDrawerOpen((prev) => !prev)
   }
@@ -149,7 +154,7 @@ const Header = () => {
       >
         <MenuItem onClick={handleProfileClick}>My Profile</MenuItem>
         <MenuItem>My Gift Exchanges</MenuItem>
-        <MenuItem>My Wishlists</MenuItem>
+        <MenuItem onClick={handleWishlistsClick}>My Wishlists</MenuItem>
         <Divider />
         <MenuItem onClick={signOut}>
           <ListItemIcon>

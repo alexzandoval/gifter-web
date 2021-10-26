@@ -8,6 +8,7 @@ import PageNotFound from 'components/pages/PageNotFound'
 import Register from 'components/pages/Register'
 import Account from 'components/pages/Account'
 import Test from 'components/pages/Test'
+import Wishlists from 'components/pages/Wishlists'
 
 export type Route = {
   Component: FC
@@ -45,6 +46,14 @@ const routes: { [name: string]: Route } = {
     path: '/account',
     Component: Account,
     protectedRoute: true,
+  },
+  wishlists: {
+    path: '/wishlists',
+    Component: Wishlists,
+    protectedRoute: true,
+    nav: {
+      label: 'My Wishlists',
+    },
   },
   login: {
     path: '/login',

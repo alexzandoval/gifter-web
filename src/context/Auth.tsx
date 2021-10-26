@@ -20,7 +20,6 @@ const { REACT_APP_PROXY, REACT_APP_ENV } = process.env
 
 interface AuthContextType {
   user: User | null
-  api: AxiosInstance
   authInitialized: boolean
   signInWithEmail: (email: string, password: string) => Promise<UserCredential>
   signInWithGoogle: () => Promise<UserCredential>
@@ -33,7 +32,7 @@ const noAuthProvider = () => {
   throw new Error('This component should be wrapper with a Auth Context Provider.')
 }
 
-const api = axios.create()
+export const api = axios.create()
 
 if (REACT_APP_ENV === 'development') {
   api.interceptors.response.use(
@@ -56,7 +55,6 @@ if (REACT_APP_PROXY) {
 
 export const AuthContext = createContext<AuthContextType>({
   user: null,
-  api,
   authInitialized: false,
   signInWithEmail: noAuthProvider,
   signInWithGoogle: noAuthProvider,
@@ -88,7 +86,6 @@ export const AuthContextProvider: FC = ({ children }) => {
 
   const store = {
     user,
-    api,
     authInitialized,
     signInWithEmail: async (email: string, password: string) =>
       signInWithEmailAndPassword(auth, email, password),

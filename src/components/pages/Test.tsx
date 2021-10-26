@@ -1,21 +1,23 @@
 /* eslint-disable no-console */
+import { useState } from 'react'
 import { Box, Button, TextField, Typography } from '@mui/material'
 
 import { useAuth } from 'context/Auth'
-import { useState } from 'react'
+import useApi from 'hooks/useApi'
 
 const Test = () => {
-  const { user, api } = useAuth()
+  const { user } = useAuth()
+  const { getWishlists, postWishlist } = useApi()
   const [wishlistName, setWishlistName] = useState('')
 
   const handleSubmitWishlist = async () => {
-    const result = await api.post('/wishlist', { name: wishlistName })
-    console.log(result.data)
+    const newWishlist = await postWishlist({ name: wishlistName })
+    console.log(newWishlist)
   }
 
   const handleFetchWishlists = async () => {
-    const result = await api.get('/wishlist')
-    console.log(result.data)
+    const wishlists = await getWishlists()
+    console.log(wishlists)
   }
 
   return (
