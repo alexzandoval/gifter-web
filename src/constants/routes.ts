@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { Home as HomeIcon, Info as InfoIcon, Login as LoginIcon } from '@mui/icons-material'
+import { Home as HomeIcon, Info as InfoIcon, Science } from '@mui/icons-material'
 import { RouteProps } from 'react-router-dom'
 import About from 'components/pages/About'
 import Home from 'components/pages/Home'
@@ -7,6 +7,7 @@ import Login from 'components/pages/Login'
 import PageNotFound from 'components/pages/PageNotFound'
 import Register from 'components/pages/Register'
 import Account from 'components/pages/Account'
+import Test from 'components/pages/Test'
 
 export type Route = {
   Component: FC
@@ -49,15 +50,19 @@ const routes: { [name: string]: Route } = {
     path: '/login',
     Component: Login,
     publicOnlyRoute: true,
-    nav: {
-      label: 'Login',
-      Icon: LoginIcon,
-    },
   },
   register: {
     path: '/register',
     Component: Register,
     publicOnlyRoute: true,
+  },
+  test: {
+    path: '/test',
+    Component: Test,
+    nav: {
+      label: 'Test',
+      Icon: Science,
+    },
   },
   // 404 route, must be last
   notFound: {

@@ -10,6 +10,7 @@ import {
   MenuItem,
   ListItemIcon,
   Divider,
+  Link,
 } from '@mui/material'
 import {
   Menu as MenuIcon,
@@ -18,7 +19,7 @@ import {
   Logout,
 } from '@mui/icons-material'
 import { makeStyles } from '@mui/styles'
-import { useHistory } from 'react-router-dom'
+import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom'
 
 import routes from 'constants/routes'
 import NavigationDrawer from 'components/layout/NavigationDrawer'
@@ -47,10 +48,14 @@ const Header = () => {
   const classes = useStyles()
   const { user, signOut } = useAuth()
   const history = useHistory()
+  const location = useLocation()
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const { colorScheme, toggleColorScheme } = useColorScheme()
+
+  const isLogin = location.pathname === routes.login.path
+  const isSignUp = location.pathname === routes.register.path
 
   const handleAvatarClick = (e: MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget)
@@ -66,7 +71,11 @@ const Header = () => {
   }
 
   const handleDrawerToggle = () => {
-    setIsDrawerOpen(!isDrawerOpen)
+    setIsDrawerOpen((prev) => !prev)
+  }
+
+  const handleDrawerClose = () => {
+    setIsDrawerOpen(false)
   }
 
   return (
@@ -87,10 +96,36 @@ const Header = () => {
             Header
           </Typography>
           <div className={classes.grow} />
-          {user && (
+          {user ? (
             <IconButton onClick={handleAvatarClick}>
               <Avatar sx={{ width: 32, height: 32 }} src={user.photoURL || ''} />
             </IconButton>
+          ) : (
+            <>
+              {!isLogin && (
+                <Link
+                  sx={{ marginRight: 1 }}
+                  color="inherit"
+                  underline="hover"
+                  component={RouterLink}
+                  to={routes.login.path}
+                >
+                  Login
+                </Link>
+              )}
+              {!isSignUp && !isLogin && '/'}
+              {!isSignUp && (
+                <Link
+                  sx={{ marginLeft: 1 }}
+                  color="inherit"
+                  underline="hover"
+                  component={RouterLink}
+                  to={routes.register.path}
+                >
+                  Sign Up
+                </Link>
+              )}
+            </>
           )}
           <IconButton color="inherit" onClick={toggleColorScheme} size="large">
             {colorScheme === 'dark' ? <SunIcon /> : <MoonIcon />}
@@ -100,8 +135,9 @@ const Header = () => {
       <NavigationDrawer
         DrawerProps={{
           open: isDrawerOpen,
-          onClose: () => setIsDrawerOpen(false),
+          onClose: handleDrawerClose,
         }}
+        onClose={handleDrawerClose}
       />
       <Menu
         anchorEl={anchorEl}

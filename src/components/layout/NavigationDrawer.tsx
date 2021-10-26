@@ -12,12 +12,15 @@ import {
   Theme,
 } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import { Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-dom'
 import clsx from 'clsx'
+import { Link as RouterLink, LinkProps as RouterLinkProps, useLocation } from 'react-router-dom'
+
 import routes from 'constants/routes'
+import { useAuth } from 'context/Auth'
 
 interface Props {
   DrawerProps: DrawerPropTypes
+  onClose: () => void
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -37,9 +40,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
-const NavigationDrawer: FC<Props> = ({ DrawerProps }) => {
+const NavigationDrawer: FC<Props> = ({ DrawerProps, onClose }) => {
   const classes = useStyles()
+  const { user } = useAuth()
   const theme = useTheme()
+  const location = useLocation()
   const isDesktop = useMediaQuery(theme.mixins.drawer.visibleBreakpoint)
 
   const renderLink = (to: string) =>
@@ -49,11 +54,19 @@ const NavigationDrawer: FC<Props> = ({ DrawerProps }) => {
 
   const navItems = Object.keys(routes).map((routeName) => {
     const route = routes[routeName]
-    if (!route.nav) return null // Removing item
+    if (!route.nav || (route.protectedRoute && !user) || (route.publicOnlyRoute && user)) {
+      return null
+    }
     const { Icon } = route.nav
     const link = renderLink(route.path)
     return (
-      <ListItem key={route.path} button component={link}>
+      <ListItem
+        key={route.path}
+        button
+        component={link}
+        onClick={onClose}
+        selected={route.path === location.pathname}
+      >
         <ListItemIcon>{Icon && <Icon />}</ListItemIcon>
         <ListItemText primary={route.nav.label} />
       </ListItem>

@@ -4,6 +4,7 @@ import { useAuth } from 'context/Auth'
 
 const Account = () => {
   const { user } = useAuth()
+
   return (
     <>
       <Typography variant="h1">Account</Typography>

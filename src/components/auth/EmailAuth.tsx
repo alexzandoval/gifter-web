@@ -43,7 +43,6 @@ const EmailAuth: FC<Props> = ({ type }) => {
     return ''
   }
 
-  console.log(errors)
   const handleFormSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
       let result
