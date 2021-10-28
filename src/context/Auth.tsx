@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext, createContext, FC } from 'react'
-import axios, { AxiosInstance } from 'axios'
+import axios from 'axios'
 import {
   createUserWithEmailAndPassword,
   FacebookAuthProvider,
@@ -76,8 +76,8 @@ export const AuthContextProvider: FC = ({ children }) => {
       } else {
         api.defaults.headers.common.Authorization = ''
       }
-      setAuthInitialized(true)
       setUser(authUser)
+      setAuthInitialized(true)
     })
     return () => {
       unsubscribe()

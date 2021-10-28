@@ -1,10 +1,15 @@
 import { api } from 'context/Auth'
 import { useCallback } from 'react'
-import { CreateWishlistDto, Wishlist } from 'ts/api'
+import { CreateWishlistDto, Wishlist, WishlistWithItems } from 'ts/api'
 
 const useApi = () => {
   const getWishlists = useCallback(async (): Promise<Wishlist[]> => {
     const result = await api.get<Wishlist[]>('/wishlist')
+    return result.data
+  }, [])
+
+  const getSingleWishlist = useCallback(async (id: string): Promise<WishlistWithItems> => {
+    const result = await api.get<WishlistWithItems>(`/wishlist/${id}`)
     return result.data
   }, [])
 
@@ -13,7 +18,7 @@ const useApi = () => {
     return result.data
   }, [])
 
-  return { getWishlists, postWishlist }
+  return { getWishlists, getSingleWishlist, postWishlist }
 }
 
 export default useApi

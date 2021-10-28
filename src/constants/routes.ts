@@ -9,6 +9,7 @@ import Register from 'components/pages/Register'
 import Account from 'components/pages/Account'
 import Test from 'components/pages/Test'
 import Wishlists from 'components/pages/Wishlists'
+import SingleWishlist from 'components/pages/SingleWishlist'
 
 export type Route = {
   Component: FC
@@ -45,6 +46,11 @@ const routes: { [name: string]: Route } = {
   account: {
     path: '/account',
     Component: Account,
+    protectedRoute: true,
+  },
+  singleWishlist: {
+    path: '/wishlists/:id',
+    Component: SingleWishlist,
     protectedRoute: true,
   },
   wishlists: {
