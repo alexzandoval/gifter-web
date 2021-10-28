@@ -1,3 +1,10 @@
+export interface User {
+  uid: string
+  email: string
+  username: string
+  photoUrl: string
+}
+
 export interface CreateWishlistDto {
   name: string
 }
@@ -13,4 +20,13 @@ export interface WishlistWithItems extends Wishlist {
     content: string
     wishlistId: number
   }[]
+}
+
+export interface Exchange {
+  id: number
+  participants: User[]
+  organizerId: string
+  name: string
+  date: Date
+  budget: number
 }

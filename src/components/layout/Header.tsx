@@ -70,6 +70,11 @@ const Header = () => {
     handleCloseProfileMenu()
   }
 
+  const handleExchangesClick = () => {
+    history.push(routes.exchanges.path)
+    handleCloseProfileMenu()
+  }
+
   const handleWishlistsClick = () => {
     history.push(routes.wishlists.path)
     handleCloseProfileMenu()
@@ -153,7 +158,7 @@ const Header = () => {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <MenuItem onClick={handleProfileClick}>My Profile</MenuItem>
-        <MenuItem>My Gift Exchanges</MenuItem>
+        <MenuItem onClick={handleExchangesClick}>My Gift Exchanges</MenuItem>
         <MenuItem onClick={handleWishlistsClick}>My Wishlists</MenuItem>
         <Divider />
         <MenuItem onClick={signOut}>

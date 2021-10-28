@@ -10,6 +10,8 @@ import Account from 'components/pages/Account'
 import Test from 'components/pages/Test'
 import Wishlists from 'components/pages/Wishlists'
 import SingleWishlist from 'components/pages/SingleWishlist'
+import Exchanges from 'components/pages/Exchanges'
+import SingleExchange from 'components/pages/SingleExchange'
 
 export type Route = {
   Component: FC
@@ -59,6 +61,19 @@ const routes: { [name: string]: Route } = {
     protectedRoute: true,
     nav: {
       label: 'My Wishlists',
+    },
+  },
+  singleExchange: {
+    path: '/exchanges/:id',
+    Component: SingleExchange,
+    protectedRoute: true,
+  },
+  exchanges: {
+    path: '/exchanges',
+    Component: Exchanges,
+    protectedRoute: true,
+    nav: {
+      label: 'My Exchanges',
     },
   },
   login: {
