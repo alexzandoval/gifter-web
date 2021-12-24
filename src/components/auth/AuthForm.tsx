@@ -13,7 +13,7 @@ export interface Props {
 
 const AuthForm: FC<Props> = ({ type }) => {
   const history = useHistory()
-  const { signInWithGoogle, signInWithFacebook } = useAuth()
+  const { signInWithGoogle, signInWithApple, signInWithFacebook } = useAuth()
   const isNewSignUp = type === 'signUp'
 
   const handleSignInWithEmail = () => history.push(routes.emailLogin.path)
@@ -21,6 +21,15 @@ const AuthForm: FC<Props> = ({ type }) => {
   const handleSignInWithGoogle = async () => {
     try {
       const result = await signInWithGoogle()
+      console.log(result)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const handleSignInWithApple = async () => {
+    try {
+      const result = await signInWithApple()
       console.log(result)
     } catch (e) {
       console.log(e)
@@ -66,7 +75,9 @@ const AuthForm: FC<Props> = ({ type }) => {
         <SocialProviderButton provider="google" onClick={handleSignInWithGoogle}>
           Continue with Google
         </SocialProviderButton>
-        <SocialProviderButton provider="apple">Continue with Apple</SocialProviderButton>
+        <SocialProviderButton provider="apple" onClick={handleSignInWithApple}>
+          Continue with Apple
+        </SocialProviderButton>
         <SocialProviderButton provider="facebook" onClick={handleSignInWithFacebook}>
           Continue with Facebook
         </SocialProviderButton>

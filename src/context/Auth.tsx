@@ -5,6 +5,7 @@ import {
   FacebookAuthProvider,
   getAuth,
   GoogleAuthProvider,
+  OAuthProvider,
   onIdTokenChanged,
   signInWithEmailAndPassword,
   signInWithPopup,
@@ -23,6 +24,7 @@ interface AuthContextType {
   authInitialized: boolean
   signInWithEmail: (email: string, password: string) => Promise<UserCredential>
   signInWithGoogle: () => Promise<UserCredential>
+  signInWithApple: () => Promise<UserCredential>
   signInWithFacebook: () => Promise<UserCredential>
   signOut: () => Promise<void>
   signUpWithEmail: (email: string, password: string) => Promise<UserCredential>
@@ -58,6 +60,7 @@ export const AuthContext = createContext<AuthContextType>({
   authInitialized: false,
   signInWithEmail: noAuthProvider,
   signInWithGoogle: noAuthProvider,
+  signInWithApple: noAuthProvider,
   signInWithFacebook: noAuthProvider,
   signOut: noAuthProvider,
   signUpWithEmail: noAuthProvider,
@@ -68,6 +71,7 @@ export const AuthContextProvider: FC = ({ children }) => {
   const [authInitialized, setAuthInitialized] = useState<AuthContextType['authInitialized']>(false)
   const googleAuthProvider = new GoogleAuthProvider()
   const facebookAuthProvider = new FacebookAuthProvider()
+  const appleAuthProvider = new OAuthProvider('apple.com')
 
   useEffect(() => {
     const unsubscribe = onIdTokenChanged(auth, async (authUser) => {
@@ -90,6 +94,7 @@ export const AuthContextProvider: FC = ({ children }) => {
     signInWithEmail: async (email: string, password: string) =>
       signInWithEmailAndPassword(auth, email, password),
     signInWithGoogle: async () => signInWithPopup(auth, googleAuthProvider),
+    signInWithApple: async () => signInWithPopup(auth, appleAuthProvider),
     signInWithFacebook: async () => signInWithPopup(auth, facebookAuthProvider),
     signOut: async () => signOut(auth),
     signUpWithEmail: async (email: string, password: string) =>
