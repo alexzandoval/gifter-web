@@ -37,22 +37,32 @@ const noAuthProvider = () => {
 export const api = axios.create()
 
 if (REACT_APP_ENV === 'development') {
-  api.interceptors.response.use(
-    (response) => {
-      // eslint-disable-next-line no-console
-      console.log(response.config.url, response)
-      return response
+  /* eslint-disable no-console */
+  api.interceptors.request.use(
+    (config) => {
+      console.log(`Requesting ${config.url}`)
+      return config
     },
     (error) => {
-      // eslint-disable-next-line no-console
-      console.error(error)
+      console.log('Error on request', error)
       return Promise.reject(error)
     },
   )
+  api.interceptors.response.use(
+    (response) => {
+      console.log(`Response from ${response.config.url}`, response)
+      return response
+    },
+    (error) => {
+      console.error('Error on response', error)
+      return Promise.reject(error)
+    },
+  )
+  /* eslint-enable no-console */
 }
 
 if (REACT_APP_PROXY) {
-  api.defaults.baseURL = REACT_APP_PROXY
+  api.defaults.baseURL = `${REACT_APP_PROXY}/api/v1`
 }
 
 export const AuthContext = createContext<AuthContextType>({
