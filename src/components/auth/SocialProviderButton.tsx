@@ -1,11 +1,12 @@
 import { FC } from 'react'
-import { Button, ButtonProps, CircularProgress, useTheme } from '@mui/material'
+import { useTheme } from '@mui/material'
 import { Apple, Email, FacebookOutlined } from '@mui/icons-material'
 import { SxProps } from '@mui/system'
 
 import GoogleIcon from 'components/icons/GoogleIcon'
+import LoadingButton, { LoadingButtonProps } from 'components/shared/LoadingButton'
 
-interface Props extends ButtonProps {
+interface Props extends LoadingButtonProps {
   loading?: boolean
   provider: 'email' | 'google' | 'apple' | 'facebook'
 }
@@ -59,8 +60,9 @@ const SocialProviderButton: FC<Props> = ({ loading, provider, ...other }) => {
   const { Icon, style } = providerAttributes[provider]
 
   return (
-    <Button
-      startIcon={loading ? <CircularProgress size={20} /> : <Icon />}
+    <LoadingButton
+      loading={loading}
+      startIcon={<Icon />}
       variant="contained"
       sx={style}
       {...other}
