@@ -1,10 +1,17 @@
+import { Dispatch, FC, SetStateAction } from 'react'
 import { TextField, Theme } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import { useAuth } from 'context/Auth'
-import { FC } from 'react'
 import { FieldError, SubmitHandler, useForm } from 'react-hook-form'
-import { Props } from './AuthForm'
+
+import { useAuth } from 'context/Auth'
+import { Props as AuthFormProps } from './AuthForm'
 import SocialProviderButton from './SocialProviderButton'
+
+interface Props extends AuthFormProps {
+  disabled?: boolean
+  isLoading: boolean
+  setIsLoading: Dispatch<SetStateAction<boolean>>
+}
 
 type FormValues = {
   email: string
@@ -22,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
-const EmailAuth: FC<Props> = ({ type }) => {
+const EmailAuth: FC<Props> = ({ type, disabled, isLoading, setIsLoading }) => {
   const classes = useStyles()
   const {
     register,
@@ -45,6 +52,7 @@ const EmailAuth: FC<Props> = ({ type }) => {
 
   const handleFormSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
+      setIsLoading(true)
       let result
       if (isNewSignUp) {
         result = await signUpWithEmail(data.email, data.password)
@@ -54,6 +62,8 @@ const EmailAuth: FC<Props> = ({ type }) => {
       console.log(result)
     } catch (e) {
       console.log('Error authenticating with email', e)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -61,6 +71,7 @@ const EmailAuth: FC<Props> = ({ type }) => {
     <form className={classes.form} onSubmit={handleSubmit(handleFormSubmit)} noValidate>
       <TextField
         type="email"
+        disabled={disabled}
         variant="filled"
         label="Email"
         error={Boolean(errors.email)}
@@ -77,6 +88,7 @@ const EmailAuth: FC<Props> = ({ type }) => {
       />
       <TextField
         type="password"
+        disabled={disabled}
         variant="filled"
         label="Password"
         error={Boolean(errors.password)}
@@ -91,6 +103,7 @@ const EmailAuth: FC<Props> = ({ type }) => {
       {isNewSignUp && (
         <TextField
           type="password"
+          disabled={disabled}
           variant="filled"
           label="Confirm Password"
           error={Boolean(errors.confirmPassword)}
@@ -102,7 +115,7 @@ const EmailAuth: FC<Props> = ({ type }) => {
           }}
         />
       )}
-      <SocialProviderButton provider="email" type="submit">
+      <SocialProviderButton loading={isLoading} disabled={disabled} provider="email" type="submit">
         {isNewSignUp ? 'Sign up with Email' : 'Sign in with Email'}
       </SocialProviderButton>
     </form>
