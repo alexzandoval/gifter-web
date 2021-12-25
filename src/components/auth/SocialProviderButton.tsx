@@ -5,10 +5,11 @@ import { SxProps } from '@mui/system'
 
 import GoogleIcon from 'components/icons/GoogleIcon'
 import LoadingButton, { LoadingButtonProps } from 'components/shared/LoadingButton'
+import { SocialProvider } from 'ts/enums'
 
 interface Props extends LoadingButtonProps {
   loading?: boolean
-  provider: 'email' | 'google' | 'apple' | 'facebook'
+  provider: SocialProvider
 }
 
 type ProviderAttributes = {
@@ -22,10 +23,10 @@ const SocialProviderButton: FC<Props> = ({ loading, provider, ...other }) => {
   const theme = useTheme()
   const isDark = theme.palette.mode === 'dark'
   const providerAttributes: ProviderAttributes = {
-    email: {
+    [SocialProvider.EMAIL]: {
       Icon: Email,
     },
-    google: {
+    [SocialProvider.GOOGLE]: {
       Icon: GoogleIcon,
       style: {
         backgroundColor: theme.palette.common.white,
@@ -35,7 +36,7 @@ const SocialProviderButton: FC<Props> = ({ loading, provider, ...other }) => {
         },
       },
     },
-    apple: {
+    [SocialProvider.APPLE]: {
       Icon: Apple,
       style: {
         backgroundColor: isDark ? theme.palette.common.white : theme.palette.common.black,
@@ -47,7 +48,7 @@ const SocialProviderButton: FC<Props> = ({ loading, provider, ...other }) => {
         },
       },
     },
-    facebook: {
+    [SocialProvider.FACEBOOK]: {
       Icon: FacebookOutlined,
       style: {
         backgroundColor: '#1777F3',

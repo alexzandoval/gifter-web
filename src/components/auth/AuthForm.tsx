@@ -1,60 +1,141 @@
-import { FC, useState } from 'react'
-import { Box, Divider, Link, Typography } from '@mui/material'
-import { Link as RouterLink } from 'react-router-dom'
+/* eslint-disable no-console */
+import { Dispatch, FC, ReactNode, SetStateAction, useState } from 'react'
+import { Box, Button, Divider, TextField, Theme, Typography } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import { AuthError, UserCredential } from 'firebase/auth'
+import { FieldError, SubmitHandler, useForm } from 'react-hook-form'
+import { useHistory } from 'react-router-dom'
 
-import EmailAuth from 'components/auth/EmailAuth'
 import SocialProviderButton from 'components/auth/SocialProviderButton'
 import routes from 'constants/routes'
 import { useAuth } from 'context/Auth'
+import { handleAuthError } from 'utility/auth'
+import { SocialProvider } from 'ts/enums'
 
 export interface Props {
   type: 'signIn' | 'signUp'
 }
 
+type FormValues = {
+  email: string
+  password: string
+  confirmPassword: string
+}
+
+type ProviderAuthFunctions = {
+  [key in SocialProvider]: {
+    setIsLoading: Dispatch<SetStateAction<boolean>>
+    handleSignIn: () => Promise<UserCredential>
+  }
+}
+
+const useStyles = makeStyles((theme: Theme) => ({
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    '& .MuiTextField-root': {
+      marginBottom: theme.spacing(2),
+    },
+  },
+  submitErrorText: {
+    marginBottom: theme.spacing(2),
+  },
+}))
+
 const AuthForm: FC<Props> = ({ type }) => {
-  const { signInWithGoogle, signInWithApple, signInWithFacebook } = useAuth()
+  const classes = useStyles()
+  const history = useHistory()
+  const {
+    signInWithEmail,
+    signUpWithEmail,
+    signInWithGoogle,
+    signInWithApple,
+    signInWithFacebook,
+  } = useAuth()
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<FormValues>()
   const [emailIsLoading, setEmailIsLoading] = useState<boolean>(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false)
   const [isAppleLoading, setIsAppleLoading] = useState<boolean>(false)
   const [isFacebookLoading, setIsFacebookLoading] = useState<boolean>(false)
+  const [error, setError] = useState<string | ReactNode>('')
+
   const isNewSignUp = type === 'signUp'
   const formIsLoading = emailIsLoading || isGoogleLoading || isAppleLoading || isFacebookLoading
+  const providersAuthFunctions: ProviderAuthFunctions = {
+    [SocialProvider.GOOGLE]: {
+      setIsLoading: setIsGoogleLoading,
+      handleSignIn: signInWithGoogle,
+    },
+    [SocialProvider.APPLE]: {
+      setIsLoading: setIsAppleLoading,
+      handleSignIn: signInWithApple,
+    },
+    [SocialProvider.FACEBOOK]: {
+      setIsLoading: setIsFacebookLoading,
+      handleSignIn: signInWithFacebook,
+    },
+    [SocialProvider.EMAIL]: {
+      setIsLoading: setEmailIsLoading,
+      handleSignIn: () => {
+        throw new Error(
+          'Email auth must be handled separately and supplied with an email and password.',
+        )
+      },
+    },
+  }
 
-  const handleSignInWithGoogle = async () => {
+  const handleToggleSignIn = () => {
+    history.push(isNewSignUp ? routes.login.path : routes.register.path)
+  }
+
+  const getErrorMessage = (inputErrors: FieldError | undefined, label: string): string => {
+    if (!inputErrors) return ''
+    const { message, type: errorType } = inputErrors
+    if (message) return message
+    if (errorType === 'required') {
+      return `${label} is required`
+    }
+    return ''
+  }
+
+  const handleSignInWithProvider = async (provider: SocialProvider, data?: FormValues) => {
+    const { setIsLoading, handleSignIn } = providersAuthFunctions[provider]
     try {
-      setIsGoogleLoading(true)
-      const result = await signInWithGoogle()
+      setIsLoading(true)
+      setError('')
+      let result
+      if (provider === SocialProvider.EMAIL && data) {
+        if (isNewSignUp) {
+          result = await signUpWithEmail(data.email, data.password)
+        } else {
+          result = await signInWithEmail(data.email, data.password)
+        }
+      } else {
+        result = await handleSignIn()
+      }
       console.log(result)
     } catch (e) {
-      console.log(e)
+      console.log(`Error authenticating with ${provider}`, e)
+      setError(handleAuthError(e as AuthError))
     } finally {
-      setIsGoogleLoading(false)
+      setIsLoading(false)
     }
   }
 
-  const handleSignInWithApple = async () => {
-    try {
-      setIsAppleLoading(true)
-      const result = await signInWithApple()
-      console.log(result)
-    } catch (e) {
-      console.log(e)
-    } finally {
-      setIsAppleLoading(false)
-    }
+  const handleSignInWithEmail: SubmitHandler<FormValues> = async (data) => {
+    handleSignInWithProvider(SocialProvider.EMAIL, data)
   }
 
-  const handleSignInWithFacebook = async () => {
-    try {
-      setIsFacebookLoading(true)
-      const result = await signInWithFacebook()
-      console.log(result)
-    } catch (e) {
-      console.log(e)
-    } finally {
-      setIsFacebookLoading(false)
-    }
-  }
+  const handleSignInWithGoogle = () => handleSignInWithProvider(SocialProvider.GOOGLE)
+
+  const handleSignInWithApple = () => handleSignInWithProvider(SocialProvider.APPLE)
+
+  const handleSignInWithFacebook = () => handleSignInWithProvider(SocialProvider.FACEBOOK)
 
   return (
     <Box
@@ -79,19 +160,70 @@ const AuthForm: FC<Props> = ({ type }) => {
         <Typography sx={{ marginBottom: 4 }} variant="h2">
           {isNewSignUp ? 'Sign Up' : 'Login'}
         </Typography>
-        <EmailAuth
-          type={type}
-          disabled={formIsLoading}
-          isLoading={emailIsLoading}
-          setIsLoading={setEmailIsLoading}
-        />
+        <form className={classes.form} onSubmit={handleSubmit(handleSignInWithEmail)} noValidate>
+          {error && <Typography className={classes.submitErrorText}>{error}</Typography>}
+          <TextField
+            type="email"
+            disabled={formIsLoading}
+            variant="filled"
+            label="Email"
+            error={Boolean(errors.email)}
+            helperText={getErrorMessage(errors.email, 'Email')}
+            inputProps={{
+              ...register('email', {
+                required: 'Please enter a valid email address',
+                pattern: {
+                  value: /^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$/,
+                  message: 'Please enter a valid email address',
+                },
+              }),
+            }}
+          />
+          <TextField
+            type="password"
+            disabled={formIsLoading}
+            variant="filled"
+            label="Password"
+            error={Boolean(errors.password)}
+            helperText={getErrorMessage(errors.password, 'Password')}
+            inputProps={{
+              ...register('password', {
+                required: 'Please enter a password',
+                minLength: { value: 6, message: 'Password must be at least 6 characters' },
+              }),
+            }}
+          />
+          {isNewSignUp && (
+            <TextField
+              type="password"
+              disabled={formIsLoading}
+              variant="filled"
+              label="Confirm Password"
+              error={Boolean(errors.confirmPassword)}
+              helperText={getErrorMessage(errors.confirmPassword, 'Confirm Password')}
+              inputProps={{
+                ...register('confirmPassword', {
+                  validate: (value) => value === watch('password') || 'Passwords must match',
+                }),
+              }}
+            />
+          )}
+          <SocialProviderButton
+            loading={emailIsLoading}
+            disabled={formIsLoading}
+            provider={SocialProvider.EMAIL}
+            type="submit"
+          >
+            {isNewSignUp ? 'Sign up with Email' : 'Sign in with Email'}
+          </SocialProviderButton>
+        </form>
         <Box>
           <Divider>OR</Divider>
         </Box>
         <SocialProviderButton
           loading={isGoogleLoading}
           disabled={formIsLoading}
-          provider="google"
+          provider={SocialProvider.GOOGLE}
           onClick={handleSignInWithGoogle}
         >
           Continue with Google
@@ -99,7 +231,7 @@ const AuthForm: FC<Props> = ({ type }) => {
         <SocialProviderButton
           loading={isAppleLoading}
           disabled={formIsLoading}
-          provider="apple"
+          provider={SocialProvider.APPLE}
           onClick={handleSignInWithApple}
         >
           Continue with Apple
@@ -107,17 +239,14 @@ const AuthForm: FC<Props> = ({ type }) => {
         <SocialProviderButton
           loading={isFacebookLoading}
           disabled={formIsLoading}
-          provider="facebook"
+          provider={SocialProvider.FACEBOOK}
           onClick={handleSignInWithFacebook}
         >
           Continue with Facebook
         </SocialProviderButton>
-        <Typography>
-          {isNewSignUp ? 'Already have an account? ' : "Don't have an account? "}
-          <Link to={isNewSignUp ? routes.login.path : routes.register.path} component={RouterLink}>
-            {isNewSignUp ? 'Login' : 'Sign Up'}
-          </Link>
-        </Typography>
+        <Button sx={{ textTransform: 'none' }} onClick={handleToggleSignIn}>
+          {isNewSignUp ? 'Already have an account? Login.' : "Don't have an account? Sign Up."}
+        </Button>
       </Box>
     </Box>
   )
