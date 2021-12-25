@@ -22,13 +22,6 @@ type FormValues = {
   confirmPassword: string
 }
 
-type ProviderAuthFunctions = {
-  [key in SocialProvider]: {
-    setIsLoading: Dispatch<SetStateAction<boolean>>
-    handleSignIn: () => Promise<UserCredential>
-  }
-}
-
 const useStyles = makeStyles((theme: Theme) => ({
   form: {
     display: 'flex',
@@ -66,28 +59,6 @@ const AuthForm: FC<Props> = ({ type }) => {
 
   const isNewSignUp = type === 'signUp'
   const formIsLoading = emailIsLoading || isGoogleLoading || isAppleLoading || isFacebookLoading
-  const providersAuthFunctions: ProviderAuthFunctions = {
-    [SocialProvider.GOOGLE]: {
-      setIsLoading: setIsGoogleLoading,
-      handleSignIn: signInWithGoogle,
-    },
-    [SocialProvider.APPLE]: {
-      setIsLoading: setIsAppleLoading,
-      handleSignIn: signInWithApple,
-    },
-    [SocialProvider.FACEBOOK]: {
-      setIsLoading: setIsFacebookLoading,
-      handleSignIn: signInWithFacebook,
-    },
-    [SocialProvider.EMAIL]: {
-      setIsLoading: setEmailIsLoading,
-      handleSignIn: () => {
-        throw new Error(
-          'Email auth must be handled separately and supplied with an email and password.',
-        )
-      },
-    },
-  }
 
   const handleToggleSignIn = () => {
     history.push(isNewSignUp ? routes.login.path : routes.register.path)
@@ -103,24 +74,17 @@ const AuthForm: FC<Props> = ({ type }) => {
     return ''
   }
 
-  const handleSignInWithProvider = async (provider: SocialProvider, data?: FormValues) => {
-    const { setIsLoading, handleSignIn } = providersAuthFunctions[provider]
+  const handleSignInWithProvider = async (
+    setIsLoading: Dispatch<SetStateAction<boolean>>,
+    handleSignIn: () => Promise<UserCredential>,
+  ) => {
     try {
       setIsLoading(true)
       setError('')
-      let result
-      if (provider === SocialProvider.EMAIL && data) {
-        if (isNewSignUp) {
-          result = await signUpWithEmail(data.email, data.password)
-        } else {
-          result = await signInWithEmail(data.email, data.password)
-        }
-      } else {
-        result = await handleSignIn()
-      }
+      const result = await handleSignIn()
       console.log(result)
     } catch (e) {
-      console.log(`Error authenticating with ${provider}`, e)
+      console.log(`Error authenticating with provider`, e)
       setError(handleAuthError(e as AuthError))
     } finally {
       setIsLoading(false)
@@ -128,14 +92,22 @@ const AuthForm: FC<Props> = ({ type }) => {
   }
 
   const handleSignInWithEmail: SubmitHandler<FormValues> = async (data) => {
-    handleSignInWithProvider(SocialProvider.EMAIL, data)
+    let handleSignIn
+    if (isNewSignUp) {
+      handleSignIn = () => signUpWithEmail(data.email, data.password)
+    } else {
+      handleSignIn = () => signInWithEmail(data.email, data.password)
+    }
+    handleSignInWithProvider(setEmailIsLoading, handleSignIn)
   }
 
-  const handleSignInWithGoogle = () => handleSignInWithProvider(SocialProvider.GOOGLE)
+  const handleSignInWithGoogle = () =>
+    handleSignInWithProvider(setIsGoogleLoading, signInWithGoogle)
 
-  const handleSignInWithApple = () => handleSignInWithProvider(SocialProvider.APPLE)
+  const handleSignInWithApple = () => handleSignInWithProvider(setIsAppleLoading, signInWithApple)
 
-  const handleSignInWithFacebook = () => handleSignInWithProvider(SocialProvider.FACEBOOK)
+  const handleSignInWithFacebook = () =>
+    handleSignInWithProvider(setIsFacebookLoading, signInWithFacebook)
 
   return (
     <Box
