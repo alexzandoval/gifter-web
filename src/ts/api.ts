@@ -14,12 +14,14 @@ export interface Wishlist extends CreateWishlistDto {
   userId: string
 }
 
+export interface WishlistItem {
+  id: number
+  content: string
+  wishlistId: number
+}
+
 export interface WishlistWithItems extends Wishlist {
-  items: {
-    id: number
-    content: string
-    wishlistId: number
-  }[]
+  items: WishlistItem[]
 }
 
 export interface Exchange {

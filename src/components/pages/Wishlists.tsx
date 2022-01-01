@@ -2,21 +2,18 @@ import { FormEvent, useEffect, useState } from 'react'
 import {
   Box,
   CircularProgress,
-  IconButton,
-  InputAdornment,
   List,
   ListItem,
   ListItemButton,
   ListItemText,
-  TextField,
   Typography,
 } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 
 import useApi from 'hooks/useApi'
 import { Wishlist } from 'ts/api'
-import { Add, Close } from '@mui/icons-material'
 import Loader from 'components/shared/Loader'
+import AddTextButton from 'components/shared/AddTextButton'
 
 const Wishlists = () => {
   const [wishlists, setWishlists] = useState<Wishlist[]>([])
@@ -25,12 +22,10 @@ const Wishlists = () => {
   const [newWishlistError, setNewWishlistError] = useState<string>('')
   const [wishlistsLoading, setWishlistsLoading] = useState<boolean>(false)
   const [newWishlistIsLoading, setNewWishlistIsLoading] = useState<boolean>(false)
-  const { getWishlists, postWishlist } = useApi()
+  const { getWishlists, createWishlist } = useApi()
 
-  const handleUpdateNewWishlistName = (
-    event: FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { value } = event.currentTarget
+  const handleUpdateNewWishlistName = (e: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { value } = e.currentTarget
     setNewWishlistName(value)
     if (newWishlistError && value.length > 0) {
       setNewWishlistError('')
@@ -55,7 +50,7 @@ const Wishlists = () => {
     }
     try {
       setNewWishlistIsLoading(true)
-      const newWishlist = await postWishlist({ name: newWishlistName })
+      const newWishlist = await createWishlist({ name: newWishlistName })
       setWishlists((prev) => [...prev, newWishlist])
     } finally {
       handleLeaveAddMode()
@@ -98,37 +93,21 @@ const Wishlists = () => {
           ))}
         </Loader>
         <ListItem>
-          {inAddMode ? (
-            <form onSubmit={handleAddNewWishlist}>
-              <TextField
-                variant="standard"
-                size="small"
-                label="New Wishlist Name"
-                disabled={newWishlistIsLoading || wishlistsLoading}
-                sx={{ marginLeft: 2 }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Loader loading={newWishlistIsLoading}>
-                        <IconButton size="small" onClick={handleLeaveAddMode}>
-                          <Close fontSize="inherit" />
-                        </IconButton>
-                      </Loader>
-                    </InputAdornment>
-                  ),
-                }}
-                autoFocus
-                error={!!newWishlistError}
-                helperText={newWishlistError}
-                value={newWishlistName}
-                onChange={handleUpdateNewWishlistName}
-              />
-            </form>
-          ) : (
-            <ListItemButton onClick={handleEnterAddMode}>
-              <Add /> New Wishlist
-            </ListItemButton>
-          )}
+          <AddTextButton
+            inAddMode={inAddMode}
+            loading={newWishlistIsLoading}
+            onEnterAddMode={handleEnterAddMode}
+            onLeaveAddMode={handleLeaveAddMode}
+            onSubmit={handleAddNewWishlist}
+            label="New Wishlist Name"
+            disabled={newWishlistIsLoading || wishlistsLoading}
+            error={!!newWishlistError}
+            helperText={newWishlistError}
+            value={newWishlistName}
+            onChange={handleUpdateNewWishlistName}
+          >
+            New Wishlist
+          </AddTextButton>
         </ListItem>
       </List>
     </>

@@ -7,11 +7,11 @@ import useApi from 'hooks/useApi'
 
 const Test = () => {
   const { user } = useAuth()
-  const { getWishlists, postWishlist } = useApi()
+  const { getWishlists, createWishlist } = useApi()
   const [wishlistName, setWishlistName] = useState('')
 
   const handleSubmitWishlist = async () => {
-    const newWishlist = await postWishlist({ name: wishlistName })
+    const newWishlist = await createWishlist({ name: wishlistName })
     console.log(newWishlist)
   }
 
