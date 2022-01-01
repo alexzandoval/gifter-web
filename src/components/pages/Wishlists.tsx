@@ -1,5 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react'
 import {
+  Box,
+  CircularProgress,
   IconButton,
   InputAdornment,
   List,
@@ -14,12 +16,15 @@ import { Link as RouterLink } from 'react-router-dom'
 import useApi from 'hooks/useApi'
 import { Wishlist } from 'ts/api'
 import { Add, Close } from '@mui/icons-material'
+import Loader from 'components/shared/Loader'
 
 const Wishlists = () => {
   const [wishlists, setWishlists] = useState<Wishlist[]>([])
   const [inAddMode, setInAddMode] = useState<boolean>(false)
   const [newWishlistName, setNewWishlistName] = useState<string>('')
   const [newWishlistError, setNewWishlistError] = useState<string>('')
+  const [wishlistsLoading, setWishlistsLoading] = useState<boolean>(false)
+  const [newWishlistIsLoading, setNewWishlistIsLoading] = useState<boolean>(false)
   const { getWishlists, postWishlist } = useApi()
 
   const handleUpdateNewWishlistName = (
@@ -48,26 +53,50 @@ const Wishlists = () => {
       setNewWishlistError('Wishlist name cannot be empty')
       return
     }
-    const newWishlist = await postWishlist({ name: newWishlistName })
-    handleLeaveAddMode()
-    setWishlists((prev) => [...prev, newWishlist])
+    try {
+      setNewWishlistIsLoading(true)
+      const newWishlist = await postWishlist({ name: newWishlistName })
+      setWishlists((prev) => [...prev, newWishlist])
+    } finally {
+      handleLeaveAddMode()
+      setNewWishlistIsLoading(false)
+    }
   }
 
   useEffect(() => {
-    getWishlists().then(setWishlists)
+    const fetchWishlists = async () => {
+      try {
+        setWishlistsLoading(true)
+        const fetchedWishlists = await getWishlists()
+        setWishlists(fetchedWishlists)
+      } finally {
+        setWishlistsLoading(false)
+      }
+    }
+
+    fetchWishlists()
   }, [getWishlists])
 
   return (
     <>
       <Typography variant="h1">My Wishlists</Typography>
-      <List>
-        {wishlists.map((wishlist) => (
-          <ListItem key={wishlist.id}>
-            <ListItemButton component={RouterLink} to={`/wishlists/${wishlist.id}`}>
-              <ListItemText>{wishlist.name}</ListItemText>
-            </ListItemButton>
-          </ListItem>
-        ))}
+      <List sx={{ marginTop: 4 }}>
+        <Loader
+          loading={wishlistsLoading}
+          loader={
+            <Box sx={{ marginLeft: 8 }}>
+              <CircularProgress />
+            </Box>
+          }
+        >
+          {wishlists.map((wishlist) => (
+            <ListItem key={wishlist.id}>
+              <ListItemButton component={RouterLink} to={`/wishlists/${wishlist.id}`}>
+                <ListItemText>{wishlist.name}</ListItemText>
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </Loader>
         <ListItem>
           {inAddMode ? (
             <form onSubmit={handleAddNewWishlist}>
@@ -75,13 +104,16 @@ const Wishlists = () => {
                 variant="standard"
                 size="small"
                 label="New Wishlist Name"
+                disabled={newWishlistIsLoading || wishlistsLoading}
                 sx={{ marginLeft: 2 }}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton size="small" onClick={handleLeaveAddMode}>
-                        <Close fontSize="inherit" />
-                      </IconButton>
+                      <Loader loading={newWishlistIsLoading}>
+                        <IconButton size="small" onClick={handleLeaveAddMode}>
+                          <Close fontSize="inherit" />
+                        </IconButton>
+                      </Loader>
                     </InputAdornment>
                   ),
                 }}
