@@ -34,11 +34,11 @@ const noAuthProvider = () => {
   throw new Error('This component should be wrapper with a Auth Context Provider.')
 }
 
-export const api = axios.create()
+export const apiAxios = axios.create()
 
 if (REACT_APP_ENV === 'development') {
   /* eslint-disable no-console */
-  api.interceptors.request.use(
+  apiAxios.interceptors.request.use(
     (config) => {
       console.log(`Requesting ${config.url}`)
       return config
@@ -48,7 +48,7 @@ if (REACT_APP_ENV === 'development') {
       return Promise.reject(error)
     },
   )
-  api.interceptors.response.use(
+  apiAxios.interceptors.response.use(
     (response) => {
       console.log(`Response from ${response.config.url}`, response)
       return response
@@ -62,7 +62,7 @@ if (REACT_APP_ENV === 'development') {
 }
 
 if (REACT_APP_PROXY) {
-  api.defaults.baseURL = REACT_APP_PROXY
+  apiAxios.defaults.baseURL = REACT_APP_PROXY
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -86,9 +86,9 @@ export const AuthContextProvider: FC = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onIdTokenChanged(auth, async (authUser) => {
       if (authUser) {
-        api.defaults.headers.common.Authorization = `Bearer ${await authUser.getIdToken()}`
+        apiAxios.defaults.headers.common.Authorization = `Bearer ${await authUser.getIdToken()}`
       } else {
-        api.defaults.headers.common.Authorization = ''
+        apiAxios.defaults.headers.common.Authorization = ''
       }
       setUser(authUser)
       setAuthInitialized(true)

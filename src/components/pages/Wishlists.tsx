@@ -10,7 +10,7 @@ import {
 } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 
-import useApi from 'hooks/useApi'
+import Api from 'services/Api'
 import { Wishlist } from 'ts/api'
 import Loader from 'components/shared/Loader'
 import AddTextButton from 'components/shared/AddTextButton'
@@ -23,7 +23,6 @@ const Wishlists = () => {
   const [newWishlistError, setNewWishlistError] = useState<string>('')
   const [wishlistsLoading, setWishlistsLoading] = useState<boolean>(false)
   const [newWishlistIsLoading, setNewWishlistIsLoading] = useState<boolean>(false)
-  const { getWishlists, createWishlist } = useApi()
 
   const handleUpdateNewWishlistName = (e: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { value } = e.currentTarget
@@ -51,7 +50,7 @@ const Wishlists = () => {
     }
     try {
       setNewWishlistIsLoading(true)
-      const newWishlist = await createWishlist({ name: newWishlistName })
+      const newWishlist = await Api.wishlists.create({ name: newWishlistName })
       setWishlists((prev) => [...prev, newWishlist])
     } finally {
       handleLeaveAddMode()
@@ -63,7 +62,7 @@ const Wishlists = () => {
     const fetchWishlists = async () => {
       try {
         setWishlistsLoading(true)
-        const fetchedWishlists = await getWishlists()
+        const fetchedWishlists = await Api.wishlists.getAll()
         setWishlists(fetchedWishlists)
       } finally {
         setWishlistsLoading(false)
@@ -71,7 +70,7 @@ const Wishlists = () => {
     }
 
     fetchWishlists()
-  }, [getWishlists])
+  }, [])
 
   return (
     <>

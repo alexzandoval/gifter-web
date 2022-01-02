@@ -2,7 +2,7 @@ import { FormEvent, useEffect, useState } from 'react'
 import { CircularProgress, List, ListItem, ListItemText, Typography } from '@mui/material'
 import { useHistory, useParams } from 'react-router-dom'
 
-import useApi from 'hooks/useApi'
+import Api from 'services/Api'
 import { WishlistWithItems } from 'ts/api'
 import Loader from 'components/shared/Loader'
 import AddTextButton from 'components/shared/AddTextButton'
@@ -20,7 +20,6 @@ const SingleWishlist = () => {
   const [newItemName, setNewItemName] = useState<string>('')
   const [newItemError, setNewItemError] = useState<string>('')
   const [newItemIsLoading, setNewItemIsLoading] = useState<boolean>(false)
-  const { getSingleWishlist, addItemToWishlist } = useApi()
   const { id } = useParams<WishlistParams>()
   const history = useHistory()
 
@@ -28,7 +27,7 @@ const SingleWishlist = () => {
     const fetchWishlist = async () => {
       try {
         setWishlistLoading(true)
-        const fetchedWishlist = await getSingleWishlist(id)
+        const fetchedWishlist = await Api.wishlists.get(id)
         setWishlist(fetchedWishlist)
       } catch (e) {
         // TODO: Handle error
@@ -40,7 +39,7 @@ const SingleWishlist = () => {
     }
 
     fetchWishlist()
-  }, [getSingleWishlist, id, history])
+  }, [id, history])
 
   const handleUpdateNewItemName = (e: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { value } = e.currentTarget
@@ -69,7 +68,7 @@ const SingleWishlist = () => {
     try {
       if (wishlist) {
         setNewItemIsLoading(true)
-        const newItem = await addItemToWishlist(wishlist?.id, newItemName)
+        const newItem = await Api.wishlists.addItem(wishlist.id, newItemName)
         setWishlist((prevWishlist) =>
           prevWishlist ? { ...prevWishlist, items: [...prevWishlist.items, newItem] } : null,
         )

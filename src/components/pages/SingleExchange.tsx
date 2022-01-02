@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { List, ListItem, ListItemText, Typography } from '@mui/material'
 import { useParams } from 'react-router-dom'
 
-import useApi from 'hooks/useApi'
+import Api from 'services/Api'
 import { Exchange } from 'ts/api'
 
 type ExchangeParams = {
@@ -11,12 +11,11 @@ type ExchangeParams = {
 
 const SingleExchange = () => {
   const [exchange, setExchange] = useState<Exchange | null>(null)
-  const { getSingleExchange } = useApi()
   const { id } = useParams<ExchangeParams>()
 
   useEffect(() => {
-    getSingleExchange(id).then(setExchange)
-  }, [getSingleExchange, id])
+    Api.exchanges.get(id).then(setExchange)
+  }, [id])
 
   return (
     <>

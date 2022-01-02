@@ -3,20 +3,19 @@ import { useState } from 'react'
 import { Box, Button, TextField, Typography } from '@mui/material'
 
 import { useAuth } from 'context/Auth'
-import useApi from 'hooks/useApi'
+import Api from 'services/Api'
 
 const Test = () => {
   const { user } = useAuth()
-  const { getWishlists, createWishlist } = useApi()
   const [wishlistName, setWishlistName] = useState('')
 
   const handleSubmitWishlist = async () => {
-    const newWishlist = await createWishlist({ name: wishlistName })
+    const newWishlist = await Api.wishlists.create({ name: wishlistName })
     console.log(newWishlist)
   }
 
   const handleFetchWishlists = async () => {
-    const wishlists = await getWishlists()
+    const wishlists = await Api.wishlists.getAll()
     console.log(wishlists)
   }
 

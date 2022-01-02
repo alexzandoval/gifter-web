@@ -2,17 +2,16 @@ import { useEffect, useState } from 'react'
 import { List, ListItem, ListItemButton, ListItemText, Typography } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 
-import useApi from 'hooks/useApi'
+import Api from 'services/Api'
 import { Exchange } from 'ts/api'
 import routes from 'constants/routes'
 
 const Exchanges = () => {
   const [exchanges, setExchanges] = useState<Exchange[]>([])
-  const { getExchanges } = useApi()
 
   useEffect(() => {
-    getExchanges().then(setExchanges)
-  }, [getExchanges])
+    Api.exchanges.getAll().then(setExchanges)
+  }, [])
 
   return (
     <>
