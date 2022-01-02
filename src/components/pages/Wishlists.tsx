@@ -14,6 +14,7 @@ import useApi from 'hooks/useApi'
 import { Wishlist } from 'ts/api'
 import Loader from 'components/shared/Loader'
 import AddTextButton from 'components/shared/AddTextButton'
+import routes from 'constants/routes'
 
 const Wishlists = () => {
   const [wishlists, setWishlists] = useState<Wishlist[]>([])
@@ -86,7 +87,7 @@ const Wishlists = () => {
         >
           {wishlists.map((wishlist) => (
             <ListItem key={wishlist.id}>
-              <ListItemButton component={RouterLink} to={`/wishlists/${wishlist.id}`}>
+              <ListItemButton component={RouterLink} to={routes.singleWishlist.id(wishlist.id)}>
                 <ListItemText>{wishlist.name}</ListItemText>
               </ListItemButton>
             </ListItem>

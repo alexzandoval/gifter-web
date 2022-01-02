@@ -2,7 +2,7 @@ import { ThemeProvider, CssBaseline, StyledEngineProvider } from '@mui/material'
 import { BrowserRouter, Route, RouteProps, Switch } from 'react-router-dom'
 
 import Layout from 'components/layout/Layout'
-import routes from 'constants/routes'
+import routes, { Routes } from 'constants/routes'
 import { AuthContextProvider } from 'context/Auth'
 import { useColorScheme } from 'context/Theme'
 import getTheme from 'styles/theme'
@@ -13,7 +13,7 @@ import { FC } from 'react'
 const App = () => {
   const { colorScheme } = useColorScheme()
   const appRoutes = Object.keys(routes).map((routeName) => {
-    const route = routes[routeName]
+    const route = routes[routeName as keyof Routes]
     const { Component, path, props, publicOnlyRoute, protectedRoute } = route
     let RouteComponent: typeof Route | FC<RouteProps> = Route
     if (protectedRoute) {

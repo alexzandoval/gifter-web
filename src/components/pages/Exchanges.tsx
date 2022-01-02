@@ -4,6 +4,7 @@ import { Link as RouterLink } from 'react-router-dom'
 
 import useApi from 'hooks/useApi'
 import { Exchange } from 'ts/api'
+import routes from 'constants/routes'
 
 const Exchanges = () => {
   const [exchanges, setExchanges] = useState<Exchange[]>([])
@@ -19,7 +20,7 @@ const Exchanges = () => {
       <List>
         {exchanges.map((exchange) => (
           <ListItem key={exchange.id}>
-            <ListItemButton component={RouterLink} to={`/exchanges/${exchange.id}`}>
+            <ListItemButton component={RouterLink} to={routes.singleExchange.id(exchange.id)}>
               <ListItemText>{exchange.name}</ListItemText>
             </ListItemButton>
           </ListItem>

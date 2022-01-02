@@ -62,7 +62,7 @@ if (REACT_APP_ENV === 'development') {
 }
 
 if (REACT_APP_PROXY) {
-  api.defaults.baseURL = `${REACT_APP_PROXY}/api/v1`
+  api.defaults.baseURL = REACT_APP_PROXY
 }
 
 export const AuthContext = createContext<AuthContextType>({

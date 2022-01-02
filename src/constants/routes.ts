@@ -1,17 +1,19 @@
 import { FC } from 'react'
 import { Home as HomeIcon, Info as InfoIcon, Science } from '@mui/icons-material'
 import { RouteProps } from 'react-router-dom'
+
 import About from 'components/pages/About'
+import Account from 'components/pages/Account'
+import Exchanges from 'components/pages/Exchanges'
 import Home from 'components/pages/Home'
 import Login from 'components/pages/Login'
 import PageNotFound from 'components/pages/PageNotFound'
 import Register from 'components/pages/Register'
-import Account from 'components/pages/Account'
+import SingleExchange from 'components/pages/SingleExchange'
+import SingleWishlist from 'components/pages/SingleWishlist'
 import Test from 'components/pages/Test'
 import Wishlists from 'components/pages/Wishlists'
-import SingleWishlist from 'components/pages/SingleWishlist'
-import Exchanges from 'components/pages/Exchanges'
-import SingleExchange from 'components/pages/SingleExchange'
+import { ResourceId } from 'ts/types'
 
 export type Route = {
   Component: FC
@@ -25,7 +27,25 @@ export type Route = {
   }
 }
 
-const routes: { [name: string]: Route } = {
+export type IdRoute = Route & {
+  id: (id: ResourceId) => string
+}
+
+export type Routes = {
+  home: Route
+  about: Route
+  account: Route
+  singleWishlist: IdRoute
+  wishlists: Route
+  singleExchange: IdRoute
+  exchanges: Route
+  login: Route
+  register: Route
+  test: Route
+  notFound: Route
+}
+
+const routes: Routes = {
   home: {
     path: '/',
     Component: Home,
@@ -52,6 +72,7 @@ const routes: { [name: string]: Route } = {
   },
   singleWishlist: {
     path: '/wishlists/:id',
+    id: (id: ResourceId) => `/wishlists/${id}`,
     Component: SingleWishlist,
     protectedRoute: true,
   },
@@ -65,6 +86,7 @@ const routes: { [name: string]: Route } = {
   },
   singleExchange: {
     path: '/exchanges/:id',
+    id: (id: ResourceId) => `/exchanges/${id}`,
     Component: SingleExchange,
     protectedRoute: true,
   },
