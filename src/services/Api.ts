@@ -7,14 +7,6 @@ const urlBuilder = new URLBuilder()
 
 const Api = {
   wishlists: {
-    getAll: async (): Promise<Wishlist[]> => {
-      const result = await apiAxios.get<Wishlist[]>(urlBuilder.wishlists().build())
-      return result.data
-    },
-    get: async (wishlistId: ResourceId): Promise<WishlistWithItems> => {
-      const result = await apiAxios.get<WishlistWithItems>(urlBuilder.wishlists(wishlistId).build())
-      return result.data
-    },
     create: async (wishlist: CreateWishlistDto): Promise<Wishlist> => {
       const result = await apiAxios.post<Wishlist>(urlBuilder.wishlists().build(), wishlist)
       return result.data
@@ -25,6 +17,24 @@ const Api = {
         { content },
       )
       return result.data
+    },
+    getAll: async (): Promise<Wishlist[]> => {
+      const result = await apiAxios.get<Wishlist[]>(urlBuilder.wishlists().build())
+      return result.data
+    },
+    get: async (wishlistId: ResourceId): Promise<WishlistWithItems> => {
+      const result = await apiAxios.get<WishlistWithItems>(urlBuilder.wishlists(wishlistId).build())
+      return result.data
+    },
+    rename: async (wishlistId: ResourceId, newName: string): Promise<WishlistWithItems> => {
+      const result = await apiAxios.patch<WishlistWithItems>(
+        urlBuilder.wishlists(wishlistId).build(),
+        { name: newName },
+      )
+      return result.data
+    },
+    delete: async (wishlistId: ResourceId): Promise<void> => {
+      await apiAxios.delete(urlBuilder.wishlists(wishlistId).build())
     },
   },
   exchanges: {
