@@ -33,8 +33,12 @@ const Api = {
       )
       return result.data
     },
-    delete: async (wishlistId: ResourceId): Promise<void> => {
-      await apiAxios.delete(urlBuilder.wishlists(wishlistId).build())
+    delete: async (wishlistId: ResourceId): Promise<boolean> => {
+      const result = await apiAxios.delete(urlBuilder.wishlists(wishlistId).build())
+      if (result.status === 200) {
+        return true
+      }
+      return false
     },
   },
   exchanges: {

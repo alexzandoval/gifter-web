@@ -40,7 +40,7 @@ if (REACT_APP_ENV === 'development') {
   /* eslint-disable no-console */
   apiAxios.interceptors.request.use(
     (config) => {
-      console.log(`Requesting ${config.url}`)
+      console.log(`Request: ${config.method?.toUpperCase()} ${config.url}`)
       return config
     },
     (error) => {
@@ -50,7 +50,10 @@ if (REACT_APP_ENV === 'development') {
   )
   apiAxios.interceptors.response.use(
     (response) => {
-      console.log(`Response from ${response.config.url}`, response)
+      console.log(
+        `Response: ${response.config.method?.toUpperCase()} ${response.config.url}`,
+        response,
+      )
       return response
     },
     (error) => {

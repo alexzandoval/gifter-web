@@ -1,5 +1,12 @@
 import { FormEvent, useEffect, useState } from 'react'
-import { CircularProgress, List, ListItem, ListItemText, Typography } from '@mui/material'
+import {
+  CircularProgress,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+} from '@mui/material'
 import { useHistory, useParams } from 'react-router-dom'
 
 import Api from 'services/Api'
@@ -8,6 +15,7 @@ import Loader from 'components/shared/Loader'
 import AddTextButton from 'components/shared/AddTextButton'
 import routes from 'constants/routes'
 import Centered from 'components/shared/Centered'
+import { Delete, Edit } from '@mui/icons-material'
 
 type WishlistParams = {
   id: string
@@ -80,6 +88,31 @@ const SingleWishlist = () => {
     }
   }
 
+  // const handleUpdateWishlistName = async (e: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleUpdateWishlistName = async () => {
+    // const { value } = e.currentTarget
+    const value = `test${Math.floor(Math.random() * 100)}`
+    if (wishlist) {
+      try {
+        const updatedWishlist = await Api.wishlists.rename(wishlist.id, value)
+        setWishlist(updatedWishlist)
+      } catch (error) {
+        console.log('Error updating wishlist name', error)
+      }
+    }
+  }
+
+  const handleDeleteWishlist = async () => {
+    if (wishlist) {
+      try {
+        const result = await Api.wishlists.delete(wishlist.id)
+        history.push(routes.wishlists.path)
+      } catch (error) {
+        console.log('Error deleting wishlist', error)
+      }
+    }
+  }
+
   return (
     <>
       <Typography variant="h1">{wishlist?.name}</Typography>
@@ -91,6 +124,12 @@ const SingleWishlist = () => {
           </Centered>
         }
       >
+        <IconButton onClick={handleUpdateWishlistName}>
+          <Edit />
+        </IconButton>
+        <IconButton onClick={handleDeleteWishlist}>
+          <Delete />
+        </IconButton>
         <List>
           {wishlist?.items.map((item) => (
             <ListItem key={item.id}>
