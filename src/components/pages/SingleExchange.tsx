@@ -21,7 +21,7 @@ const SingleExchange = () => {
     <>
       <Typography variant="h1">{exchange?.name}</Typography>
       <List>
-        {exchange?.participants.map((participant) => (
+        {exchange?.participants?.map((participant) => (
           <ListItem key={participant.uid}>
             <ListItemText>{participant.email}</ListItemText>
           </ListItem>

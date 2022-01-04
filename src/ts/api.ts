@@ -24,11 +24,14 @@ export interface WishlistWithItems extends Wishlist {
   items: WishlistItem[]
 }
 
-export interface Exchange {
+export interface CreateExchangeDto {
+  name: string
+  budget?: number
+  date?: Date
+}
+
+export interface Exchange extends CreateExchangeDto {
   id: number
   participants: User[]
   organizerId: string
-  name: string
-  date: Date
-  budget: number
 }

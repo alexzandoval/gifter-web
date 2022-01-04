@@ -1,5 +1,12 @@
 import { apiAxios } from 'context/Auth'
-import { CreateWishlistDto, Exchange, Wishlist, WishlistItem, WishlistWithItems } from 'ts/api'
+import {
+  CreateExchangeDto,
+  CreateWishlistDto,
+  Exchange,
+  Wishlist,
+  WishlistItem,
+  WishlistWithItems,
+} from 'ts/api'
 import { ResourceId } from 'ts/types'
 import URLBuilder from '../utility/URLBuilder'
 
@@ -48,6 +55,10 @@ const Api = {
     },
     get: async (id: ResourceId): Promise<Exchange> => {
       const result = await apiAxios.get<Exchange>(urlBuilder.exchanges(id).build())
+      return result.data
+    },
+    create: async (exchange: CreateExchangeDto): Promise<Exchange> => {
+      const result = await apiAxios.post<Exchange>(urlBuilder.exchanges().build(), exchange)
       return result.data
     },
   },

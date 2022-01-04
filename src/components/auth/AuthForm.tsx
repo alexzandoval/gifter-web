@@ -16,7 +16,7 @@ export interface Props {
   type: 'signIn' | 'signUp'
 }
 
-type FormValues = {
+type AuthFormValues = {
   email: string
   password: string
   confirmPassword: string
@@ -50,7 +50,7 @@ const AuthForm: FC<Props> = ({ type }) => {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<FormValues>()
+  } = useForm<AuthFormValues>()
   const [emailIsLoading, setEmailIsLoading] = useState<boolean>(false)
   const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false)
   const [isAppleLoading, setIsAppleLoading] = useState<boolean>(false)
@@ -91,7 +91,7 @@ const AuthForm: FC<Props> = ({ type }) => {
     }
   }
 
-  const handleSignInWithEmail: SubmitHandler<FormValues> = async (data) => {
+  const handleSignInWithEmail: SubmitHandler<AuthFormValues> = async (data) => {
     let handleSignIn
     if (isNewSignUp) {
       handleSignIn = () => signUpWithEmail(data.email, data.password)

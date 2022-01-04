@@ -1,14 +1,16 @@
+import { FC } from 'react'
 import { ThemeProvider, CssBaseline, StyledEngineProvider } from '@mui/material'
+import { LocalizationProvider } from '@mui/lab'
+import DateAdapter from '@mui/lab/AdapterDateFns'
 import { BrowserRouter, Route, RouteProps, Switch } from 'react-router-dom'
 
+import ProtectedRoute from 'components/auth/ProtectedRoute'
+import PublicOnlyRoute from 'components/auth/PublicOnlyRoute'
 import Layout from 'components/layout/Layout'
 import routes, { Routes } from 'constants/routes'
 import { AuthContextProvider } from 'context/Auth'
 import { useColorScheme } from 'context/Theme'
 import getTheme from 'styles/theme'
-import ProtectedRoute from 'components/auth/ProtectedRoute'
-import PublicOnlyRoute from 'components/auth/PublicOnlyRoute'
-import { FC } from 'react'
 
 const App = () => {
   const { colorScheme } = useColorScheme()
@@ -36,10 +38,12 @@ const App = () => {
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={theme}>
           <AuthContextProvider>
-            <CssBaseline />
-            <Layout>
-              <Switch>{appRoutes}</Switch>
-            </Layout>
+            <LocalizationProvider dateAdapter={DateAdapter}>
+              <CssBaseline />
+              <Layout>
+                <Switch>{appRoutes}</Switch>
+              </Layout>
+            </LocalizationProvider>
           </AuthContextProvider>
         </ThemeProvider>
       </StyledEngineProvider>
