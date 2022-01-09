@@ -40,12 +40,12 @@ if (REACT_APP_ENV === 'development') {
   /* eslint-disable no-console */
   apiAxios.interceptors.request.use(
     (config) => {
-      console.log(`Request: ${config.method?.toUpperCase()} ${config.url}`)
+      console.log(`Request: ${config.method?.toUpperCase()} ${config.url}`, config)
       return config
     },
     (error) => {
-      console.log('Error on request', error)
-      return Promise.reject(error)
+      console.error('Error on request', error)
+      return Promise.reject(error.response?.data || error)
     },
   )
   apiAxios.interceptors.response.use(
@@ -58,7 +58,7 @@ if (REACT_APP_ENV === 'development') {
     },
     (error) => {
       console.error('Error on response', error)
-      return Promise.reject(error)
+      return Promise.reject(error.response?.data || error)
     },
   )
   /* eslint-enable no-console */
