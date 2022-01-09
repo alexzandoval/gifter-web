@@ -88,17 +88,21 @@ export const AuthContextProvider: FC = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = onIdTokenChanged(auth, async (authUser) => {
-      if (authUser) {
-        apiAxios.defaults.headers.common.Authorization = `Bearer ${await authUser.getIdToken()}`
-      } else {
-        apiAxios.defaults.headers.common.Authorization = ''
-      }
       setUser(authUser)
       setAuthInitialized(true)
     })
     return () => {
       unsubscribe()
     }
+  }, [])
+
+  apiAxios.interceptors.request.use(async (config) => {
+    if (user) {
+      apiAxios.defaults.headers.common.Authorization = `Bearer ${await user.getIdToken()}`
+    } else {
+      apiAxios.defaults.headers.common.Authorization = ''
+    }
+    return config
   })
 
   const store = {

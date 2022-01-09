@@ -24,6 +24,7 @@ type WishlistParams = {
 const SingleWishlist = () => {
   const [wishlist, setWishlist] = useState<WishlistWithItems | null>(null)
   const [wishlistLoading, setWishlistLoading] = useState<boolean>(true)
+  const [wishlistIsUpdating, setWishlistIsUpdating] = useState<boolean>(false)
   const [inAddMode, setInAddMode] = useState<boolean>(false)
   const [newItemName, setNewItemName] = useState<string>('')
   const [newItemError, setNewItemError] = useState<string>('')
@@ -94,10 +95,13 @@ const SingleWishlist = () => {
     const value = `test${Math.floor(Math.random() * 100)}`
     if (wishlist) {
       try {
+        setWishlistIsUpdating(true)
         const updatedWishlist = await Api.wishlists.rename(wishlist.id, value)
         setWishlist(updatedWishlist)
       } catch (error) {
         console.log('Error updating wishlist name', error)
+      } finally {
+        setWishlistIsUpdating(false)
       }
     }
   }
@@ -105,10 +109,14 @@ const SingleWishlist = () => {
   const handleDeleteWishlist = async () => {
     if (wishlist) {
       try {
-        const result = await Api.wishlists.delete(wishlist.id)
+        setWishlistIsUpdating(true)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const deleteWasSuccessful = await Api.wishlists.delete(wishlist.id)
         history.push(routes.wishlists.path)
       } catch (error) {
         console.log('Error deleting wishlist', error)
+      } finally {
+        setWishlistIsUpdating(false)
       }
     }
   }
@@ -124,10 +132,10 @@ const SingleWishlist = () => {
           </Centered>
         }
       >
-        <IconButton onClick={handleUpdateWishlistName}>
+        <IconButton onClick={handleUpdateWishlistName} disabled={wishlistIsUpdating}>
           <Edit />
         </IconButton>
-        <IconButton onClick={handleDeleteWishlist}>
+        <IconButton onClick={handleDeleteWishlist} disabled={wishlistIsUpdating}>
           <Delete />
         </IconButton>
         <List>

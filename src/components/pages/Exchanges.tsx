@@ -19,7 +19,7 @@ import NewExchangeDialog from 'components/exchanges/NewExchangeDialog'
 
 const Exchanges = () => {
   const [exchanges, setExchanges] = useState<Exchange[]>([])
-  const [newExchangeDialogOpen, setNewExchangeDialogOpen] = useState<boolean>(true)
+  const [newExchangeDialogOpen, setNewExchangeDialogOpen] = useState<boolean>(false)
 
   useEffect(() => {
     Api.exchanges.getAll().then(setExchanges)

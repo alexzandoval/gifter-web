@@ -61,6 +61,13 @@ const Api = {
       const result = await apiAxios.post<Exchange>(urlBuilder.exchanges().build(), exchange)
       return result.data
     },
+    delete: async (exchangeId: ResourceId): Promise<boolean> => {
+      const result = await apiAxios.delete(urlBuilder.exchanges(exchangeId).build())
+      if (result.status === 200) {
+        return true
+      }
+      return false
+    },
   },
 }
 

@@ -1,9 +1,20 @@
 import { useEffect, useState } from 'react'
-import { List, ListItem, ListItemText, Typography } from '@mui/material'
-import { useParams } from 'react-router-dom'
+import {
+  CircularProgress,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+} from '@mui/material'
+import { useHistory, useParams } from 'react-router-dom'
 
 import Api from 'services/Api'
 import { Exchange } from 'ts/api'
+import Loader from 'components/shared/Loader'
+import routes from 'constants/routes'
+import Centered from 'components/shared/Centered'
+import { Delete } from '@mui/icons-material'
 
 type ExchangeParams = {
   id: string
@@ -12,21 +23,65 @@ type ExchangeParams = {
 const SingleExchange = () => {
   const [exchange, setExchange] = useState<Exchange | null>(null)
   const { id } = useParams<ExchangeParams>()
+  const [exchangeLoading, setExchangeLoading] = useState<boolean>(true)
+  const [exchangeDeleting, setExchangeDeleting] = useState<boolean>(false)
+  const history = useHistory()
 
   useEffect(() => {
-    Api.exchanges.get(id).then(setExchange)
-  }, [id])
+    const fetchExchange = async () => {
+      try {
+        setExchangeLoading(true)
+        const fetchedWishlist = await Api.exchanges.get(id)
+        setExchange(fetchedWishlist)
+      } catch (e) {
+        // TODO: Handle error
+        // console.log('Error fetching exchange', e)
+        history.push(routes.exchanges.path)
+      } finally {
+        setExchangeLoading(false)
+      }
+    }
+
+    fetchExchange()
+  }, [id, history])
+
+  const handleDeleteExchange = async () => {
+    if (exchange) {
+      try {
+        setExchangeDeleting(true)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const deleteWasSuccessful = await Api.exchanges.delete(exchange.id)
+        history.push(routes.exchanges.path)
+      } catch (error) {
+        console.log('Error deleting exchange', error)
+      } finally {
+        setExchangeDeleting(false)
+      }
+    }
+  }
 
   return (
     <>
       <Typography variant="h1">{exchange?.name}</Typography>
-      <List>
-        {exchange?.participants?.map((participant) => (
-          <ListItem key={participant.uid}>
-            <ListItemText>{participant.email}</ListItemText>
-          </ListItem>
-        ))}
-      </List>
+      <Loader
+        loading={exchangeLoading}
+        loader={
+          <Centered horizontal vertical>
+            <CircularProgress />
+          </Centered>
+        }
+      >
+        <IconButton onClick={handleDeleteExchange} disabled={exchangeDeleting}>
+          <Delete />
+        </IconButton>
+        <List>
+          {exchange?.participants?.map((participant) => (
+            <ListItem key={participant.uid}>
+              <ListItemText>{participant.email}</ListItemText>
+            </ListItem>
+          ))}
+        </List>
+      </Loader>
     </>
   )
 }

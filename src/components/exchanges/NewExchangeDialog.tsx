@@ -122,7 +122,6 @@ const NewExchangeDialog: FC<Props> = ({ ...other }) => {
         <DialogContentText>
           Create a new gift exchange, set a date and budget, and invite your friends!
         </DialogContentText>
-        {/* Display server errors in red text */}
         {serverErrors.length > 0 && (
           <Box mt={2}>
             {serverErrors.map((error) => (
@@ -135,6 +134,7 @@ const NewExchangeDialog: FC<Props> = ({ ...other }) => {
         <TextField
           className={classes.input}
           type="text"
+          autoFocus
           disabled={formIsLoading}
           variant="filled"
           label="Exchange Name"
@@ -154,7 +154,6 @@ const NewExchangeDialog: FC<Props> = ({ ...other }) => {
           onChange={handleBudgetInputChange}
           startAdornment="$"
           inputProps={{
-            type: 'text',
             'aria-labelledby': 'gift-exchange-budget',
           }}
         />
