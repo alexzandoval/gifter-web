@@ -107,9 +107,14 @@ const Header = () => {
           </Typography>
           <div className={classes.grow} />
           {user ? (
-            <IconButton onClick={handleAvatarClick}>
-              <Avatar sx={{ width: 32, height: 32 }} src={user.photoURL || ''} />
-            </IconButton>
+            <>
+              <Typography>
+                Hello, {user.displayName} {user.email}
+              </Typography>
+              <IconButton onClick={handleAvatarClick}>
+                <Avatar sx={{ width: 32, height: 32 }} src={user.photoURL || ''} />
+              </IconButton>
+            </>
           ) : (
             <>
               {!isLogin && (
