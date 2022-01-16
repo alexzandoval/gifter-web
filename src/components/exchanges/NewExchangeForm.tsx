@@ -1,18 +1,5 @@
 import { ChangeEvent, FC, useState } from 'react'
-import {
-  Box,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogProps,
-  DialogTitle,
-  Input,
-  Slider,
-  TextField,
-  Theme,
-  Typography,
-} from '@mui/material'
+import { Box, Input, Slider, TextField, Theme, Typography } from '@mui/material'
 import { DatePicker } from '@mui/lab'
 import { makeStyles } from '@mui/styles'
 import { useHistory } from 'react-router-dom'
@@ -21,8 +8,6 @@ import Api from 'services/Api'
 import routes from 'constants/routes'
 import LoadingButton from 'components/shared/LoadingButton'
 import { isServerValidationError, ucFirst } from 'utility/utility'
-
-interface Props extends DialogProps {}
 
 const marks = [
   {
@@ -49,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
-const NewExchangeDialog: FC<Props> = ({ ...other }) => {
+const NewExchangeForm: FC = () => {
   const classes = useStyles()
   const history = useHistory()
   const [formIsLoading, setFormIsLoading] = useState<boolean>(false)
@@ -116,83 +101,78 @@ const NewExchangeDialog: FC<Props> = ({ ...other }) => {
   }
 
   return (
-    <Dialog {...other}>
-      <DialogTitle>Create Exchange</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          Create a new gift exchange, set a date and budget, and invite your friends!
-        </DialogContentText>
-        {serverErrors.length > 0 && (
-          <Box mt={2}>
-            {serverErrors.map((error) => (
-              <Typography key={error} color="error">
-                {ucFirst(error)}
-              </Typography>
-            ))}
-          </Box>
-        )}
-        <TextField
-          className={classes.input}
-          type="text"
-          autoFocus
-          disabled={formIsLoading}
-          variant="filled"
-          label="Exchange Name"
-          error={Boolean(exchangeNameError)}
-          helperText={exchangeNameError}
-          value={exchangeName}
-          onChange={handleExchangeNameChange}
-        />
-        <Typography id="gift-exchange-budget" gutterBottom className={classes.input}>
-          Budget
-        </Typography>
-        <Input
-          sx={{ width: 65, marginLeft: 'auto' }}
-          type="text"
-          disabled={formIsLoading}
-          value={exchangeBudget}
-          onChange={handleBudgetInputChange}
-          startAdornment="$"
-          inputProps={{
-            'aria-labelledby': 'gift-exchange-budget',
-          }}
-        />
-        <Slider
-          aria-labelledby="gift-exchange-budget"
-          disabled={formIsLoading}
-          sx={{ display: 'none' }}
-          defaultValue={20}
-          getAriaValueText={getValueText}
-          step={5}
-          max={150}
-          valueLabelDisplay="auto"
-          marks={marks}
-          value={typeof exchangeBudget === 'number' ? exchangeBudget : 0}
-          onChange={handleBudgetSliderChange}
-        />
-        <Box className={classes.input}>
-          <DatePicker
-            label="Exchange Date"
-            disabled={formIsLoading}
-            value={exchangeDate}
-            minDate={new Date()}
-            onChange={setExchangeDate}
-            renderInput={(params) => <TextField {...params} />}
-          />
+    <>
+      <Typography>
+        Create a new gift exchange, set a date and budget, and invite your friends!
+      </Typography>
+      {serverErrors.length > 0 && (
+        <Box mt={2}>
+          {serverErrors.map((error) => (
+            <Typography key={error} color="error">
+              {ucFirst(error)}
+            </Typography>
+          ))}
         </Box>
-      </DialogContent>
-      <DialogActions>
-        <LoadingButton
-          loading={formIsLoading}
-          variant="contained"
+      )}
+      <TextField
+        className={classes.input}
+        type="text"
+        autoFocus
+        disabled={formIsLoading}
+        variant="filled"
+        label="Exchange Name"
+        error={Boolean(exchangeNameError)}
+        helperText={exchangeNameError}
+        value={exchangeName}
+        onChange={handleExchangeNameChange}
+      />
+      <Typography id="gift-exchange-budget" gutterBottom className={classes.input}>
+        Budget
+      </Typography>
+      <Input
+        sx={{ width: 65, marginLeft: 'auto' }}
+        type="text"
+        disabled={formIsLoading}
+        value={exchangeBudget}
+        onChange={handleBudgetInputChange}
+        startAdornment="$"
+        inputProps={{
+          'aria-labelledby': 'gift-exchange-budget',
+        }}
+      />
+      <Slider
+        aria-labelledby="gift-exchange-budget"
+        disabled={formIsLoading}
+        sx={{ display: 'none' }}
+        defaultValue={20}
+        getAriaValueText={getValueText}
+        step={5}
+        max={150}
+        valueLabelDisplay="auto"
+        marks={marks}
+        value={typeof exchangeBudget === 'number' ? exchangeBudget : 0}
+        onChange={handleBudgetSliderChange}
+      />
+      <Box className={classes.input}>
+        <DatePicker
+          label="Exchange Date"
           disabled={formIsLoading}
-          onClick={handleSubmit}
-        >
-          Create
-        </LoadingButton>
-      </DialogActions>
-    </Dialog>
+          value={exchangeDate}
+          minDate={new Date()}
+          onChange={setExchangeDate}
+          renderInput={(params) => <TextField {...params} />}
+        />
+      </Box>
+      <LoadingButton
+        loading={formIsLoading}
+        variant="contained"
+        disabled={formIsLoading}
+        onClick={handleSubmit}
+      >
+        Create
+      </LoadingButton>
+    </>
   )
 }
 
-export default NewExchangeDialog
+export default NewExchangeForm
