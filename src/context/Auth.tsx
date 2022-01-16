@@ -96,14 +96,40 @@ export const AuthContextProvider: FC = ({ children }) => {
     }
   }, [])
 
-  apiAxios.interceptors.request.use(async (config) => {
-    if (user) {
-      apiAxios.defaults.headers.common.Authorization = `Bearer ${await user.getIdToken()}`
-    } else {
-      apiAxios.defaults.headers.common.Authorization = ''
-    }
-    return config
-  })
+  apiAxios.interceptors.request.use(
+    async (config) => {
+      if (user) {
+        // eslint-disable-next-line no-param-reassign
+        config.headers = {
+          ...config.headers,
+          Authorization: `Bearer ${await user.getIdToken()}`,
+        }
+      }
+      return config
+    },
+    (error) => {
+      Promise.reject(error)
+    },
+  )
+
+  apiAxios.interceptors.response.use(
+    (response) => response,
+    async (error) => {
+      const originalRequest = error.config
+      if (error.response.status === 403 && !originalRequest._retry) {
+        originalRequest._retry = true
+        if (user) {
+          // eslint-disable-next-line no-param-reassign
+          originalRequest.headers = {
+            ...originalRequest.headers,
+            Authorization: `Bearer ${await user.getIdToken()}`,
+          }
+        }
+        return apiAxios(originalRequest)
+      }
+      return Promise.reject(error)
+    },
+  )
 
   const store = {
     user,
