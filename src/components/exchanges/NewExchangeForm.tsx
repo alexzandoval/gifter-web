@@ -1,104 +1,68 @@
-import { ChangeEvent, FC, useState } from 'react'
-import { Box, Input, Slider, TextField, Theme, Typography } from '@mui/material'
-import { DatePicker } from '@mui/lab'
-import { makeStyles } from '@mui/styles'
-import { useHistory } from 'react-router-dom'
+import { FC, useState } from 'react'
+import { Box, Button, Step, StepLabel, Stepper, Typography } from '@mui/material'
 
-import Api from 'services/Api'
-import routes from 'constants/routes'
 import LoadingButton from 'components/shared/LoadingButton'
-import { isServerValidationError, ucFirst } from 'utility/utility'
+import { ucFirst } from 'utility/utility'
+import ExchangeInformation from './steps/ExchangeInformation'
+import AddParticipants from './steps/AddParticipants'
+import ExchangeRules from './steps/ExchangeRules'
 
-const marks = [
+const steps = [
   {
-    value: 20,
-    label: '$20',
+    label: 'Add Participants',
+    component: AddParticipants,
   },
   {
-    value: 50,
-    label: '$50',
+    label: 'Set Exchange Rules',
+    component: ExchangeRules,
   },
   {
-    value: 100,
-    label: '$100',
-  },
-  {
-    value: 150,
-    label: '$150+',
+    label: 'Exchange Information',
+    component: ExchangeInformation,
   },
 ]
 
-const useStyles = makeStyles((theme: Theme) => ({
-  input: {
-    marginTop: theme.spacing(4),
-  },
-}))
-
 const NewExchangeForm: FC = () => {
-  const classes = useStyles()
-  const history = useHistory()
+  const [activeStep, setActiveStep] = useState<number>(0)
   const [formIsLoading, setFormIsLoading] = useState<boolean>(false)
-  const [exchangeName, setExchangeName] = useState<string>('')
-  const [exchangeNameError, setExchangeNameError] = useState<string>('')
-  const [exchangeBudget, setExchangeBudget] = useState<number | string | number[] | null>('')
-  const [exchangeDate, setExchangeDate] = useState<Date | null>(null)
   const [serverErrors, setServerErrors] = useState<string[]>([])
 
-  const getValueText = (value: number) => `$${value}`
-
-  const clearErrors = () => {
-    setExchangeNameError('')
-    setServerErrors([])
-  }
-
-  const exchangeNameIsValid = () => {
-    if (!exchangeName) {
-      setExchangeNameError('Exchange name is required.')
-      return false
-    }
-    return true
-  }
-
-  const updateBudget = (value: number | string) => {
-    setExchangeBudget(['', '0', 0].includes(value) ? '' : Number(value))
-  }
-
-  const handleExchangeNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setExchangeNameError('')
-    setExchangeName(e.target.value)
-  }
-
-  const handleBudgetSliderChange = (e: Event, value: number | number[]) => {
-    updateBudget(Array.isArray(value) ? 0 : value)
-  }
-
-  const handleBudgetInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value)
-    // Allows the user to backspace to empty the input
-    if (e.target.value === '' || value) updateBudget(value)
-  }
-
   const handleSubmit = async () => {
-    clearErrors()
-    if (!exchangeNameIsValid()) return
-    setFormIsLoading(true)
-    try {
-      const newExchange = await Api.exchanges.create({
-        name: exchangeName,
-        budget: exchangeBudget ? Number(exchangeBudget) : undefined,
-        date: exchangeDate || undefined,
-      })
-      history.push(routes.singleExchange.id(newExchange.id))
-    } catch (e) {
-      if (isServerValidationError(e)) {
-        setServerErrors(e.message)
-      } else {
-        setServerErrors(['Something went wrong. Please try again.'])
-      }
-    } finally {
-      setFormIsLoading(false)
+    console.log('Submitting')
+    //   clearErrors()
+    //   if (!exchangeNameIsValid()) return
+    //   setFormIsLoading(true)
+    //   try {
+    //     const newExchange = await Api.exchanges.create({
+    //       name: exchangeName,
+    //       budget: exchangeBudget ? Number(exchangeBudget) : undefined,
+    //       date: exchangeDate || undefined,
+    //     })
+    //     history.push(routes.singleExchange.id(newExchange.id))
+    //   } catch (e) {
+    //     if (isServerValidationError(e)) {
+    //       setServerErrors(e.message)
+    //     } else {
+    //       setServerErrors(['Something went wrong. Please try again.'])
+    //     }
+    //   } finally {
+    //     setFormIsLoading(false)
+    //   }
+  }
+
+  const handleNextStep = () => {
+    if (activeStep === steps.length - 1) {
+      handleSubmit()
+    } else {
+      setActiveStep((prev) => (steps.length - 1 === prev ? prev : prev + 1))
     }
   }
+
+  const handlePreviousStep = () => {
+    setActiveStep((prev) => (prev === 0 ? prev : prev - 1))
+  }
+
+  const CurrentStepComponent = steps[activeStep].component
 
   return (
     <>
@@ -114,63 +78,43 @@ const NewExchangeForm: FC = () => {
           ))}
         </Box>
       )}
-      <TextField
-        className={classes.input}
-        type="text"
-        autoFocus
-        disabled={formIsLoading}
-        variant="filled"
-        label="Exchange Name"
-        error={Boolean(exchangeNameError)}
-        helperText={exchangeNameError}
-        value={exchangeName}
-        onChange={handleExchangeNameChange}
-      />
-      <Typography id="gift-exchange-budget" gutterBottom className={classes.input}>
-        Budget
-      </Typography>
-      <Input
-        sx={{ width: 65, marginLeft: 'auto' }}
-        type="text"
-        disabled={formIsLoading}
-        value={exchangeBudget}
-        onChange={handleBudgetInputChange}
-        startAdornment="$"
-        inputProps={{
-          'aria-labelledby': 'gift-exchange-budget',
-        }}
-      />
-      <Slider
-        aria-labelledby="gift-exchange-budget"
-        disabled={formIsLoading}
-        sx={{ display: 'none' }}
-        defaultValue={20}
-        getAriaValueText={getValueText}
-        step={5}
-        max={150}
-        valueLabelDisplay="auto"
-        marks={marks}
-        value={typeof exchangeBudget === 'number' ? exchangeBudget : 0}
-        onChange={handleBudgetSliderChange}
-      />
-      <Box className={classes.input}>
-        <DatePicker
-          label="Exchange Date"
-          disabled={formIsLoading}
-          value={exchangeDate}
-          minDate={new Date()}
-          onChange={setExchangeDate}
-          renderInput={(params) => <TextField {...params} />}
-        />
+      <Stepper activeStep={activeStep} sx={{ marginTop: 4 }}>
+        {steps.map((step, index) => (
+          <Step key={step.label} onClick={() => setActiveStep(index)}>
+            <StepLabel>{step.label}</StepLabel>
+          </Step>
+        ))}
+      </Stepper>
+      <Box mt={4} mb={4} minHeight={500}>
+        <CurrentStepComponent />
       </Box>
-      <LoadingButton
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          width: '100%',
+          maxWidth: 350,
+          marginLeft: 'auto',
+          marginRight: 'auto',
+        }}
+      >
+        <Button onClick={handlePreviousStep} disabled={activeStep === 0} sx={{ minWidth: 150 }}>
+          Back
+        </Button>
+        <Button onClick={handleNextStep} sx={{ minWidth: 150 }} variant="contained">
+          {activeStep === steps.length - 1 ? 'Create Exchange' : 'Next'}
+        </Button>
+      </Box>
+      {/* <LoadingButton
         loading={formIsLoading}
         variant="contained"
         disabled={formIsLoading}
-        onClick={handleSubmit}
+        onClick={() => {
+          console.log('Submitting')
+        }}
       >
         Create
-      </LoadingButton>
+      </LoadingButton> */}
     </>
   )
 }
