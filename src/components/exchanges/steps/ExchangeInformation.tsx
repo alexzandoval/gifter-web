@@ -1,27 +1,27 @@
 import { DatePicker } from '@mui/lab'
-import { Box, Input, Slider, TextField, Theme, Typography } from '@mui/material'
+import { Box, Input, TextField, Theme, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
-import { ChangeEvent, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { Controller, useFormContext } from 'react-hook-form'
+import { NewExchangeFormValues } from '../NewExchangeForm'
 
-const marks = [
-  {
-    value: 20,
-    label: '$20',
-  },
-  {
-    value: 50,
-    label: '$50',
-  },
-  {
-    value: 100,
-    label: '$100',
-  },
-  {
-    value: 150,
-    label: '$150+',
-  },
-]
+// const marks = [
+//   {
+//     value: 20,
+//     label: '$20',
+//   },
+//   {
+//     value: 50,
+//     label: '$50',
+//   },
+//   {
+//     value: 100,
+//     label: '$100',
+//   },
+//   {
+//     value: 150,
+//     label: '$150+',
+//   },
+// ]
 
 const useStyles = makeStyles((theme: Theme) => ({
   input: {
@@ -31,77 +31,47 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const ExchangeInformation = () => {
   const classes = useStyles()
-  const history = useHistory()
-  const [activeStep, setActiveStep] = useState<number>(0)
-  const [formIsLoading, setFormIsLoading] = useState<boolean>(false)
-  const [exchangeName, setExchangeName] = useState<string>('')
-  const [exchangeNameError, setExchangeNameError] = useState<string>('')
-  const [exchangeBudget, setExchangeBudget] = useState<number | string | number[] | null>('')
-  const [exchangeDate, setExchangeDate] = useState<Date | null>(null)
-  const [serverErrors, setServerErrors] = useState<string[]>([])
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext<NewExchangeFormValues>()
 
-  const getValueText = (value: number) => `$${value}`
+  const allowOnlyNumber = (value: string): string => value.replace(/[^0-9]/g, '').replace(/^0+/, '')
 
-  const clearErrors = () => {
-    setExchangeNameError('')
-    setServerErrors([])
-  }
-
-  const exchangeNameIsValid = () => {
-    if (!exchangeName) {
-      setExchangeNameError('Exchange name is required.')
-      return false
-    }
-    return true
-  }
-
-  const updateBudget = (value: number | string) => {
-    setExchangeBudget(['', '0', 0].includes(value) ? '' : Number(value))
-  }
-
-  const handleExchangeNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setExchangeNameError('')
-    setExchangeName(e.target.value)
-  }
-
-  const handleBudgetSliderChange = (e: Event, value: number | number[]) => {
-    updateBudget(Array.isArray(value) ? 0 : value)
-  }
-
-  const handleBudgetInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value)
-    // Allows the user to backspace to empty the input
-    if (e.target.value === '' || value) updateBudget(value)
-  }
   return (
     <>
       <TextField
         className={classes.input}
-        type="text"
-        autoFocus
-        disabled={formIsLoading}
         variant="filled"
         label="Exchange Name"
-        error={Boolean(exchangeNameError)}
-        helperText={exchangeNameError}
-        value={exchangeName}
-        onChange={handleExchangeNameChange}
+        error={Boolean(errors.information?.name)}
+        helperText={errors.information?.name?.message}
+        inputProps={{
+          ...register('information.name', {
+            required: 'Please enter a name for your exchange.',
+          }),
+        }}
       />
       <Typography id="gift-exchange-budget" gutterBottom className={classes.input}>
         Budget
       </Typography>
-      <Input
-        sx={{ width: 65, marginLeft: 'auto' }}
-        type="text"
-        disabled={formIsLoading}
-        value={exchangeBudget}
-        onChange={handleBudgetInputChange}
-        startAdornment="$"
-        inputProps={{
-          'aria-labelledby': 'gift-exchange-budget',
-        }}
+      <Controller
+        name="information.budget"
+        defaultValue=""
+        render={({ field }) => (
+          <Input
+            {...field}
+            onChange={(e) => field.onChange(allowOnlyNumber(e.target.value))}
+            sx={{ width: 65, marginLeft: 'auto' }}
+            type="text"
+            startAdornment="$"
+            inputProps={{
+              'aria-labelledby': 'gift-exchange-budget',
+            }}
+          />
+        )}
       />
-      <Slider
+      {/* <Slider
         aria-labelledby="gift-exchange-budget"
         disabled={formIsLoading}
         sx={{ display: 'none' }}
@@ -113,15 +83,19 @@ const ExchangeInformation = () => {
         marks={marks}
         value={typeof exchangeBudget === 'number' ? exchangeBudget : 0}
         onChange={handleBudgetSliderChange}
-      />
+      /> */}
       <Box className={classes.input}>
-        <DatePicker
-          label="Exchange Date"
-          disabled={formIsLoading}
-          value={exchangeDate}
-          minDate={new Date()}
-          onChange={setExchangeDate}
-          renderInput={(params) => <TextField {...params} />}
+        <Controller
+          name="information.date"
+          defaultValue={null}
+          render={({ field }) => (
+            <DatePicker
+              {...field}
+              label="Exchange Date"
+              minDate={new Date()}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          )}
         />
       </Box>
     </>
