@@ -137,7 +137,6 @@ const AuthForm: FC<Props> = ({ type }) => {
           <TextField
             type="email"
             disabled={formIsLoading}
-            variant="filled"
             label="Email"
             error={Boolean(errors.email)}
             helperText={getErrorMessage(errors.email, 'Email')}
@@ -154,7 +153,6 @@ const AuthForm: FC<Props> = ({ type }) => {
           <TextField
             type="password"
             disabled={formIsLoading}
-            variant="filled"
             label="Password"
             error={Boolean(errors.password)}
             helperText={getErrorMessage(errors.password, 'Password')}
@@ -169,7 +167,6 @@ const AuthForm: FC<Props> = ({ type }) => {
             <TextField
               type="password"
               disabled={formIsLoading}
-              variant="filled"
               label="Confirm Password"
               error={Boolean(errors.confirmPassword)}
               helperText={getErrorMessage(errors.confirmPassword, 'Confirm Password')}

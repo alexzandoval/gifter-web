@@ -1,6 +1,5 @@
 import { DatePicker } from '@mui/lab'
-import { Box, Input, TextField, Theme, Typography } from '@mui/material'
-import { makeStyles } from '@mui/styles'
+import { TextField } from '@mui/material'
 import { Controller, useFormContext } from 'react-hook-form'
 import { NewExchangeFormValues } from '../NewExchangeForm'
 
@@ -23,26 +22,21 @@ import { NewExchangeFormValues } from '../NewExchangeForm'
 //   },
 // ]
 
-const useStyles = makeStyles((theme: Theme) => ({
-  input: {
-    marginTop: theme.spacing(4),
-  },
-}))
-
 const ExchangeInformation = () => {
-  const classes = useStyles()
   const {
     register,
     formState: { errors },
   } = useFormContext<NewExchangeFormValues>()
 
-  const allowOnlyNumber = (value: string): string => value.replace(/[^0-9]/g, '').replace(/^0+/, '')
+  const allowOnlyNumber = (value: string): string =>
+    value
+      .replace(/[^0-9]/g, '')
+      .replace(/^0+/, '')
+      .slice(0, 5)
 
   return (
     <>
       <TextField
-        className={classes.input}
-        variant="filled"
         label="Exchange Name"
         error={Boolean(errors.information?.name)}
         helperText={errors.information?.name?.message}
@@ -52,52 +46,48 @@ const ExchangeInformation = () => {
           }),
         }}
       />
-      <Typography id="gift-exchange-budget" gutterBottom className={classes.input}>
-        Budget
-      </Typography>
       <Controller
         name="information.budget"
         defaultValue=""
         render={({ field }) => (
-          <Input
+          <TextField
             {...field}
+            label="Budget"
             onChange={(e) => field.onChange(allowOnlyNumber(e.target.value))}
-            sx={{ width: 65, marginLeft: 'auto' }}
+            sx={{ width: 125 }}
             type="text"
-            startAdornment="$"
-            inputProps={{
-              'aria-labelledby': 'gift-exchange-budget',
-            }}
+            InputProps={{ startAdornment: '$' }}
           />
         )}
       />
-      {/* <Slider
-        aria-labelledby="gift-exchange-budget"
-        disabled={formIsLoading}
-        sx={{ display: 'none' }}
-        defaultValue={20}
-        getAriaValueText={getValueText}
-        step={5}
-        max={150}
-        valueLabelDisplay="auto"
-        marks={marks}
-        value={typeof exchangeBudget === 'number' ? exchangeBudget : 0}
-        onChange={handleBudgetSliderChange}
+      {/* <Controller
+        name="information.budget"
+        defaultValue=""
+        render={({ field }) => (
+          <Slider
+            {...field}
+            onChange={(e, value) => {
+              setBudget(allowOnlyNumber(value.toString()))
+            }}
+            step={5}
+            max={150}
+            valueLabelDisplay="auto"
+            marks={marks}
+          />
+        )}
       /> */}
-      <Box className={classes.input}>
-        <Controller
-          name="information.date"
-          defaultValue={null}
-          render={({ field }) => (
-            <DatePicker
-              {...field}
-              label="Exchange Date"
-              minDate={new Date()}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          )}
-        />
-      </Box>
+      <Controller
+        name="information.date"
+        defaultValue={null}
+        render={({ field }) => (
+          <DatePicker
+            {...field}
+            label="Exchange Date"
+            minDate={new Date()}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        )}
+      />
     </>
   )
 }

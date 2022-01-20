@@ -14,37 +14,31 @@ const ExchangeRules = () => {
       <Box sx={{ display: 'flex', flexDirection: 'column', '& > *': { margin: 2, maxWidth: 400 } }}>
         <TextField
           type="number"
-          variant="filled"
           label="Number of names to draw"
           inputProps={{ ...register(`rules.numberOfDraws`) }}
         />
         <TextField
           type="text"
-          variant="filled"
           label="Participant 1 may not draw"
           inputProps={{ ...register(`rules.participant1`) }}
         />
         <TextField
           type="text"
-          variant="filled"
           label="Participant 2 may not draw"
           inputProps={{ ...register(`rules.participant2`) }}
         />
         <TextField
           type="text"
-          variant="filled"
           label="Participant 3 may not draw"
           inputProps={{ ...register(`rules.participant3`) }}
         />
         <TextField
           type="text"
-          variant="filled"
           label="Participant 4 may not draw"
           inputProps={{ ...register(`rules.participant4`) }}
         />
         <TextField
           type="text"
-          variant="filled"
           label="Participant 5 may not draw"
           inputProps={{ ...register(`rules.participant5`) }}
         />

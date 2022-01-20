@@ -111,7 +111,16 @@ const NewExchangeForm: FC = () => {
               </Step>
             ))}
           </Stepper>
-          <Box mt={4} mb={4} minHeight={300}>
+          <Box
+            mt={4}
+            mb={4}
+            minHeight={300}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              '& > *:not(p)': { marginTop: 2, marginBottom: 1, maxWidth: 400 },
+            }}
+          >
             {steps[activeStep]?.component}
           </Box>
           <Box
