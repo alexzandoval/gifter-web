@@ -1,8 +1,8 @@
 import { FC, useState } from 'react'
 import { Box, Button, Step, StepLabel, Stepper, Typography } from '@mui/material'
 
-import LoadingButton from 'components/shared/LoadingButton'
 import { ucFirst } from 'utility/utility'
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import ExchangeInformation from './steps/ExchangeInformation'
 import AddParticipants from './steps/AddParticipants'
 import ExchangeRules from './steps/ExchangeRules'
@@ -10,25 +10,55 @@ import ExchangeRules from './steps/ExchangeRules'
 const steps = [
   {
     label: 'Add Participants',
-    component: AddParticipants,
+    component: <AddParticipants />,
   },
   {
     label: 'Set Exchange Rules',
-    component: ExchangeRules,
+    component: <ExchangeRules />,
   },
   {
     label: 'Exchange Information',
-    component: ExchangeInformation,
+    component: <ExchangeInformation />,
   },
 ]
+
+export type NewExchangeFormValues = {
+  participants: {
+    participant1: string
+    participant2: string
+    participant3: string
+    participant4: string
+    participant5: string
+  }
+  rules: {
+    numberOfDraws: number
+    participant1: string
+    participant2: string
+    participant3: string
+    participant4: string
+    participant5: string
+  }
+  information: {
+    name: string
+    budget: number
+    date: Date
+  }
+}
 
 const NewExchangeForm: FC = () => {
   const [activeStep, setActiveStep] = useState<number>(0)
   const [formIsLoading, setFormIsLoading] = useState<boolean>(false)
   const [serverErrors, setServerErrors] = useState<string[]>([])
+  const reactHookForm = useForm()
+  const {
+    handleSubmit,
+    formState: { errors },
+  } = reactHookForm
+  const isLastStep = activeStep === steps.length - 1
+  console.log(errors)
 
-  const handleSubmit = async () => {
-    console.log('Submitting')
+  const onSubmit: SubmitHandler<NewExchangeFormValues> = async (data, e) => {
+    console.log(data, errors)
     //   clearErrors()
     //   if (!exchangeNameIsValid()) return
     //   setFormIsLoading(true)
@@ -51,18 +81,12 @@ const NewExchangeForm: FC = () => {
   }
 
   const handleNextStep = () => {
-    if (activeStep === steps.length - 1) {
-      handleSubmit()
-    } else {
-      setActiveStep((prev) => (steps.length - 1 === prev ? prev : prev + 1))
-    }
+    setActiveStep((prev) => (prev === steps.length - 1 ? prev : prev + 1))
   }
 
   const handlePreviousStep = () => {
     setActiveStep((prev) => (prev === 0 ? prev : prev - 1))
   }
-
-  const CurrentStepComponent = steps[activeStep].component
 
   return (
     <>
@@ -78,33 +102,43 @@ const NewExchangeForm: FC = () => {
           ))}
         </Box>
       )}
-      <Stepper activeStep={activeStep} sx={{ marginTop: 4 }}>
-        {steps.map((step, index) => (
-          <Step key={step.label} onClick={() => setActiveStep(index)}>
-            <StepLabel>{step.label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
-      <Box mt={4} mb={4} minHeight={500}>
-        <CurrentStepComponent />
-      </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          width: '100%',
-          maxWidth: 350,
-          marginLeft: 'auto',
-          marginRight: 'auto',
-        }}
-      >
-        <Button onClick={handlePreviousStep} disabled={activeStep === 0} sx={{ minWidth: 150 }}>
-          Back
-        </Button>
-        <Button onClick={handleNextStep} sx={{ minWidth: 150 }} variant="contained">
-          {activeStep === steps.length - 1 ? 'Create Exchange' : 'Next'}
-        </Button>
-      </Box>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <FormProvider {...reactHookForm}>
+          <Stepper activeStep={activeStep} sx={{ marginTop: 4 }}>
+            {steps.map((step, index) => (
+              <Step key={step.label} onClick={() => setActiveStep(index)}>
+                <StepLabel>{step.label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+          <Box mt={4} mb={4} minHeight={300}>
+            {steps[activeStep]?.component}
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              width: '100%',
+              maxWidth: 350,
+              marginLeft: 'auto',
+              marginRight: 'auto',
+            }}
+          >
+            <Button onClick={handlePreviousStep} disabled={activeStep === 0} sx={{ minWidth: 150 }}>
+              Back
+            </Button>
+            {isLastStep ? (
+              <Button sx={{ minWidth: 150 }} variant="contained" type="submit">
+                Create Exchange
+              </Button>
+            ) : (
+              <Button onClick={handleNextStep} sx={{ minWidth: 150 }} variant="contained">
+                Next
+              </Button>
+            )}
+          </Box>
+        </FormProvider>
+      </form>
       {/* <LoadingButton
         loading={formIsLoading}
         variant="contained"
