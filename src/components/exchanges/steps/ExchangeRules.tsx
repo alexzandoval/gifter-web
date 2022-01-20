@@ -17,7 +17,7 @@ const ExchangeRules = () => {
           label="Number of names to draw"
           inputProps={{ ...register(`rules.numberOfDraws`) }}
         />
-        <TextField
+        {/* <TextField
           type="text"
           label="Participant 1 may not draw"
           inputProps={{ ...register(`rules.participant1`) }}
@@ -41,7 +41,7 @@ const ExchangeRules = () => {
           type="text"
           label="Participant 5 may not draw"
           inputProps={{ ...register(`rules.participant5`) }}
-        />
+        /> */}
       </Box>
     </>
   )

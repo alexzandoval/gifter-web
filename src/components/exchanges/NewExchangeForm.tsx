@@ -23,13 +23,7 @@ const steps = [
 ]
 
 export type NewExchangeFormValues = {
-  participants: {
-    participant1: string
-    participant2: string
-    participant3: string
-    participant4: string
-    participant5: string
-  }
+  participants: { name: string }[]
   rules: {
     numberOfDraws: number
     participant1: string
@@ -45,11 +39,25 @@ export type NewExchangeFormValues = {
   }
 }
 
+const defaultValues: Partial<NewExchangeFormValues> = {
+  participants: [
+    {
+      name: '',
+    },
+    {
+      name: '',
+    },
+    {
+      name: '',
+    },
+  ],
+}
+
 const NewExchangeForm: FC = () => {
   const [activeStep, setActiveStep] = useState<number>(0)
   const [formIsLoading, setFormIsLoading] = useState<boolean>(false)
   const [serverErrors, setServerErrors] = useState<string[]>([])
-  const reactHookForm = useForm()
+  const reactHookForm = useForm({ defaultValues })
   const {
     handleSubmit,
     formState: { errors },
