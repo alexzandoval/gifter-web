@@ -1,8 +1,13 @@
 import { Box, TextField, Typography } from '@mui/material'
+import { FC } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { NewExchangeFormValues } from '../NewExchangeForm'
 
-const ExchangeRules = () => {
+interface Props {
+  validate?: () => boolean
+}
+
+const ExchangeRules: FC<Props> = () => {
   const { register } = useFormContext<NewExchangeFormValues>()
 
   return (

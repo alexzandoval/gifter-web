@@ -55,7 +55,7 @@ const NewExchangeForm: FC = () => {
   const steps = [
     {
       label: 'Add Participants',
-      component: <AddParticipants />,
+      component: AddParticipants,
       isValid: () => {
         // Check if there are at least 3 unique participants
         let error = ''
@@ -90,7 +90,7 @@ const NewExchangeForm: FC = () => {
     },
     {
       label: 'Set Exchange Rules',
-      component: <ExchangeRules />,
+      component: ExchangeRules,
       isValid: () => {
         const error = ''
         return true
@@ -98,7 +98,7 @@ const NewExchangeForm: FC = () => {
     },
     {
       label: 'Exchange Information',
-      component: <ExchangeInformation />,
+      component: ExchangeInformation,
       isValid: () => {
         const error = ''
         return true
@@ -140,6 +140,8 @@ const NewExchangeForm: FC = () => {
     setActiveStep((prev) => (prev === 0 ? prev : prev - 1))
   }
 
+  const CurrentStepComponent = steps[activeStep]?.component
+
   return (
     <>
       <Typography>
@@ -173,7 +175,7 @@ const NewExchangeForm: FC = () => {
               '& > *:not(p)': { marginTop: 2, marginBottom: 1, maxWidth: 400 },
             }}
           >
-            {steps[activeStep]?.component}
+            <CurrentStepComponent validate={steps[activeStep]?.isValid} />
           </Box>
           <Box
             sx={{

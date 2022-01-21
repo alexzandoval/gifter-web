@@ -1,10 +1,14 @@
 import { Add, Close } from '@mui/icons-material'
 import { Button, IconButton, InputAdornment, TextField, Typography } from '@mui/material'
-import { ChangeEvent, useEffect } from 'react'
+import { ChangeEvent, FC, FocusEvent, useEffect } from 'react'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { NewExchangeFormValues } from '../NewExchangeForm'
 
-const AddParticipants = () => {
+interface Props {
+  validate: () => boolean
+}
+
+const AddParticipants: FC<Props> = ({ validate }) => {
   const {
     register,
     watch,
@@ -58,6 +62,10 @@ const AddParticipants = () => {
           handleAddNewParticipant(index, e.target.value)
           inputProps.onChange(e)
         }
+        const handleParticipantOnBlur = (e: FocusEvent<HTMLInputElement>) => {
+          if (errorMessage) validate()
+          inputProps.onBlur(e)
+        }
         return (
           <TextField
             key={field.id}
@@ -75,6 +83,7 @@ const AddParticipants = () => {
             inputProps={{
               ...inputProps,
               onChange: handleParticipantOnChange,
+              onBlur: handleParticipantOnBlur,
             }}
           />
         )
