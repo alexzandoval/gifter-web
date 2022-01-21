@@ -7,21 +7,6 @@ import ExchangeInformation from './steps/ExchangeInformation'
 import AddParticipants from './steps/AddParticipants'
 import ExchangeRules from './steps/ExchangeRules'
 
-const steps = [
-  {
-    label: 'Add Participants',
-    component: <AddParticipants />,
-  },
-  {
-    label: 'Set Exchange Rules',
-    component: <ExchangeRules />,
-  },
-  {
-    label: 'Exchange Information',
-    component: <ExchangeInformation />,
-  },
-]
-
 export type NewExchangeFormValues = {
   participants: { name: string }[]
   rules: {
@@ -59,11 +44,68 @@ const NewExchangeForm: FC = () => {
   const [serverErrors, setServerErrors] = useState<string[]>([])
   const reactHookForm = useForm({ defaultValues })
   const {
+    clearErrors,
     handleSubmit,
+    setError,
+    trigger,
+    watch,
     formState: { errors },
   } = reactHookForm
+
+  const steps = [
+    {
+      label: 'Add Participants',
+      component: <AddParticipants />,
+      isValid: () => {
+        // Check if there are at least 3 unique participants
+        let error = ''
+        const participants = watch('participants')
+        const lessThanThreeParticipantsError =
+          'You cannot create an exchange with less than 3 participants'
+        if (!participants || participants.length < 3) {
+          error = lessThanThreeParticipantsError
+        } else {
+          // Removing empty and whitespace names
+          const names = participants.map((p) => p.name.trim()).filter((n) => n)
+          const uniqueNames = new Set(names)
+          if (uniqueNames.size < 3) {
+            error = lessThanThreeParticipantsError
+          }
+          if (names.length !== uniqueNames.size) {
+            error = 'All names must be unique'
+          }
+        }
+        clearErrors('participants')
+        if (error) {
+          if (participants) {
+            setError('participants', {
+              type: 'onChange',
+              message: error,
+            })
+          }
+          return false
+        }
+        return true
+      },
+    },
+    {
+      label: 'Set Exchange Rules',
+      component: <ExchangeRules />,
+      isValid: () => {
+        const error = ''
+        return true
+      },
+    },
+    {
+      label: 'Exchange Information',
+      component: <ExchangeInformation />,
+      isValid: () => {
+        const error = ''
+        return true
+      },
+    },
+  ]
   const isLastStep = activeStep === steps.length - 1
-  console.log(errors)
 
   const onSubmit: SubmitHandler<NewExchangeFormValues> = async (data, e) => {
     console.log(data, errors)
@@ -89,7 +131,9 @@ const NewExchangeForm: FC = () => {
   }
 
   const handleNextStep = () => {
-    setActiveStep((prev) => (prev === steps.length - 1 ? prev : prev + 1))
+    if (steps[activeStep].isValid()) {
+      setActiveStep((prev) => (prev === steps.length - 1 ? prev : prev + 1))
+    }
   }
 
   const handlePreviousStep = () => {
@@ -113,8 +157,8 @@ const NewExchangeForm: FC = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormProvider {...reactHookForm}>
           <Stepper activeStep={activeStep} sx={{ marginTop: 4 }}>
-            {steps.map((step, index) => (
-              <Step key={step.label} onClick={() => setActiveStep(index)}>
+            {steps.map((step) => (
+              <Step key={step.label}>
                 <StepLabel>{step.label}</StepLabel>
               </Step>
             ))}

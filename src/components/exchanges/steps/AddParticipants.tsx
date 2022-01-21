@@ -5,7 +5,11 @@ import { useFieldArray, useFormContext } from 'react-hook-form'
 import { NewExchangeFormValues } from '../NewExchangeForm'
 
 const AddParticipants = () => {
-  const { register, watch } = useFormContext<NewExchangeFormValues>()
+  const {
+    register,
+    watch,
+    formState: { errors },
+  } = useFormContext<NewExchangeFormValues>()
   const { fields, append, remove, update } = useFieldArray({
     name: 'participants',
   })
@@ -39,6 +43,8 @@ const AddParticipants = () => {
       update(index, { name: '' })
     }
   }
+
+  const errorMessage = (errors as any).participants?.message
 
   return (
     <>
@@ -80,6 +86,12 @@ const AddParticipants = () => {
       >
         Add Another Participant
       </Button>
+      {/* Display error in red */}
+      {errorMessage && (
+        <Typography sx={{ textAlign: 'center' }} color="error">
+          {errorMessage}
+        </Typography>
+      )}
     </>
   )
 }
