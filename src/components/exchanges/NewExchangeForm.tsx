@@ -7,15 +7,15 @@ import ExchangeInformation from './steps/ExchangeInformation'
 import AddParticipants from './steps/AddParticipants'
 import ExchangeRules from './steps/ExchangeRules'
 
+export type Participant = {
+  name: string
+  excludes: { name: string }[]
+}
+
 export type NewExchangeFormValues = {
-  participants: { name: string }[]
+  participants: Participant[]
   rules: {
     numberOfDraws: number
-    participant1: string
-    participant2: string
-    participant3: string
-    participant4: string
-    participant5: string
   }
   information: {
     name: string
@@ -27,19 +27,22 @@ export type NewExchangeFormValues = {
 const defaultValues: Partial<NewExchangeFormValues> = {
   participants: [
     {
-      name: '',
+      name: 'James',
+      excludes: [],
     },
     {
-      name: '',
+      name: 'Hannah',
+      excludes: [],
     },
     {
-      name: '',
+      name: 'Alex',
+      excludes: [],
     },
   ],
 }
 
 const NewExchangeForm: FC = () => {
-  const [activeStep, setActiveStep] = useState<number>(0)
+  const [activeStep, setActiveStep] = useState<number>(1)
   const [formIsLoading, setFormIsLoading] = useState<boolean>(false)
   const [serverErrors, setServerErrors] = useState<string[]>([])
   const reactHookForm = useForm({ defaultValues })

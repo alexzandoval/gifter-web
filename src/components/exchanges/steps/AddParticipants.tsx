@@ -1,8 +1,10 @@
 import { Add, Close } from '@mui/icons-material'
 import { Button, IconButton, InputAdornment, TextField, Typography } from '@mui/material'
-import { ChangeEvent, FC, FocusEvent, useEffect } from 'react'
+import { ChangeEvent, FC, FocusEvent, useEffect, useState } from 'react'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { NewExchangeFormValues } from '../NewExchangeForm'
+
+const newParticipant = { name: '', excludes: [] }
 
 interface Props {
   validate: () => boolean
@@ -17,25 +19,36 @@ const AddParticipants: FC<Props> = ({ validate }) => {
   const { fields, append, remove, update } = useFieldArray({
     name: 'participants',
   })
+  const [participantsHaveChanged, setParticipantsHaveChanged] = useState<boolean>(false)
 
   useEffect(() => {
     // Remove extra fields that are empty when component is remounted
-    const emptyFields: number[] = []
-    fields.forEach(
-      (field, index) => !watch(`participants.${index}.name`) && emptyFields.push(index),
-    )
-    const numberOfFieldsLeft = fields.length - emptyFields.length
-    if (numberOfFieldsLeft < 3) {
-      emptyFields.splice(-(3 - numberOfFieldsLeft))
+    const removeEmptyFields = () => {
+      const emptyFields: number[] = []
+      const participants = watch('participants')
+      participants.forEach((participant, index) => {
+        if (!participant.name) {
+          emptyFields.push(index)
+        } else if (participantsHaveChanged) {
+          update(index, {
+            ...participant,
+            excludes: [],
+          })
+        }
+      })
+      const numberOfFieldsLeft = participants.length - emptyFields.length
+      if (numberOfFieldsLeft < 3) {
+        emptyFields.splice(-(3 - numberOfFieldsLeft))
+      }
+      remove(emptyFields)
     }
-    remove(emptyFields)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    return removeEmptyFields
+  }, [remove, update, watch, participantsHaveChanged])
 
   const handleAddNewParticipant = (fieldIndex: number, value: string) => {
     const isLastInput = fieldIndex === fields.length - 1
     if (isLastInput && value.length > 0) {
-      append({ name: '' }, { shouldFocus: false })
+      append(newParticipant, { shouldFocus: false })
     }
   }
 
@@ -44,7 +57,7 @@ const AddParticipants: FC<Props> = ({ validate }) => {
     if (isMoreThanThreeParticipants) {
       remove(index)
     } else {
-      update(index, { name: '' })
+      update(index, newParticipant)
     }
   }
 
@@ -58,7 +71,9 @@ const AddParticipants: FC<Props> = ({ validate }) => {
       </Typography>
       {fields.map((field, index) => {
         const inputProps = register(`participants.${index}.name`)
+        const currentParticipant = watch(`participants.${index}`)
         const handleParticipantOnChange = (e: ChangeEvent<HTMLInputElement>) => {
+          setParticipantsHaveChanged(true)
           handleAddNewParticipant(index, e.target.value)
           inputProps.onChange(e)
         }
@@ -71,7 +86,7 @@ const AddParticipants: FC<Props> = ({ validate }) => {
             key={field.id}
             label={`Enter participant ${index + 1}`}
             InputProps={{
-              endAdornment: (fields.length > 3 || watch(`participants.${index}.name`)) && (
+              endAdornment: (fields.length > 3 || currentParticipant.name) && (
                 <InputAdornment position="end">
                   <IconButton tabIndex={-1} onClick={() => handleRemoveParticipant(index)}>
                     <Close />
@@ -91,7 +106,7 @@ const AddParticipants: FC<Props> = ({ validate }) => {
       <Button
         title="Add another participant"
         startIcon={<Add />}
-        onClick={() => append({ name: '' }, { shouldFocus: false })}
+        onClick={() => append(newParticipant, { shouldFocus: false })}
       >
         Add Another Participant
       </Button>
