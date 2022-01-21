@@ -3,8 +3,6 @@ import {
   Box,
   FormControl,
   IconButton,
-  Input,
-  InputAdornment,
   InputBase,
   InputLabel,
   List,
@@ -12,7 +10,7 @@ import {
   MenuItem,
   Select,
 } from '@mui/material'
-import { FC, useEffect } from 'react'
+import { FC } from 'react'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { NewExchangeFormValues, Participant } from '../NewExchangeForm'
 
@@ -27,7 +25,6 @@ const ExclusionFieldArray: FC<Props> = ({ participantIndex, participants }) => {
     name: `participants.${participantIndex}.excludes`,
   })
   const currentlyExcluded = watch(`participants.${participantIndex}.excludes`)
-  console.log(participants, currentlyExcluded)
 
   const handleAddExclusion = (newExclusionIndex: number) => {
     append({ name: participants[newExclusionIndex].name }, { shouldFocus: false })
@@ -65,6 +62,7 @@ const ExclusionFieldArray: FC<Props> = ({ participantIndex, participants }) => {
         </FormControl>
       )}
       <List sx={{ marginLeft: 4 }}>
+        {/* FIXME: List not always updating when being erased in AddParticipants */}
         {fields.map((field, index) => (
           <ListItem
             key={field.id}
