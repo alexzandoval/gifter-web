@@ -1,5 +1,6 @@
 import { DatePicker } from '@mui/lab'
 import { TextField } from '@mui/material'
+import { FC } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import { NewExchangeFormValues } from '../NewExchangeForm'
 
@@ -21,8 +22,11 @@ import { NewExchangeFormValues } from '../NewExchangeForm'
 //     label: '$150+',
 //   },
 // ]
+interface Props {
+  validate: () => boolean
+}
 
-const ExchangeInformation = () => {
+const ExchangeInformation: FC<Props> = () => {
   const {
     register,
     formState: { errors },
