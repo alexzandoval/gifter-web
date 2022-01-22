@@ -1,7 +1,8 @@
+import { ChangeEvent, FC, FocusEvent, useEffect, useState } from 'react'
 import { Add, Close } from '@mui/icons-material'
 import { Button, IconButton, InputAdornment, TextField, Typography } from '@mui/material'
-import { ChangeEvent, FC, FocusEvent, useEffect, useState } from 'react'
 import { useFieldArray, useFormContext } from 'react-hook-form'
+
 import { NewExchangeFormValues } from '../NewExchangeForm'
 
 const newParticipant = { name: '', excludes: [] }
@@ -86,6 +87,7 @@ const AddParticipants: FC<Props> = ({ validate }) => {
           <TextField
             key={field.id}
             label={`Enter participant ${index + 1}`}
+            variant="filled"
             InputProps={{
               endAdornment: (fields.length > 3 || currentParticipant.name) && (
                 <InputAdornment position="end">

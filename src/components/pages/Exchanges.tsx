@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Add } from '@mui/icons-material'
 import {
   Box,
   Button,
@@ -10,10 +11,9 @@ import {
 } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 
+import routes from 'constants/routes'
 import Api from 'services/Api'
 import { Exchange } from 'ts/api'
-import routes from 'constants/routes'
-import { Add } from '@mui/icons-material'
 
 const Exchanges = () => {
   const [exchanges, setExchanges] = useState<Exchange[]>([])

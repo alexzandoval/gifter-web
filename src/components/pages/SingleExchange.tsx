@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Delete } from '@mui/icons-material'
 import {
   CircularProgress,
   IconButton,
@@ -9,12 +10,11 @@ import {
 } from '@mui/material'
 import { useHistory, useParams } from 'react-router-dom'
 
-import Api from 'services/Api'
-import { Exchange } from 'ts/api'
+import Centered from 'components/shared/Centered'
 import Loader from 'components/shared/Loader'
 import routes from 'constants/routes'
-import Centered from 'components/shared/Centered'
-import { Delete } from '@mui/icons-material'
+import Api from 'services/Api'
+import { Exchange } from 'ts/api'
 
 type ExchangeParams = {
   id: string

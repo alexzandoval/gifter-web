@@ -9,8 +9,8 @@ import { useHistory } from 'react-router-dom'
 import SocialProviderButton from 'components/auth/SocialProviderButton'
 import routes from 'constants/routes'
 import { useAuth } from 'context/Auth'
-import { handleAuthError } from 'utility/auth'
 import { SocialProvider } from 'ts/enums'
+import { handleAuthError } from 'utility/auth'
 
 export interface Props {
   type: 'signIn' | 'signUp'
@@ -138,6 +138,7 @@ const AuthForm: FC<Props> = ({ type }) => {
             type="email"
             disabled={formIsLoading}
             label="Email"
+            variant="filled"
             error={Boolean(errors.email)}
             helperText={getErrorMessage(errors.email, 'Email')}
             inputProps={{
@@ -154,6 +155,7 @@ const AuthForm: FC<Props> = ({ type }) => {
             type="password"
             disabled={formIsLoading}
             label="Password"
+            variant="filled"
             error={Boolean(errors.password)}
             helperText={getErrorMessage(errors.password, 'Password')}
             inputProps={{
@@ -168,6 +170,7 @@ const AuthForm: FC<Props> = ({ type }) => {
               type="password"
               disabled={formIsLoading}
               label="Confirm Password"
+              variant="filled"
               error={Boolean(errors.confirmPassword)}
               helperText={getErrorMessage(errors.confirmPassword, 'Confirm Password')}
               inputProps={{

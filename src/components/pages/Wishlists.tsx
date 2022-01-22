@@ -10,11 +10,11 @@ import {
 } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 
+import AddTextButton from 'components/shared/AddTextButton'
+import Loader from 'components/shared/Loader'
+import routes from 'constants/routes'
 import Api from 'services/Api'
 import { Wishlist } from 'ts/api'
-import Loader from 'components/shared/Loader'
-import AddTextButton from 'components/shared/AddTextButton'
-import routes from 'constants/routes'
 
 const Wishlists = () => {
   const [wishlists, setWishlists] = useState<Wishlist[]>([])

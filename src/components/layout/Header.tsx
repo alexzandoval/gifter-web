@@ -21,8 +21,8 @@ import {
 import { makeStyles } from '@mui/styles'
 import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom'
 
-import routes from 'constants/routes'
 import NavigationDrawer from 'components/layout/NavigationDrawer'
+import routes from 'constants/routes'
 import { useAuth } from 'context/Auth'
 import { useColorScheme } from 'context/Theme'
 

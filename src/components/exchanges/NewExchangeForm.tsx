@@ -1,11 +1,11 @@
 import { FC, useState } from 'react'
 import { Box, Button, Step, StepLabel, Stepper, Typography } from '@mui/material'
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 
 import { ucFirst } from 'utility/utility'
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
-import ExchangeInformation from './steps/ExchangeInformation'
 import AddParticipants from './steps/AddParticipants'
 import ExchangeRules from './steps/ExchangeRules'
+import ExchangeInformation from './steps/ExchangeInformation'
 
 export type Participant = {
   name: string

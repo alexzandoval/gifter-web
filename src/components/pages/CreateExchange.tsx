@@ -1,4 +1,5 @@
 import { Typography } from '@mui/material'
+
 import NewExchangeForm from 'components/exchanges/NewExchangeForm'
 
 const Home = () => (

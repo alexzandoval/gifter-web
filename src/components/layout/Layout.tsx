@@ -1,6 +1,7 @@
 import { FC, ReactNode } from 'react'
 import { Box, Container, Theme, Toolbar } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+
 import Header from 'components/layout/Header'
 
 interface Props {

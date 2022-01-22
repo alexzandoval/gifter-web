@@ -8,7 +8,7 @@ import {
   WishlistWithItems,
 } from 'ts/api'
 import { ResourceId } from 'ts/types'
-import URLBuilder from '../utility/URLBuilder'
+import URLBuilder from 'utility/URLBuilder'
 
 const urlBuilder = new URLBuilder()
 

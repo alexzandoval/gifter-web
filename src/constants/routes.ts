@@ -4,6 +4,7 @@ import { RouteProps } from 'react-router-dom'
 
 import About from 'components/pages/About'
 import Account from 'components/pages/Account'
+import CreateExchange from 'components/pages/CreateExchange'
 import Exchanges from 'components/pages/Exchanges'
 import Home from 'components/pages/Home'
 import Login from 'components/pages/Login'
@@ -14,7 +15,6 @@ import SingleWishlist from 'components/pages/SingleWishlist'
 import Test from 'components/pages/Test'
 import Wishlists from 'components/pages/Wishlists'
 import { ResourceId } from 'ts/types'
-import CreateExchange from 'components/pages/CreateExchange'
 
 export type Route = {
   Component: FC

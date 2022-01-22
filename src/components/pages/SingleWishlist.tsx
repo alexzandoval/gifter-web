@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react'
+import { Delete, Edit } from '@mui/icons-material'
 import {
   CircularProgress,
   IconButton,
@@ -9,13 +10,12 @@ import {
 } from '@mui/material'
 import { useHistory, useParams } from 'react-router-dom'
 
+import AddTextButton from 'components/shared/AddTextButton'
+import Centered from 'components/shared/Centered'
+import Loader from 'components/shared/Loader'
+import routes from 'constants/routes'
 import Api from 'services/Api'
 import { WishlistWithItems } from 'ts/api'
-import Loader from 'components/shared/Loader'
-import AddTextButton from 'components/shared/AddTextButton'
-import routes from 'constants/routes'
-import Centered from 'components/shared/Centered'
-import { Delete, Edit } from '@mui/icons-material'
 
 type WishlistParams = {
   id: string

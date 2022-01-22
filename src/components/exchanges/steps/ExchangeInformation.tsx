@@ -1,7 +1,8 @@
-import { DatePicker } from '@mui/lab'
-import { TextField } from '@mui/material'
 import { FC } from 'react'
+import { InputAdornment, TextField } from '@mui/material'
+import { DatePicker } from '@mui/lab'
 import { Controller, useFormContext } from 'react-hook-form'
+
 import { NewExchangeFormValues } from '../NewExchangeForm'
 
 // const marks = [
@@ -42,6 +43,7 @@ const ExchangeInformation: FC<Props> = () => {
     <>
       <TextField
         label="Exchange Name"
+        variant="filled"
         error={Boolean(errors.information?.name)}
         helperText={errors.information?.name?.message}
         inputProps={{
@@ -57,10 +59,11 @@ const ExchangeInformation: FC<Props> = () => {
           <TextField
             {...field}
             label="Budget"
+            variant="filled"
             onChange={(e) => field.onChange(allowOnlyNumber(e.target.value))}
             sx={{ width: 125 }}
             type="text"
-            InputProps={{ startAdornment: '$' }}
+            InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }}
           />
         )}
       />
@@ -88,7 +91,7 @@ const ExchangeInformation: FC<Props> = () => {
             {...field}
             label="Exchange Date"
             minDate={new Date()}
-            renderInput={(params) => <TextField {...params} />}
+            renderInput={(params) => <TextField variant="filled" {...params} />}
           />
         )}
       />

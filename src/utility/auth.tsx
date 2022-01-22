@@ -1,8 +1,9 @@
-import { Link } from '@mui/material'
-import routes from 'constants/routes'
-import { AuthError, AuthErrorCodes } from 'firebase/auth'
 import { ReactNode } from 'react'
+import { Link } from '@mui/material'
+import { AuthError, AuthErrorCodes } from 'firebase/auth'
 import { Link as RouterLink } from 'react-router-dom'
+
+import routes from 'constants/routes'
 
 // eslint-disable-next-line import/prefer-default-export
 export const handleAuthError = (authError: AuthError): ReactNode => {

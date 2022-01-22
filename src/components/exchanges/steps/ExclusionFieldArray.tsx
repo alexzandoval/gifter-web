@@ -1,3 +1,4 @@
+import { FC, useEffect } from 'react'
 import { Close } from '@mui/icons-material'
 import {
   Box,
@@ -10,8 +11,8 @@ import {
   MenuItem,
   Select,
 } from '@mui/material'
-import { FC, useEffect } from 'react'
 import { useFieldArray, useFormContext } from 'react-hook-form'
+
 import { NewExchangeFormValues, Participant } from '../NewExchangeForm'
 
 interface Props {
@@ -45,6 +46,7 @@ const ExclusionFieldArray: FC<Props> = ({ participantIndex, participants, number
         <FormControl fullWidth>
           <InputLabel id="select-exclusions-label">Select a name</InputLabel>
           <Select
+            variant="filled"
             labelId="select-exclusions-label"
             id="select-exclusions"
             label="Select a name"

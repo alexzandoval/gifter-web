@@ -1,5 +1,5 @@
-import { Box, BoxProps } from '@mui/material'
 import { FC, ReactNode } from 'react'
+import { Box, BoxProps } from '@mui/material'
 
 interface Props extends BoxProps {
   children: ReactNode

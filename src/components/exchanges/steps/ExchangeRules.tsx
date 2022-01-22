@@ -1,3 +1,4 @@
+import { FC, Fragment } from 'react'
 import {
   Box,
   FormControl,
@@ -7,10 +8,10 @@ import {
   RadioGroup,
   Typography,
 } from '@mui/material'
-import { FC, Fragment } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
-import { NewExchangeFormValues } from '../NewExchangeForm'
+
 import ExclusionFieldArray from './ExclusionFieldArray'
+import { NewExchangeFormValues } from '../NewExchangeForm'
 
 interface Props {
   validate?: () => boolean
