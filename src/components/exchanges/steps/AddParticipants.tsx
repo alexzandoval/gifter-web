@@ -34,6 +34,7 @@ const AddParticipants: FC<Props> = ({ validate }) => {
             ...participant,
             excludes: [],
           })
+          setParticipantsHaveChanged(false)
         }
       })
       const numberOfFieldsLeft = participants.length - emptyFields.length

@@ -62,24 +62,27 @@ const ExclusionFieldArray: FC<Props> = ({ participantIndex, participants }) => {
         </FormControl>
       )}
       <List sx={{ marginLeft: 4 }}>
-        {/* FIXME: List not always updating when being erased in AddParticipants */}
-        {fields.map((field, index) => (
-          <ListItem
-            key={field.id}
-            secondaryAction={
-              <IconButton edge="end" tabIndex={-1} onClick={() => remove(index)}>
-                <Close />
-              </IconButton>
-            }
-            dense
-          >
-            <InputBase
-              readOnly
-              // eslint-disable-next-line react/jsx-no-duplicate-props
-              inputProps={register(`participants.${participantIndex}.excludes.${index}.name`)}
-            />
-          </ListItem>
-        ))}
+        {/* Using currently excluded instead of fields as fields can lag behind when updated from another component */}
+        {currentlyExcluded.map((_, index) => {
+          const field = fields[index]
+          return (
+            <ListItem
+              key={field.id}
+              secondaryAction={
+                <IconButton edge="end" tabIndex={-1} onClick={() => remove(index)}>
+                  <Close />
+                </IconButton>
+              }
+              dense
+            >
+              <InputBase
+                readOnly
+                // eslint-disable-next-line react/jsx-no-duplicate-props
+                inputProps={register(`participants.${participantIndex}.excludes.${index}.name`)}
+              />
+            </ListItem>
+          )
+        })}
       </List>
     </Box>
   )
