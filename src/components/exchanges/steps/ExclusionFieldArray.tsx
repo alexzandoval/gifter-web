@@ -10,21 +10,30 @@ import {
   MenuItem,
   Select,
 } from '@mui/material'
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { NewExchangeFormValues, Participant } from '../NewExchangeForm'
 
 interface Props {
   participantIndex: number
   participants: Participant[]
+  numberOfDraws: number
 }
 
-const ExclusionFieldArray: FC<Props> = ({ participantIndex, participants }) => {
+const ExclusionFieldArray: FC<Props> = ({ participantIndex, participants, numberOfDraws }) => {
   const { register, watch } = useFormContext<NewExchangeFormValues>()
   const { fields, remove, append } = useFieldArray({
     name: `participants.${participantIndex}.excludes`,
   })
   const currentlyExcluded = watch(`participants.${participantIndex}.excludes`)
+  const namesLeftForThisParticipantToDraw = participants.length - 1 - currentlyExcluded.length
+
+  useEffect(() => {
+    // If the user increases the draw limit, remove the last exclusion from the list
+    if (numberOfDraws > namesLeftForThisParticipantToDraw) {
+      remove(fields.length - 1)
+    }
+  }, [numberOfDraws, namesLeftForThisParticipantToDraw, fields.length, remove])
 
   const handleAddExclusion = (newExclusionIndex: number) => {
     append({ name: participants[newExclusionIndex].name }, { shouldFocus: false })
@@ -32,7 +41,7 @@ const ExclusionFieldArray: FC<Props> = ({ participantIndex, participants }) => {
 
   return (
     <Box ml={4} mt={0}>
-      {participants.length - 1 > currentlyExcluded.length && (
+      {namesLeftForThisParticipantToDraw > numberOfDraws && (
         <FormControl fullWidth>
           <InputLabel id="select-exclusions-label">Select a name</InputLabel>
           <Select

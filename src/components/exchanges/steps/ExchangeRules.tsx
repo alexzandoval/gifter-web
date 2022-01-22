@@ -85,7 +85,11 @@ const ExchangeRules: FC<Props> = () => {
           participants.map((participant, index) => (
             <Fragment key={participant.name}>
               <Typography>{`${participant.name} can not draw:`}</Typography>
-              <ExclusionFieldArray participantIndex={index} participants={participants} />
+              <ExclusionFieldArray
+                participantIndex={index}
+                participants={participants}
+                numberOfDraws={numberOfDraws}
+              />
             </Fragment>
           ))}
       </Box>
