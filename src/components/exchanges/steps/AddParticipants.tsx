@@ -111,7 +111,6 @@ const AddParticipants: FC<Props> = ({ validate }) => {
       >
         Add Another Participant
       </Button>
-      {/* Display error in red */}
       {errorMessage && (
         <Typography sx={{ textAlign: 'center' }} color="error">
           {errorMessage}
