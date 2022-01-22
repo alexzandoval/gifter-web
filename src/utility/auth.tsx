@@ -5,7 +5,6 @@ import { Link as RouterLink } from 'react-router-dom'
 
 import routes from 'constants/routes'
 
-// eslint-disable-next-line import/prefer-default-export
 export const handleAuthError = (authError: AuthError): ReactNode => {
   switch (authError.code) {
     case AuthErrorCodes.EMAIL_EXISTS:

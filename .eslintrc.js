@@ -25,6 +25,7 @@ module.exports = {
   plugins: ['react', '@typescript-eslint', 'jest', 'prettier'],
   rules: {
     'import/extensions': 'off',
+    'import/prefer-default-export': 'off',
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': 'error',
     'no-underscore-dangle': 'off',

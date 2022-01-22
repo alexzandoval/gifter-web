@@ -3,6 +3,7 @@ import { Box, Button, Step, StepLabel, Stepper, Typography } from '@mui/material
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 
 import { ucFirst } from 'utility/utility'
+import { isDrawPossible } from 'utility/exchanges'
 import AddParticipants from './steps/AddParticipants'
 import ExchangeRules from './steps/ExchangeRules'
 import ExchangeInformation from './steps/ExchangeInformation'
@@ -12,12 +13,14 @@ export type Participant = {
   excludes: { name: string }[]
 }
 
+export type Rules = {
+  numberOfDraws: number
+  addExclusions: boolean
+}
+
 export type NewExchangeFormValues = {
   participants: Participant[]
-  rules: {
-    numberOfDraws: number
-    addExclusions: boolean
-  }
+  rules: Rules
   information: {
     name: string
     budget: number
@@ -59,6 +62,8 @@ const NewExchangeForm: FC = () => {
     watch,
     formState: { errors },
   } = reactHookForm
+  const participants = watch('participants')
+  const rules = watch('rules')
 
   const steps = [
     {
@@ -67,7 +72,6 @@ const NewExchangeForm: FC = () => {
       isValid: () => {
         // Check if there are at least 3 unique participants
         let error = ''
-        const participants = watch('participants')
         const lessThanThreeParticipantsError =
           'You cannot create an exchange with less than 3 participants'
         if (!participants || participants.length < 3) {
@@ -100,8 +104,18 @@ const NewExchangeForm: FC = () => {
       label: 'Set Exchange Rules',
       component: ExchangeRules,
       isValid: () => {
-        const error = ''
-        return true
+        let error = ''
+        if (participants && rules && isDrawPossible(participants, rules)) {
+          // return true
+          return false
+        }
+        error =
+          'Draw is not possible with the current exclusions you have set. Try removing or modifying some of them.'
+        setError('rules', {
+          type: 'onChange',
+          message: error,
+        })
+        return false
       },
     },
     {
