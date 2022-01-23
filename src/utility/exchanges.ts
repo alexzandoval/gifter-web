@@ -4,9 +4,62 @@ type ParticipantWithPotentialDraws = Participant & {
   potentialDraws: { name: string }[]
 }
 
+const NUMBER_OF_TIMES_TO_TRY_TO_FIND_A_DRAWING_CLASH = 25
+
+// Brute force algorithm to find a clash of participants
+const randomlyCheckForDrawingClashes = (
+  participants: ParticipantWithPotentialDraws[],
+  numberOfDraws: number,
+): boolean => {
+  const checkForClash = () => {
+    const drawnNames: { gifter: string; giftees: string[] }[] = []
+    const canEveryoneDrawAName = participants.every((participant) => {
+      // Removing names that have met the draw limit
+      const namesLeftToDraw = participant.potentialDraws.filter(({ name }) => {
+        let numberOfTimesNameHasBeenDrawn = 0
+        // Checking if a name has been drawn n times
+        return !drawnNames.some(({ giftees }) => {
+          if (giftees.includes(name)) {
+            numberOfTimesNameHasBeenDrawn += 1
+          }
+          return numberOfTimesNameHasBeenDrawn >= numberOfDraws
+        })
+      })
+      if (namesLeftToDraw.length < numberOfDraws) {
+        // Every name this participant can draw has already been drawn
+        return false
+      }
+      drawnNames.push({
+        gifter: participant.name,
+        // Shuffling the potential names to draw and taking the first n
+        giftees: namesLeftToDraw
+          .sort(() => 0.5 - Math.random())
+          .slice(0, numberOfDraws)
+          .map(({ name }) => name),
+      })
+      return true
+    })
+    return canEveryoneDrawAName
+  }
+  let loopCounter = 0
+  let everyoneCanDrawAName = false
+
+  while (!everyoneCanDrawAName && NUMBER_OF_TIMES_TO_TRY_TO_FIND_A_DRAWING_CLASH > loopCounter) {
+    loopCounter += 1
+    everyoneCanDrawAName = checkForClash()
+  }
+  return everyoneCanDrawAName
+}
+
+// TODO: Develop algorithm to check every combination for validity
+// const methodicallyCheckForDrawingClashes = (
+//   participants: ParticipantWithPotentialDraws[],
+// ): boolean => {
+//   return true
+// }
+
 export const isDrawPossible = (participants: Participant[], rules: Rules): boolean => {
   const numberOfParticipants = participants.length
-  let totalNumberOfExclusions = 0
   const { numberOfDraws, addExclusions } = rules
   const participantsWithPotentialDraws: ParticipantWithPotentialDraws[] = []
 
@@ -14,8 +67,7 @@ export const isDrawPossible = (participants: Participant[], rules: Rules): boole
   if (!addExclusions) return true
 
   // Check that everyone can draw enough names to match the exchange settings
-  const everyoneHasEnoughNamesToDraw = participants.every((currentParticipant, index) => {
-    totalNumberOfExclusions += currentParticipant.excludes.length
+  const everyoneHasEnoughNamesToDraw = participants.every((currentParticipant) => {
     const peopleThisParticipantCanDraw = participants.filter(
       (p) =>
         currentParticipant.name !== p.name &&
@@ -35,32 +87,11 @@ export const isDrawPossible = (participants: Participant[], rules: Rules): boole
   // Sort participantsWithEligibleDraws by who has the least amount of names to draw
   participantsWithPotentialDraws.sort((a, b) => a.potentialDraws.length - b.potentialDraws.length)
 
-  if (numberOfDraws === 1) {
-    const drawnNames: { gifter: string; giftee: string }[] = []
-    const everyoneCanDrawAName = participantsWithPotentialDraws.every((participant) => {
-      const drawnName = participant.potentialDraws.find(
-        ({ name }) => !drawnNames.some(({ giftee }) => name === giftee),
-      )
-      if (drawnName) {
-        drawnNames.push({ gifter: participant.name, giftee: drawnName.name })
-        return true
-      }
-      return false
-    })
-    console.log({
-      drawnNames,
-      everyoneCanDrawAName,
-      participantsWithPotentialDraws: participantsWithPotentialDraws.map(
-        ({ name, potentialDraws }) =>
-          `${name} can draw ${potentialDraws.map((p) => p.name).join(', ')}`,
-      ),
-    })
-    // TODO: Find the participant who cannot draw a name and see if there is a way to make this more efficient
-    if (!everyoneCanDrawAName) return false
-  }
-
-  console.log(participantsWithPotentialDraws)
-  console.log({ totalNumberOfExclusions })
+  const everyoneCanDrawAName = randomlyCheckForDrawingClashes(
+    participantsWithPotentialDraws,
+    numberOfDraws,
+  )
+  if (!everyoneCanDrawAName) return false
 
   return true
 }

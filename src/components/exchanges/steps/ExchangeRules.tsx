@@ -18,13 +18,17 @@ interface Props {
 }
 
 const ExchangeRules: FC<Props> = () => {
-  const { watch } = useFormContext<NewExchangeFormValues>()
+  const {
+    watch,
+    formState: { errors },
+  } = useFormContext<NewExchangeFormValues>()
 
   const participants = watch('participants')
   const numberOfDraws = watch('rules.numberOfDraws')
   const shouldShowExclusions = (watch('rules.addExclusions') as unknown as string) === 'true'
   const canAddExclusions = (numberOfDraws < 2 && participants.length > 3) || participants.length > 4
 
+  const errorMessage = (errors as any).rules?.message
   return (
     <>
       <Typography>
@@ -94,6 +98,12 @@ const ExchangeRules: FC<Props> = () => {
             </Fragment>
           ))}
       </Box>
+
+      {errorMessage && (
+        <Typography sx={{ textAlign: 'center' }} color="error">
+          {errorMessage}
+        </Typography>
+      )}
     </>
   )
 }

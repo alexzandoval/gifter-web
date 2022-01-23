@@ -74,6 +74,7 @@ const NewExchangeForm: FC = () => {
         let error = ''
         const lessThanThreeParticipantsError =
           'You cannot create an exchange with less than 3 participants'
+        clearErrors('participants')
         if (!participants || participants.length < 3) {
           error = lessThanThreeParticipantsError
         } else {
@@ -87,7 +88,6 @@ const NewExchangeForm: FC = () => {
             error = 'All names must be unique'
           }
         }
-        clearErrors('participants')
         if (error) {
           if (participants) {
             setError('participants', {
@@ -105,6 +105,7 @@ const NewExchangeForm: FC = () => {
       component: ExchangeRules,
       isValid: () => {
         let error = ''
+        clearErrors('rules')
         if (participants && rules && isDrawPossible(participants, rules)) {
           // return true
           return false
