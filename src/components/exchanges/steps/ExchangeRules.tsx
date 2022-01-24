@@ -13,11 +13,7 @@ import { Controller, useFormContext } from 'react-hook-form'
 import ExclusionFieldArray from './ExclusionFieldArray'
 import { NewExchangeFormValues } from '../NewExchangeForm'
 
-interface Props {
-  validate?: () => boolean
-}
-
-const ExchangeRules: FC<Props> = () => {
+const ExchangeRules: FC = () => {
   const {
     watch,
     formState: { errors },

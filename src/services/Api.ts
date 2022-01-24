@@ -1,3 +1,4 @@
+import { Participant, Rules } from 'components/exchanges/NewExchangeForm'
 import { apiAxios } from 'context/Auth'
 import {
   CreateExchangeDto,
@@ -67,6 +68,19 @@ const Api = {
         return true
       }
       return false
+    },
+    checkExclusions: async (
+      participants: Participant[],
+      rules: Rules,
+    ): Promise<{ isValid: boolean }> => {
+      const result = await apiAxios.post<{ isValid: boolean }>(
+        urlBuilder.exchanges().addPath('check-exclusions').build(),
+        {
+          participants,
+          ...rules,
+        },
+      )
+      return result.data
     },
   },
 }

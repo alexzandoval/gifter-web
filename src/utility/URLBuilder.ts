@@ -1,3 +1,4 @@
+import { ApiPath } from 'ts/api'
 import { ResourceId } from 'ts/types'
 
 export default class URLBuilder {
@@ -24,6 +25,11 @@ export default class URLBuilder {
   public addQueryParam(name: string, value: string): URLBuilder {
     this._queryParams.push(name)
     this._queryParamValues.push(value)
+    return this
+  }
+
+  public addPath(path: ApiPath): URLBuilder {
+    this._url += `/${path}`
     return this
   }
 

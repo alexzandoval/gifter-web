@@ -35,3 +35,5 @@ export interface Exchange extends CreateExchangeDto {
   participants: User[]
   organizerId: string
 }
+
+export type ApiPath = 'check-exclusions'

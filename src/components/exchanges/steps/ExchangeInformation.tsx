@@ -23,11 +23,8 @@ import { NewExchangeFormValues } from '../NewExchangeForm'
 //     label: '$150+',
 //   },
 // ]
-interface Props {
-  validate: () => boolean
-}
 
-const ExchangeInformation: FC<Props> = () => {
+const ExchangeInformation: FC = () => {
   const {
     register,
     formState: { errors },
