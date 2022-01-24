@@ -42,12 +42,14 @@ const AddParticipants: FC<Props> = ({ validate }) => {
       if (numberOfFieldsLeft < 3) {
         emptyFields.splice(-(3 - numberOfFieldsLeft))
       }
+      // FIXME: Extra fields are sometimes not removed when flipping between steps
       remove(emptyFields)
     }
     return removeEmptyFields
   }, [remove, update, watch, participantsHaveChanged])
 
   const handleAddNewParticipant = (fieldIndex: number, value: string) => {
+    setParticipantsHaveChanged(true)
     const isLastInput = fieldIndex === fields.length - 1
     if (isLastInput && value.length > 0) {
       append(newParticipant, { shouldFocus: false })
@@ -55,6 +57,7 @@ const AddParticipants: FC<Props> = ({ validate }) => {
   }
 
   const handleRemoveParticipant = (index: number) => {
+    setParticipantsHaveChanged(true)
     const isMoreThanThreeParticipants = fields.length > 3
     if (isMoreThanThreeParticipants) {
       remove(index)

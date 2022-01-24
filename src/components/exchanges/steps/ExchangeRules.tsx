@@ -19,7 +19,7 @@ const ExchangeRules: FC = () => {
     formState: { errors },
   } = useFormContext<NewExchangeFormValues>()
 
-  const participants = watch('participants')
+  const participants = watch('participants').filter((participant) => participant.name)
   const numberOfDraws = watch('rules.numberOfDraws')
   const shouldShowExclusions = (watch('rules.addExclusions') as unknown as string) === 'true'
   const canAddExclusions = (numberOfDraws < 2 && participants.length > 3) || participants.length > 4
