@@ -111,12 +111,17 @@ const NewExchangeForm: FC = () => {
         let error = ''
         clearErrors('rules')
         if (participants && rules) {
+          let isValidDraw = false
           try {
             setNextStepIsLoading(true)
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const result = await Api.exchanges.checkExclusions(participants, rules)
+            isValidDraw = result.isValid
+            if (!isValidDraw) {
+              throw new Error('Invalid draw')
+            }
           } catch (e) {
-            if (isServerValidationError(e)) {
+            if (isServerValidationError(e) || !isValidDraw) {
               error =
                 'Draw is not possible with the current exclusions you have set. Try removing or modifying some of them.'
             } else {
