@@ -1,4 +1,4 @@
-import { FC, Fragment } from 'react'
+import { FC, Fragment, useEffect } from 'react'
 import {
   Box,
   FormControl,
@@ -16,6 +16,7 @@ import { NewExchangeFormValues } from '../NewExchangeForm'
 const ExchangeRules: FC = () => {
   const {
     watch,
+    setValue,
     formState: { errors },
   } = useFormContext<NewExchangeFormValues>()
 
@@ -23,6 +24,12 @@ const ExchangeRules: FC = () => {
   const numberOfDraws = watch('rules.numberOfDraws')
   const shouldShowExclusions = (watch('rules.addExclusions') as unknown as string) === 'true'
   const canAddExclusions = (numberOfDraws < 2 && participants.length > 3) || participants.length > 4
+
+  useEffect(() => {
+    if (!canAddExclusions) {
+      setValue('rules.addExclusions', false)
+    }
+  }, [canAddExclusions, setValue])
 
   const errorMessage = (errors as any).rules?.message
   return (
@@ -60,7 +67,6 @@ const ExchangeRules: FC = () => {
               ? 'Do you want to add exclusions? You can specify people who should NOT draw each other.'
               : 'Exclusions allow you to specify which participants can NOT draw each other. Your group is not big enough to add exclusions.'}
           </FormLabel>
-
           <Controller
             name="rules.addExclusions"
             render={({ field }) => (
