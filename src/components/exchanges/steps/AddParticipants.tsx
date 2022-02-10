@@ -48,12 +48,9 @@ const AddParticipants: FC<Props> = ({ validate }) => {
     return removeEmptyFields
   }, [remove, update, watch, participantsHaveChanged])
 
-  const handleAddNewParticipant = (fieldIndex: number, value: string) => {
+  const handleAddNewParticipant = (shouldFocus: boolean = false) => {
     setParticipantsHaveChanged(true)
-    const isLastInput = fieldIndex === fields.length - 1
-    if (isLastInput && value.length > 0) {
-      append(newParticipant, { shouldFocus: false })
-    }
+    append(newParticipant, { shouldFocus })
   }
 
   const handleRemoveParticipant = (index: number) => {
@@ -78,8 +75,12 @@ const AddParticipants: FC<Props> = ({ validate }) => {
         const inputProps = register(`participants.${index}.name`)
         const currentParticipant = watch(`participants.${index}`)
         const handleParticipantOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-          setParticipantsHaveChanged(true)
-          handleAddNewParticipant(index, e.target.value)
+          const isLastInput = index === fields.length - 1
+          if (isLastInput && e.target.value.length > 0) {
+            handleAddNewParticipant()
+          } else {
+            setParticipantsHaveChanged(true)
+          }
           inputProps.onChange(e)
         }
         const handleParticipantOnBlur = (e: FocusEvent<HTMLInputElement>) => {
@@ -112,7 +113,7 @@ const AddParticipants: FC<Props> = ({ validate }) => {
       <Button
         title="Add another participant"
         startIcon={<Add />}
-        onClick={() => append(newParticipant, { shouldFocus: false })}
+        onClick={() => handleAddNewParticipant(true)}
       >
         Add Another Participant
       </Button>

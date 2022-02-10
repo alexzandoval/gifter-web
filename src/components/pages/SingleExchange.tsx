@@ -53,6 +53,7 @@ const SingleExchange = () => {
         const deleteWasSuccessful = await Api.exchanges.delete(exchange.id)
         history.push(routes.exchanges.path)
       } catch (error) {
+        // TODO: Handle error
         console.log('Error deleting exchange', error)
       } finally {
         setExchangeDeleting(false)
