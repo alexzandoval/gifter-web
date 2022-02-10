@@ -1,8 +1,19 @@
+import { ExclusionParticipant, Rules } from 'components/exchanges/NewExchangeForm'
+
 export interface User {
   uid: string
   email: string
   username: string
   photoUrl: string
+}
+
+export interface Participant {
+  id: number
+  name: string
+  exchangeId: number
+  excludedDraws: Participant[]
+  userId?: string
+  wishlistId?: number
 }
 
 export interface CreateWishlistDto {
@@ -28,11 +39,18 @@ export interface CreateExchangeDto {
   name: string
   budget?: number
   date?: Date
+  addExclusions: Rules['addExclusions']
+  numberOfDraws: Rules['numberOfDraws']
+  participants: ExclusionParticipant[]
 }
 
-export interface Exchange extends CreateExchangeDto {
+export interface Exchange {
   id: number
-  participants: User[]
+  name: string
+  budget?: number
+  date?: string
+  numberOfDraws: Rules['numberOfDraws']
+  participants: Participant[]
   organizerId: string
 }
 

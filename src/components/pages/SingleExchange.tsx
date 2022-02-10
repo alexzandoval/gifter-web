@@ -75,9 +75,9 @@ const SingleExchange = () => {
           <Delete />
         </IconButton>
         <List>
-          {exchange?.participants?.map((participant) => (
-            <ListItem key={participant.uid}>
-              <ListItemText>{participant.email}</ListItemText>
+          {exchange?.participants.map((participant) => (
+            <ListItem key={participant.id}>
+              <ListItemText>{participant.name}</ListItemText>
             </ListItem>
           ))}
         </List>

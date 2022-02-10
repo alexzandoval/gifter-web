@@ -5,11 +5,13 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { isServerValidationError, ucFirst } from 'utility/utility'
 import Api from 'services/Api'
 import LoadingButton from 'components/shared/LoadingButton'
+import { useHistory } from 'react-router-dom'
+import routes from 'constants/routes'
 import AddParticipants from './steps/AddParticipants'
 import ExchangeRules from './steps/ExchangeRules'
 import ExchangeInformation from './steps/ExchangeInformation'
 
-export type Participant = {
+export type ExclusionParticipant = {
   name: string
   excludes: { name: string }[]
 }
@@ -20,7 +22,7 @@ export type Rules = {
 }
 
 export type NewExchangeFormValues = {
-  participants: Participant[]
+  participants: ExclusionParticipant[]
   rules: Rules
   information: {
     name: string
@@ -55,15 +57,9 @@ const NewExchangeForm: FC = () => {
   const [formIsLoading, setFormIsLoading] = useState<boolean>(false)
   const [serverErrors, setServerErrors] = useState<string[]>([])
   const [nextStepIsLoading, setNextStepIsLoading] = useState<boolean>(false)
+  const history = useHistory()
   const reactHookForm = useForm({ defaultValues })
-  const {
-    clearErrors,
-    handleSubmit,
-    setError,
-    trigger,
-    watch,
-    formState: { errors },
-  } = reactHookForm
+  const { clearErrors, handleSubmit, setError, trigger, watch } = reactHookForm
   const participants = watch('participants')
   const rules = watch('rules')
 
@@ -148,35 +144,38 @@ const NewExchangeForm: FC = () => {
     {
       label: 'Exchange Information',
       component: <ExchangeInformation />,
-      isValid: () => {
-        const error = ''
+      isValidAsync: async () => {
+        clearErrors('information')
+        const hasError = await trigger('information')
+        if (hasError) {
+          return false
+        }
         return true
       },
     },
   ]
   const isLastStep = activeStep === steps.length - 1
 
-  const onSubmit: SubmitHandler<NewExchangeFormValues> = async (data, e) => {
-    console.log(data, errors)
-    //   clearErrors()
-    //   if (!exchangeNameIsValid()) return
-    //   setFormIsLoading(true)
-    //   try {
-    //     const newExchange = await Api.exchanges.create({
-    //       name: exchangeName,
-    //       budget: exchangeBudget ? Number(exchangeBudget) : undefined,
-    //       date: exchangeDate || undefined,
-    //     })
-    //     history.push(routes.singleExchange.id(newExchange.id))
-    //   } catch (e) {
-    //     if (isServerValidationError(e)) {
-    //       setServerErrors(e.message)
-    //     } else {
-    //       setServerErrors(['Something went wrong. Please try again.'])
-    //     }
-    //   } finally {
-    //     setFormIsLoading(false)
-    //   }
+  const onSubmit: SubmitHandler<NewExchangeFormValues> = async (data) => {
+    setFormIsLoading(true)
+    try {
+      const newExchange = await Api.exchanges.create({
+        name: data.information.name,
+        budget: data.information.budget ? Number(data.information.budget) : undefined,
+        date: data.information.date || undefined,
+        participants: data.participants,
+        ...data.rules,
+      })
+      history.push(routes.singleExchange.id(newExchange.id))
+    } catch (e) {
+      if (isServerValidationError(e)) {
+        setServerErrors(e.message)
+      } else {
+        setServerErrors(['Something went wrong. Please try again.'])
+      }
+    } finally {
+      setFormIsLoading(false)
+    }
   }
 
   const handleNextStep = async () => {
@@ -247,9 +246,14 @@ const NewExchangeForm: FC = () => {
               Back
             </Button>
             {isLastStep ? (
-              <Button sx={{ minWidth: 150 }} variant="contained" type="submit">
+              <LoadingButton
+                loading={formIsLoading}
+                sx={{ minWidth: 150 }}
+                variant="contained"
+                type="submit"
+              >
                 Create Exchange
-              </Button>
+              </LoadingButton>
             ) : (
               <LoadingButton
                 loading={nextStepIsLoading}

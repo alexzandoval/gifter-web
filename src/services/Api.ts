@@ -1,4 +1,4 @@
-import { Participant, Rules } from 'components/exchanges/NewExchangeForm'
+import { ExclusionParticipant, Rules } from 'components/exchanges/NewExchangeForm'
 import { apiAxios } from 'context/Auth'
 import {
   CreateExchangeDto,
@@ -70,7 +70,7 @@ const Api = {
       return false
     },
     checkExclusions: async (
-      participants: Participant[],
+      participants: ExclusionParticipant[],
       rules: Rules,
     ): Promise<{ isValid: boolean }> => {
       const result = await apiAxios.post<{ isValid: boolean }>(

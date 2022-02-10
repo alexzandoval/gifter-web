@@ -32,6 +32,7 @@ const ExchangeRules: FC = () => {
   }, [canAddExclusions, setValue])
 
   const errorMessage = (errors as any).rules?.message
+
   return (
     <>
       <Typography>
@@ -100,7 +101,6 @@ const ExchangeRules: FC = () => {
             </Fragment>
           ))}
       </Box>
-
       {errorMessage && (
         <Typography sx={{ textAlign: 'center' }} color="error">
           {errorMessage}

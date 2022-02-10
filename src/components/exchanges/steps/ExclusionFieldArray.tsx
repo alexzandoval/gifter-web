@@ -13,11 +13,11 @@ import {
 } from '@mui/material'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 
-import { NewExchangeFormValues, Participant } from '../NewExchangeForm'
+import { NewExchangeFormValues, ExclusionParticipant } from '../NewExchangeForm'
 
 interface Props {
   participantIndex: number
-  participants: Participant[]
+  participants: ExclusionParticipant[]
   numberOfDraws: number
 }
 
