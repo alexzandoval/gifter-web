@@ -12,11 +12,13 @@ import {
 import { Link as RouterLink } from 'react-router-dom'
 
 import routes from 'constants/routes'
+import { useAuth } from 'context/Auth'
 import Api from 'services/Api'
 import { Exchange } from 'ts/api'
 
 const Exchanges = () => {
   const [exchanges, setExchanges] = useState<Exchange[]>([])
+  const { user } = useAuth()
 
   useEffect(() => {
     Api.exchanges.getAll().then(setExchanges)
@@ -46,7 +48,10 @@ const Exchanges = () => {
         {exchanges.map((exchange) => (
           <ListItem key={exchange.id}>
             <ListItemButton component={RouterLink} to={routes.singleExchange.id(exchange.id)}>
-              <ListItemText>{exchange.name}</ListItemText>
+              <ListItemText
+                primary={exchange.name}
+                secondary={exchange.organizerId === user?.uid && 'Organizer'}
+              />
             </ListItemButton>
           </ListItem>
         ))}
