@@ -1,12 +1,23 @@
 import { FC, useState } from 'react'
-import { Box, Button, Step, StepLabel, Stepper, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  CardActions,
+  CardContent,
+  Grow,
+  Paper,
+  Step,
+  StepLabel,
+  Stepper,
+  Typography,
+} from '@mui/material'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
-
-import { isServerValidationError, ucFirst } from 'utility/utility'
-import Api from 'services/Api'
-import LoadingButton from 'components/shared/LoadingButton'
 import { useHistory } from 'react-router-dom'
+
+import LoadingButton from 'components/shared/LoadingButton'
 import routes from 'constants/routes'
+import Api from 'services/Api'
+import { isServerValidationError, ucFirst } from 'utility/utility'
 import AddParticipants from './steps/AddParticipants'
 import ExchangeRules from './steps/ExchangeRules'
 import ExchangeInformation from './steps/ExchangeInformation'
@@ -53,9 +64,10 @@ const defaultValues: Partial<NewExchangeFormValues> = {
 }
 
 const NewExchangeForm: FC = () => {
-  const [activeStep, setActiveStep] = useState<number>(0)
+  const [activeStep, setActiveStep] = useState<number>(2)
   const [formIsLoading, setFormIsLoading] = useState<boolean>(false)
   const [serverErrors, setServerErrors] = useState<string[]>([])
+  const [showServerErrors, setShowServerErrors] = useState<boolean>(false)
   const [nextStepIsLoading, setNextStepIsLoading] = useState<boolean>(false)
   const history = useHistory()
   const reactHookForm = useForm({ defaultValues })
@@ -173,6 +185,7 @@ const NewExchangeForm: FC = () => {
       } else {
         setServerErrors(['Something went wrong. Please try again.'])
       }
+      setShowServerErrors(true)
     } finally {
       setFormIsLoading(false)
     }
@@ -197,20 +210,16 @@ const NewExchangeForm: FC = () => {
     setActiveStep((prev) => (prev === 0 ? prev : prev - 1))
   }
 
+  const handleCloseServerErrors = () => {
+    setShowServerErrors(false)
+    setTimeout(() => setServerErrors([]), 5000)
+  }
+
   return (
     <>
       <Typography>
         Create a new gift exchange, set a date and budget, and invite your friends!
       </Typography>
-      {serverErrors.length > 0 && (
-        <Box mt={2}>
-          {serverErrors.map((error) => (
-            <Typography key={error} color="error">
-              {ucFirst(error)}
-            </Typography>
-          ))}
-        </Box>
-      )}
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormProvider {...reactHookForm}>
           <Stepper activeStep={activeStep} sx={{ marginTop: 4 }}>
@@ -220,8 +229,28 @@ const NewExchangeForm: FC = () => {
               </Step>
             ))}
           </Stepper>
+          <Grow in={showServerErrors} unmountOnExit>
+            <Paper sx={{ mt: 3, mb: 2 }} elevation={2}>
+              <CardContent sx={{ marginBottom: 0, paddingBottom: 0 }}>
+                The following errors occurred when creating your exchange. Please go back and make
+                sure you have entered valid information before submitting again.
+                <ul>
+                  {serverErrors.map((error) => (
+                    <Typography key={error} color="error">
+                      <li>{ucFirst(error)}</li>
+                    </Typography>
+                  ))}
+                </ul>
+              </CardContent>
+              <CardActions sx={{ paddingTop: 0 }}>
+                <Button sx={{ marginLeft: 'auto' }} onClick={handleCloseServerErrors}>
+                  OK
+                </Button>
+              </CardActions>
+            </Paper>
+          </Grow>
           <Box
-            mt={4}
+            mt={2}
             mb={4}
             minHeight={300}
             sx={{
@@ -248,6 +277,7 @@ const NewExchangeForm: FC = () => {
             {isLastStep ? (
               <LoadingButton
                 loading={formIsLoading}
+                disabled={formIsLoading}
                 sx={{ minWidth: 150 }}
                 variant="contained"
                 type="submit"
@@ -257,6 +287,7 @@ const NewExchangeForm: FC = () => {
             ) : (
               <LoadingButton
                 loading={nextStepIsLoading}
+                disabled={nextStepIsLoading}
                 onClick={handleNextStep}
                 sx={{ minWidth: 150 }}
                 variant="contained"
@@ -267,16 +298,6 @@ const NewExchangeForm: FC = () => {
           </Box>
         </FormProvider>
       </form>
-      {/* <LoadingButton
-        loading={formIsLoading}
-        variant="contained"
-        disabled={formIsLoading}
-        onClick={() => {
-          console.log('Submitting')
-        }}
-      >
-        Create
-      </LoadingButton> */}
     </>
   )
 }
