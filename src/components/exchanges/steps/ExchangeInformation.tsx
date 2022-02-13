@@ -39,7 +39,7 @@ const ExchangeInformation: FC = () => {
   return (
     <>
       <TextField
-        label="Exchange Name"
+        label={`My Exchange Name ${new Date().getFullYear()}`}
         variant="filled"
         error={Boolean(errors.information?.name)}
         helperText={errors.information?.name?.message}

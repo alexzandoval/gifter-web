@@ -1,6 +1,13 @@
 import { ChangeEvent, FC, FocusEvent, useEffect, useState } from 'react'
 import { Add, Close } from '@mui/icons-material'
-import { Button, IconButton, InputAdornment, TextField, Typography } from '@mui/material'
+import {
+  Button,
+  IconButton,
+  InputAdornment,
+  TextField,
+  TextFieldProps,
+  Typography,
+} from '@mui/material'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 
 import { NewExchangeFormValues } from '../NewExchangeForm'
@@ -28,9 +35,11 @@ const AddParticipants: FC<Props> = ({ validate }) => {
       const emptyFields: number[] = []
       const participants = watch('participants')
       participants.forEach((participant, index) => {
-        if (!participant.name) {
+        // Remove empty fields unless except for the field that is synced with the organizer name
+        if (!participant.name && index !== 0) {
           emptyFields.push(index)
         } else if (participantsHaveChanged) {
+          // Clearing out the exclusion list when the participant name is changed
           update(index, {
             ...participant,
             excludes: [],
@@ -42,11 +51,16 @@ const AddParticipants: FC<Props> = ({ validate }) => {
       if (numberOfFieldsLeft < 3) {
         emptyFields.splice(-(3 - numberOfFieldsLeft))
       }
-      // FIXME: Extra fields are sometimes not removed when flipping between steps
       remove(emptyFields)
     }
     return removeEmptyFields
   }, [remove, update, watch, participantsHaveChanged])
+
+  const organizerName = watch('organizerName')
+  useEffect(() => {
+    setParticipantsHaveChanged(true)
+    update(0, { name: organizerName })
+  }, [update, organizerName])
 
   const handleAddNewParticipant = (shouldFocus: boolean = false) => {
     setParticipantsHaveChanged(true)
@@ -71,9 +85,41 @@ const AddParticipants: FC<Props> = ({ validate }) => {
         Who will all be participating in this exchange? Don't worry you can add or remove more
         people later.
       </Typography>
+      <Typography sx={{ fontWeight: 'bold', mt: 2 }}>Enter your name:</Typography>
+      <TextField
+        label="Your name*"
+        variant="filled"
+        error={Boolean(errors.organizerName)}
+        helperText={errors.organizerName?.message}
+        inputProps={{
+          ...register('organizerName', {
+            required: 'Please enter your name',
+          }),
+        }}
+      />
+      <Typography sx={{ fontWeight: 'bold', mt: 4 }}>
+        Other participants to draw names with:
+      </Typography>
       {fields.map((field, index) => {
-        const inputProps = register(`participants.${index}.name`)
+        const isOrganizerName = index === 0
         const currentParticipant = watch(`participants.${index}`)
+        const extraProps: TextFieldProps = {}
+        const inputProps = register(`participants.${index}.name`)
+
+        if (isOrganizerName) {
+          extraProps.InputLabelProps = { shrink: organizerName?.length > 0 }
+        } else {
+          extraProps.InputProps = {
+            endAdornment: (fields.length > 3 || currentParticipant.name) && (
+              <InputAdornment position="end">
+                <IconButton tabIndex={-1} onClick={() => handleRemoveParticipant(index)}>
+                  <Close />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }
+        }
+
         const handleParticipantOnChange = (e: ChangeEvent<HTMLInputElement>) => {
           const isLastInput = index === fields.length - 1
           if (isLastInput && e.target.value.length > 0) {
@@ -83,30 +129,24 @@ const AddParticipants: FC<Props> = ({ validate }) => {
           }
           inputProps.onChange(e)
         }
+
         const handleParticipantOnBlur = (e: FocusEvent<HTMLInputElement>) => {
           if (errorMessage) validate()
           inputProps.onBlur(e)
         }
+
         return (
           <TextField
             key={field.id}
-            label={`Enter participant ${index + 1}`}
+            label={isOrganizerName ? 'Your Name' : `Enter participant ${index + 1}`}
             variant="filled"
-            InputProps={{
-              endAdornment: (fields.length > 3 || currentParticipant.name) && (
-                <InputAdornment position="end">
-                  <IconButton tabIndex={-1} onClick={() => handleRemoveParticipant(index)}>
-                    <Close />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            // eslint-disable-next-line react/jsx-no-duplicate-props
+            disabled={isOrganizerName}
             inputProps={{
               ...inputProps,
               onChange: handleParticipantOnChange,
               onBlur: handleParticipantOnBlur,
             }}
+            {...extraProps}
           />
         )
       })}

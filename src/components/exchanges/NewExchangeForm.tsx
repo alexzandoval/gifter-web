@@ -33,6 +33,7 @@ export type Rules = {
 }
 
 export type NewExchangeFormValues = {
+  organizerName: string
   participants: ExclusionParticipant[]
   rules: Rules
   information: {
@@ -64,7 +65,7 @@ const defaultValues: Partial<NewExchangeFormValues> = {
 }
 
 const NewExchangeForm: FC = () => {
-  const [activeStep, setActiveStep] = useState<number>(2)
+  const [activeStep, setActiveStep] = useState<number>(0)
   const [formIsLoading, setFormIsLoading] = useState<boolean>(false)
   const [serverErrors, setServerErrors] = useState<string[]>([])
   const [showServerErrors, setShowServerErrors] = useState<boolean>(false)
@@ -80,7 +81,7 @@ const NewExchangeForm: FC = () => {
     let error = ''
     const lessThanThreeParticipantsError =
       'You cannot create an exchange with less than 3 participants'
-    clearErrors('participants')
+    clearErrors(['participants', 'organizerName'])
     if (!participants || participants.length < 3) {
       error = lessThanThreeParticipantsError
     } else {
@@ -111,6 +112,10 @@ const NewExchangeForm: FC = () => {
       label: 'Add Participants',
       component: <AddParticipants validate={addParticipantsIsValid} />,
       isValid: addParticipantsIsValid,
+      isValidAsync: async () => {
+        const isValid = await trigger(['participants', 'organizerName'], { shouldFocus: true })
+        return isValid
+      },
     },
     {
       label: 'Set Exchange Rules',
@@ -158,11 +163,8 @@ const NewExchangeForm: FC = () => {
       component: <ExchangeInformation />,
       isValidAsync: async () => {
         clearErrors('information')
-        const hasError = await trigger('information')
-        if (hasError) {
-          return false
-        }
-        return true
+        const isValid = await trigger('information', { shouldFocus: true })
+        return isValid
       },
     },
   ]
