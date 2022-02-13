@@ -59,7 +59,7 @@ const AddParticipants: FC<Props> = ({ validate }) => {
   const organizerName = watch('organizerName')
   useEffect(() => {
     setParticipantsHaveChanged(true)
-    update(0, { name: organizerName })
+    update(0, { name: organizerName, excludes: [] })
   }, [update, organizerName])
 
   const handleAddNewParticipant = (shouldFocus: boolean = false) => {
