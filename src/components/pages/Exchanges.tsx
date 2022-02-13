@@ -3,6 +3,7 @@ import { Add } from '@mui/icons-material'
 import {
   Box,
   Button,
+  Chip,
   List,
   ListItem,
   ListItemButton,
@@ -15,6 +16,7 @@ import routes from 'constants/routes'
 import { useAuth } from 'context/Auth'
 import Api from 'services/Api'
 import { Exchange } from 'ts/api'
+import { format } from 'date-fns'
 
 const Exchanges = () => {
   const [exchanges, setExchanges] = useState<Exchange[]>([])
@@ -45,16 +47,30 @@ const Exchanges = () => {
         Create new exchange
       </Button>
       <List>
-        {exchanges.map((exchange) => (
-          <ListItem key={exchange.id}>
-            <ListItemButton component={RouterLink} to={routes.singleExchange.id(exchange.id)}>
-              <ListItemText
-                primary={exchange.name}
-                secondary={exchange.organizerId === user?.uid && 'Organizer'}
-              />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        {exchanges.map((exchange) => {
+          const secondaryText = (
+            <Box component="span" display="flex" flexDirection="column" alignItems="flex-start">
+              {exchange.organizerId === user?.uid && (
+                <Chip size="small" component="span" label="Organizer" />
+              )}
+              {exchange.date && (
+                <Typography component="span">{format(new Date(exchange.date), 'PPP')}</Typography>
+              )}
+              {exchange.budget && <Typography component="span">{`$${exchange.budget}`}</Typography>}
+            </Box>
+          )
+          return (
+            <ListItem key={exchange.id}>
+              <ListItemButton component={RouterLink} to={routes.singleExchange.id(exchange.id)}>
+                <ListItemText
+                  primary={exchange.name}
+                  primaryTypographyProps={{ variant: 'h6' }}
+                  secondary={secondaryText}
+                />
+              </ListItemButton>
+            </ListItem>
+          )
+        })}
       </List>
     </>
   )
