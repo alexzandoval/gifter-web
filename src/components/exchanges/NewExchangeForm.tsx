@@ -177,6 +177,7 @@ const NewExchangeForm: FC = () => {
         name: data.information.name,
         budget: data.information.budget ? Number(data.information.budget) : undefined,
         date: data.information.date || undefined,
+        organizerName: data.organizerName,
         participants: data.participants,
         ...data.rules,
       })
