@@ -52,7 +52,7 @@ export interface Exchange {
   date?: string
   numberOfDraws: Rules['numberOfDraws']
   participants: Participant[]
-  organizerId: string
+  organizer: User
 }
 
 export type ApiPath = 'check-exclusions'

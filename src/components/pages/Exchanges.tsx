@@ -50,7 +50,7 @@ const Exchanges = () => {
         {exchanges.map((exchange) => {
           const secondaryText = (
             <Box component="span" display="flex" flexDirection="column" alignItems="flex-start">
-              {exchange.organizerId === user?.uid && (
+              {exchange.organizer?.uid === user?.uid && (
                 <Chip size="small" component="span" label="Organizer" />
               )}
               {exchange.date && (
