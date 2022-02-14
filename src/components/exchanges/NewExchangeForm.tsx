@@ -38,8 +38,9 @@ export type NewExchangeFormValues = {
   rules: Rules
   information: {
     name: string
-    budget: number
-    date: Date
+    budget?: number
+    date?: Date
+    description?: string
   }
 }
 
@@ -61,6 +62,10 @@ const defaultValues: Partial<NewExchangeFormValues> = {
   rules: {
     numberOfDraws: 1,
     addExclusions: false,
+  },
+  information: {
+    name: '',
+    description: 'We are going to draw names, sign up and create a wish list!',
   },
 }
 
@@ -177,6 +182,7 @@ const NewExchangeForm: FC = () => {
         name: data.information.name,
         budget: data.information.budget ? Number(data.information.budget) : undefined,
         date: data.information.date || undefined,
+        description: data.information.description,
         organizerName: data.organizerName,
         participants: data.participants,
         ...data.rules,

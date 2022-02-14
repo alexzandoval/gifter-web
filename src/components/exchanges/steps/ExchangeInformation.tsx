@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { InputAdornment, TextField } from '@mui/material'
+import { InputAdornment, TextField, Typography } from '@mui/material'
 import { DatePicker } from '@mui/lab'
 import { Controller, useFormContext } from 'react-hook-form'
 
@@ -36,10 +36,12 @@ const ExchangeInformation: FC = () => {
       .replace(/^0+/, '')
       .slice(0, 5)
 
+  // TODO: Add styling for titles
   return (
     <>
+      <Typography>Your Group Name</Typography>
       <TextField
-        label={`My Exchange Name ${new Date().getFullYear()}`}
+        label={`My Exchange Name ${new Date().getFullYear()}*`}
         variant="filled"
         error={Boolean(errors.information?.name)}
         helperText={errors.information?.name?.message}
@@ -49,13 +51,14 @@ const ExchangeInformation: FC = () => {
           }),
         }}
       />
+      <Typography>Budget</Typography>
       <Controller
         name="information.budget"
         defaultValue=""
         render={({ field }) => (
           <TextField
             {...field}
-            label="Budget"
+            label="Budget (optional)"
             variant="filled"
             onChange={(e) => field.onChange(allowOnlyNumber(e.target.value))}
             sx={{ width: 125 }}
@@ -80,17 +83,26 @@ const ExchangeInformation: FC = () => {
           />
         )}
       /> */}
+      <Typography>Date of the Exchange</Typography>
       <Controller
         name="information.date"
         defaultValue={null}
         render={({ field }) => (
           <DatePicker
             {...field}
-            label="Exchange Date"
+            label="Select a Date (optional)"
             minDate={new Date()}
             renderInput={(params) => <TextField variant="filled" {...params} />}
           />
         )}
+      />
+      <Typography>Exchange Invitation Message/Description</Typography>
+      <TextField
+        label="Description (optional)"
+        variant="filled"
+        multiline
+        rows={4}
+        inputProps={register('information.description')}
       />
     </>
   )

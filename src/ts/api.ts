@@ -39,6 +39,7 @@ export interface CreateExchangeDto {
   name: string
   budget?: number
   date?: Date
+  description?: string
   organizerName: string
   addExclusions: Rules['addExclusions']
   numberOfDraws: Rules['numberOfDraws']
