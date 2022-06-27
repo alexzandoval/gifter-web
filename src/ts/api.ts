@@ -12,7 +12,7 @@ export interface Participant {
   name: string
   exchangeId: number
   excludedDraws: Participant[]
-  userId?: string
+  user: User
   wishlistId?: number
 }
 
@@ -49,6 +49,7 @@ export interface CreateExchangeDto {
 export interface Exchange {
   id: number
   name: string
+  description?: string
   budget?: number
   date?: string
   numberOfDraws: Rules['numberOfDraws']
