@@ -4,7 +4,7 @@ import { Box, Button, Divider, TextField, Theme, Typography } from '@mui/materia
 import { makeStyles } from '@mui/styles'
 import { AuthError, UserCredential } from 'firebase/auth'
 import { FieldError, SubmitHandler, useForm } from 'react-hook-form'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 
 import SocialProviderButton from 'components/auth/SocialProviderButton'
 import routes from 'constants/routes'
@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 const AuthForm: FC<Props> = ({ type }) => {
   const classes = useStyles()
   const history = useHistory()
+  const { search } = useLocation()
   const {
     signInWithEmail,
     signUpWithEmail,
@@ -61,7 +62,7 @@ const AuthForm: FC<Props> = ({ type }) => {
   const formIsLoading = emailIsLoading || isGoogleLoading || isAppleLoading || isFacebookLoading
 
   const handleToggleSignIn = () => {
-    history.push(isNewSignUp ? routes.login.path : routes.register.path)
+    history.push((isNewSignUp ? routes.login.path : routes.register.path) + search)
   }
 
   const getErrorMessage = (inputErrors: FieldError | undefined, label: string): string => {

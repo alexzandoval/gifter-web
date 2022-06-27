@@ -14,6 +14,7 @@ import {
   UserCredential,
 } from 'firebase/auth'
 import firebaseApp from 'firebase/config'
+import { useHistory } from 'react-router-dom'
 
 const auth = getAuth(firebaseApp)
 
@@ -80,11 +81,17 @@ export const AuthContext = createContext<AuthContextType>({
 })
 
 export const AuthContextProvider: FC = ({ children }) => {
+  const history = useHistory()
   const [user, setUser] = useState<AuthContextType['user']>(null)
   const [authInitialized, setAuthInitialized] = useState<AuthContextType['authInitialized']>(false)
   const googleAuthProvider = new GoogleAuthProvider()
   const facebookAuthProvider = new FacebookAuthProvider()
   const appleAuthProvider = new OAuthProvider('apple.com')
+
+  const logout = async () => {
+    history.replace('/')
+    await signOut(auth)
+  }
 
   useEffect(() => {
     const unsubscribe = onIdTokenChanged(auth, async (authUser) => {
@@ -139,7 +146,7 @@ export const AuthContextProvider: FC = ({ children }) => {
     signInWithGoogle: async () => signInWithPopup(auth, googleAuthProvider),
     signInWithApple: async () => signInWithPopup(auth, appleAuthProvider),
     signInWithFacebook: async () => signInWithPopup(auth, facebookAuthProvider),
-    signOut: async () => signOut(auth),
+    signOut: logout,
     signUpWithEmail: async (email: string, password: string) =>
       createUserWithEmailAndPassword(auth, email, password),
   }

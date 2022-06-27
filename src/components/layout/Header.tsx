@@ -48,14 +48,14 @@ const Header = () => {
   const classes = useStyles()
   const { user, signOut } = useAuth()
   const history = useHistory()
-  const location = useLocation()
+  const { pathname, search } = useLocation()
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const { colorScheme, toggleColorScheme } = useColorScheme()
 
-  const isLogin = location.pathname === routes.login.path
-  const isSignUp = location.pathname === routes.register.path
+  const isLogin = pathname.startsWith(routes.login.path)
+  const isSignUp = pathname.startsWith(routes.register.path)
 
   const handleAvatarClick = (e: MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget)
@@ -123,7 +123,7 @@ const Header = () => {
                   color="inherit"
                   underline="hover"
                   component={RouterLink}
-                  to={routes.login.path}
+                  to={routes.login.path + search}
                 >
                   Login
                 </Link>
@@ -135,7 +135,7 @@ const Header = () => {
                   color="inherit"
                   underline="hover"
                   component={RouterLink}
-                  to={routes.register.path}
+                  to={routes.register.path + search}
                 >
                   Sign Up
                 </Link>

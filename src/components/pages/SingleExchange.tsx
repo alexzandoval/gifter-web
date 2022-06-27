@@ -9,16 +9,16 @@ import {
   Theme,
   Typography,
 } from '@mui/material'
+import { makeStyles } from '@mui/styles'
+import { format } from 'date-fns'
 import { useHistory, useParams } from 'react-router-dom'
 
 import Centered from 'components/shared/Centered'
 import Loader from 'components/shared/Loader'
 import routes from 'constants/routes'
+import { useAuth } from 'context/Auth'
 import Api from 'services/Api'
 import { Exchange } from 'ts/api'
-import { useAuth } from 'context/Auth'
-import { makeStyles } from '@mui/styles'
-import { format } from 'date-fns'
 
 type ExchangeParams = {
   id: string

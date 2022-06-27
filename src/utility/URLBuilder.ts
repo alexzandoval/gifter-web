@@ -10,8 +10,15 @@ export default class URLBuilder {
 
   private _queryParamValues: string[]
 
-  constructor(version?: number) {
-    this._baseUrl = `/api/v${version || 1}`
+  constructor(options?: { isApiCall: boolean; version?: number }) {
+    // Default values for options
+    let isApiCall = true
+    let version = 1
+    if (options) {
+      isApiCall = options.isApiCall !== false
+      version = options.version || 1
+    }
+    this._baseUrl = isApiCall ? `/api/v${version}` : ''
     this._url = this._baseUrl
     this._queryParams = []
     this._queryParamValues = []
@@ -28,8 +35,13 @@ export default class URLBuilder {
     return this
   }
 
-  public addPath(path: ApiPath): URLBuilder {
-    this._url += `/${path}`
+  public redirect(redirectUrl: string): URLBuilder {
+    this.addQueryParam('redirect', redirectUrl)
+    return this
+  }
+
+  public addPath(path: string): URLBuilder {
+    this._url += `${path.startsWith('/') ? '' : '/'}${path}`
     return this
   }
 
