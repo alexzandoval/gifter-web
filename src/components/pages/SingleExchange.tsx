@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Delete } from '@mui/icons-material'
 import {
+  Button,
   CircularProgress,
-  IconButton,
   List,
   ListItem,
   ListItemText,
@@ -10,6 +9,7 @@ import {
   Typography,
 } from '@mui/material'
 import { makeStyles } from '@mui/styles'
+import { Box } from '@mui/system'
 import { format } from 'date-fns'
 import { useHistory, useParams } from 'react-router-dom'
 
@@ -45,9 +45,10 @@ const SingleExchange = () => {
   const [exchange, setExchange] = useState<Exchange | null>(null)
   const { id } = useParams<ExchangeParams>()
   const [exchangeLoading, setExchangeLoading] = useState<boolean>(true)
-  const [exchangeDeleting, setExchangeDeleting] = useState<boolean>(false)
+  const [exchangeUpdating, setExchangeUpdating] = useState<boolean>(false)
   const history = useHistory()
   const { user } = useAuth()
+  const isOrganizer = user?.uid === exchange?.organizer?.uid
 
   useEffect(() => {
     const fetchExchange = async () => {
@@ -70,7 +71,7 @@ const SingleExchange = () => {
   const handleDeleteExchange = async () => {
     if (exchange) {
       try {
-        setExchangeDeleting(true)
+        setExchangeUpdating(true)
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const deleteWasSuccessful = await Api.exchanges.delete(exchange.id)
         if (deleteWasSuccessful) {
@@ -81,9 +82,14 @@ const SingleExchange = () => {
         // eslint-disable-next-line no-console
         console.log('Error deleting exchange', error)
       } finally {
-        setExchangeDeleting(false)
+        setExchangeUpdating(false)
       }
     }
+  }
+
+  // TODO Implement
+  const handleEditExchange = async () => {
+    throw new Error('Not implemented')
   }
 
   let description = null
@@ -102,29 +108,29 @@ const SingleExchange = () => {
     }
     if (exchange.description) {
       description = (
-        <Typography className={classes.informationSection}>
+        <Box className={classes.informationSection}>
           <Typography className={classes.propertyHeader}>Description</Typography>
           <Typography>{exchange.description}</Typography>
-        </Typography>
+        </Box>
       )
     }
     if (exchange.budget) {
       budget = (
-        <Typography className={classes.informationSection}>
+        <Box className={classes.informationSection}>
           <Typography className={classes.propertyHeader}>Gift Budget</Typography>
           <Typography>${exchange.budget}</Typography>
-        </Typography>
+        </Box>
       )
     }
     if (exchange.numberOfDraws) {
       numberOfDraws = (
-        <Typography className={classes.informationSection}>
+        <Box className={classes.informationSection}>
           <Typography className={classes.propertyHeader}>Number of Draws</Typography>
           <Typography className={classes.subheader}>
             This is the number of people you will need to buy a gift for
           </Typography>
           <Typography>{exchange.numberOfDraws}</Typography>
-        </Typography>
+        </Box>
       )
     }
   }
@@ -141,9 +147,6 @@ const SingleExchange = () => {
           </Centered>
         }
       >
-        <IconButton onClick={handleDeleteExchange} disabled={exchangeDeleting}>
-          <Delete />
-        </IconButton>
         <Typography variant="h5" sx={{ marginBottom: 2 }}>
           Gift Exchange Information
         </Typography>
@@ -158,8 +161,8 @@ const SingleExchange = () => {
             const userRoles = []
             const isYou = user?.uid === participant.user?.uid
             if (isYou) userRoles.push('You')
-            const isOrganizer = participant.user?.uid === exchange?.organizer?.uid
-            if (isOrganizer) userRoles.push('Organizer')
+            const participantIsOrganizer = participant.user?.uid === exchange?.organizer?.uid
+            if (participantIsOrganizer) userRoles.push('Organizer')
 
             return (
               <ListItem key={participant.id}>
@@ -171,6 +174,21 @@ const SingleExchange = () => {
             )
           })}
         </List>
+        {isOrganizer && (
+          <Box sx={{ display: 'flex', justifyContent: 'space-around', maxWidth: 300 }}>
+            <Button onClick={handleEditExchange} variant="contained" disabled={exchangeUpdating}>
+              Edit
+            </Button>
+            <Button
+              onClick={handleDeleteExchange}
+              variant="contained"
+              color="error"
+              disabled={exchangeUpdating}
+            >
+              Delete
+            </Button>
+          </Box>
+        )}
       </Loader>
     </>
   )

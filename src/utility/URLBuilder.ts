@@ -1,4 +1,3 @@
-import { ApiPath } from 'ts/api'
 import { ResourceId } from 'ts/types'
 
 export default class URLBuilder {
