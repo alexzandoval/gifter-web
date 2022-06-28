@@ -15,6 +15,7 @@ import SingleWishlist from 'components/pages/SingleWishlist'
 import Test from 'components/pages/Test'
 import Wishlists from 'components/pages/Wishlists'
 import { ResourceId } from 'ts/types'
+import JoinExchange from 'components/pages/JoinExchange'
 
 export type Route = {
   Component: FC
@@ -38,6 +39,7 @@ export type Routes = {
   account: Route
   singleWishlist: IdRoute
   wishlists: Route
+  joinExchange: IdRoute
   singleExchange: IdRoute
   createExchange: Route
   exchanges: Route
@@ -85,6 +87,12 @@ const routes: Routes = {
     nav: {
       label: 'My Wishlists',
     },
+  },
+  joinExchange: {
+    path: '/exchanges/join/:id',
+    id: (id: ResourceId) => `/exchanges/join/${id}`,
+    Component: JoinExchange,
+    protectedRoute: false,
   },
   singleExchange: {
     path: '/exchanges/:id',
