@@ -6,6 +6,7 @@ import { BrowserRouter, Route, RouteProps, Switch } from 'react-router-dom'
 
 import ProtectedRoute from 'components/auth/ProtectedRoute'
 import PublicOnlyRoute from 'components/auth/PublicOnlyRoute'
+import PublicRoute from 'components/auth/PublicRoute'
 import Layout from 'components/layout/Layout'
 import routes, { Routes } from 'constants/routes'
 import { AuthContextProvider } from 'context/Auth'
@@ -17,7 +18,7 @@ const App = () => {
   const appRoutes = Object.keys(routes).map((routeName) => {
     const route = routes[routeName as keyof Routes]
     const { Component, path, props, publicOnlyRoute, protectedRoute } = route
-    let RouteComponent: typeof Route | FC<RouteProps> = Route
+    let RouteComponent: typeof Route | FC<RouteProps> = PublicRoute
     if (protectedRoute) {
       RouteComponent = ProtectedRoute
     } else if (publicOnlyRoute) {

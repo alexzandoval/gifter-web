@@ -62,10 +62,13 @@ export default class URLBuilder {
     return this
   }
 
+  public joinExchange(id: ResourceId): URLBuilder {
+    this.exchanges().addPath('/join').addId(id)
+    return this
+  }
+
   public build(): string {
     let url = this._url
-    // Reset the url to the base url for the next build operation
-    this._url = this._baseUrl
     if (this._queryParams.length > 0) {
       url += '?'
       this._queryParams.forEach((param, index) => {
@@ -75,6 +78,10 @@ export default class URLBuilder {
         }
       })
     }
+    // Reset the values to the original for the next build operation
+    this._url = this._baseUrl
+    this._queryParams = []
+    this._queryParamValues = []
     return url
   }
 }

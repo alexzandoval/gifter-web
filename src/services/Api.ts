@@ -69,6 +69,10 @@ const Api = {
       }
       return false
     },
+    joinExchange: async (exchangeId: ResourceId): Promise<Exchange> => {
+      const result = await apiAxios.get<Exchange>(urlBuilder.joinExchange(exchangeId).build())
+      return result.data
+    },
     checkExclusions: async (
       participants: ExclusionParticipant[],
       rules: Rules,

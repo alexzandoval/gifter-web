@@ -54,8 +54,8 @@ const SingleExchange = () => {
     const fetchExchange = async () => {
       try {
         setExchangeLoading(true)
-        const fetchedWishlist = await Api.exchanges.get(id)
-        setExchange(fetchedWishlist)
+        const fetchedExchange = await Api.exchanges.get(id)
+        setExchange(fetchedExchange)
       } catch (e) {
         // TODO: Handle error
         // console.log('Error fetching exchange', e)

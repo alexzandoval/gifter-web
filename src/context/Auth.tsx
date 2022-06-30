@@ -89,8 +89,9 @@ export const AuthContextProvider: FC = ({ children }) => {
   const appleAuthProvider = new OAuthProvider('apple.com')
 
   const logout = async () => {
-    history.replace('/')
     await signOut(auth)
+    setUser(null)
+    history.replace('/')
   }
 
   useEffect(() => {
