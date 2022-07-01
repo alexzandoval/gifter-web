@@ -1,14 +1,20 @@
-import { useEffect, useState } from 'react'
-import { Delete } from '@mui/icons-material'
+import { ReactElement, ReactNode, useEffect, useState } from 'react'
+import { CalendarToday } from '@mui/icons-material'
 import {
+  Box,
   Button,
   Card,
   CardContent,
   CircularProgress,
+  FormControl,
   IconButton,
+  InputLabel,
   List,
   ListItem,
   ListItemText,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
   Typography,
 } from '@mui/material'
 import { Link as RouterLink, useHistory, useLocation, useParams } from 'react-router-dom'
@@ -20,6 +26,10 @@ import Api from 'services/Api'
 import { Exchange } from 'ts/api'
 import { useAuth } from 'context/Auth'
 import URLBuilder from 'utility/URLBuilder'
+import Title from 'components/shared/Title'
+import { format } from 'date-fns'
+import LoadingButton from 'components/shared/LoadingButton'
+import AppTypography from 'components/shared/AppTypography'
 
 type ExchangeParams = {
   id: string
@@ -28,7 +38,7 @@ type ExchangeParams = {
 const urlBuilder = new URLBuilder({ isApiCall: false })
 
 // TODO: Cases to handle
-// ❌ 1. User is not logged in => Show exchange information and prompt them to login with redirect to this page
+// ✅ 1. User is not logged in => Show exchange information and prompt them to login with redirect to this page
 // ❌ 2. User is logged in and not part of the exchange already => Show Dropper for them to claim their spot, then redirect to Exchange page
 // ✅ 3. User is logged in and already joined => Redirect to exchange page
 // ❌ 4. All participant slots are taken => Show message that exchange is full and to contact the organizer
@@ -38,7 +48,8 @@ const JoinExchange = () => {
   const [exchange, setExchange] = useState<Exchange | null>(null)
   const { id } = useParams<ExchangeParams>()
   const [exchangeLoading, setExchangeLoading] = useState<boolean>(true)
-  const [exchangeDeleting, setExchangeDeleting] = useState<boolean>(false)
+  const [joinExchangeLoading, setJoinExchangeLoading] = useState<boolean>(false)
+  const [selectedParticipant, setSelectedParticipant] = useState<string>('')
   const history = useHistory()
   const location = useLocation()
   const { user } = useAuth()
@@ -75,7 +86,47 @@ const JoinExchange = () => {
     (exchange?.participants.some((p) => p.user && p.user.uid === user.uid) ||
       exchange?.organizer.uid === user.uid)
 
-  const getExchangeContent = (currentExchange: Exchange) => <>{currentExchange.name}</>
+  const handleSelectParticipant = (event: SelectChangeEvent) => {
+    setSelectedParticipant(event.target.value as string)
+  }
+
+  const getExchangeInformationPiece = (title: ReactNode, content: ReactNode) => (
+    <>
+      <Title type="sub">{title}</Title>
+      <Typography
+        variant="body1"
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        {content}
+      </Typography>
+    </>
+  )
+
+  const handleJoinExchange = async () => {
+    setJoinExchangeLoading(true)
+    setTimeout(() => {
+      console.log('Joining exchange', selectedParticipant)
+      setJoinExchangeLoading(false)
+    }, 3000)
+  }
+
+  const getExchangeContent = (currentExchange: Exchange) => (
+    <Box mt={4}>
+      {getExchangeInformationPiece('Exchange Name', currentExchange.name)}
+      {currentExchange.description &&
+        getExchangeInformationPiece('Description', currentExchange.description)}
+      {currentExchange.date &&
+        getExchangeInformationPiece('Date of Exchange', [
+          <CalendarToday key="calendar-icon" sx={{ marginRight: 1 }} />,
+          format(new Date(currentExchange.date), 'PPP'),
+        ])}
+      {currentExchange.budget &&
+        getExchangeInformationPiece('Gift Budget', `$${currentExchange.budget}`)}
+    </Box>
+  )
 
   if (userIsAlreadyJoined) {
     history.push(routes.singleExchange.id(id))
@@ -93,29 +144,92 @@ const JoinExchange = () => {
         }
       >
         {exchange && (
-          <Card raised>
-            <CardContent>
-              <Typography variant="h6">
-                {organizerName} invited you to join {exchange.name}!
-              </Typography>
-              <Typography>{exchange.description}</Typography>
-              {user ? (
-                getExchangeContent(exchange)
-              ) : (
-                <>
-                  <Typography>
-                    To join this exchange log in or sign up for a free account.
-                  </Typography>
-                  <Button variant="contained" component={RouterLink} to={urls.login}>
-                    Login
-                  </Button>
-                  <Button variant="contained" component={RouterLink} to={urls.register}>
-                    Sign Up
-                  </Button>
-                </>
-              )}
-            </CardContent>
-          </Card>
+          <>
+            <Card raised sx={{ maxWidth: 500 }}>
+              <CardContent>
+                <Title mb={3}>
+                  {organizerName} invited you to join {exchange.name}!
+                </Title>
+                <Typography gutterBottom>{exchange.description}</Typography>
+                {user ? (
+                  <>
+                    <Typography gutterBottom>
+                      To join this exchange, <AppTypography bold>select your name</AppTypography>{' '}
+                      below and hit <AppTypography bold>join</AppTypography>.
+                    </Typography>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        maxWidth: 300,
+                        marginTop: 2,
+                        marginBottom: 2,
+                      }}
+                    >
+                      <FormControl variant="filled" sx={{ minWidth: 200 }}>
+                        <InputLabel id="select-participant-label">Select Your Name</InputLabel>
+                        <Select
+                          labelId="select-participant-label"
+                          value={selectedParticipant}
+                          label="Select your name..."
+                          onChange={handleSelectParticipant}
+                        >
+                          {exchange.participants
+                            .filter((p) => !p.user)
+                            .map((p) => (
+                              <MenuItem key={p.name} value={p.name}>
+                                {p.name}
+                              </MenuItem>
+                            ))}
+                        </Select>
+                      </FormControl>
+                      <LoadingButton
+                        loading={joinExchangeLoading}
+                        disabled={joinExchangeLoading || !selectedParticipant}
+                        variant="contained"
+                        onClick={handleJoinExchange}
+                      >
+                        Join
+                      </LoadingButton>
+                    </Box>
+
+                    <Typography>
+                      Don't see your name in the list? Check with the organizer,{' '}
+                      <AppTypography bold>{organizerName}</AppTypography>, so they can add you.
+                    </Typography>
+                  </>
+                ) : (
+                  <>
+                    <Typography gutterBottom>
+                      To join this exchange, <AppTypography bold>log in</AppTypography> or{' '}
+                      <AppTypography bold>sign up</AppTypography> with a free account.
+                    </Typography>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        flexWrap: 'wrap',
+                        maxWidth: 200,
+                        marginLeft: 'auto',
+                        marginRight: 'auto',
+                        marginTop: 3,
+                      }}
+                    >
+                      <Button variant="contained" component={RouterLink} to={urls.login}>
+                        Login
+                      </Button>
+                      <Button variant="contained" component={RouterLink} to={urls.register}>
+                        Sign Up
+                      </Button>
+                    </Box>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+            {getExchangeContent(exchange)}
+          </>
         )}
       </Loader>
     </>
