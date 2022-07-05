@@ -69,8 +69,17 @@ const Api = {
       }
       return false
     },
-    joinExchange: async (exchangeId: ResourceId): Promise<Exchange> => {
+    getJoinExchangeInformation: async (exchangeId: ResourceId): Promise<Exchange> => {
       const result = await apiAxios.get<Exchange>(urlBuilder.joinExchange(exchangeId).build())
+      return result.data
+    },
+    postJoinExchange: async (
+      exchangeId: ResourceId,
+      participantName: string,
+    ): Promise<Exchange> => {
+      const result = await apiAxios.post<Exchange>(urlBuilder.joinExchange(exchangeId).build(), {
+        name: participantName,
+      })
       return result.data
     },
     checkExclusions: async (

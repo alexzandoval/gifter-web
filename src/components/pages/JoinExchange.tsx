@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import { CalendarToday } from '@mui/icons-material'
 import {
   Box,
@@ -7,11 +7,7 @@ import {
   CardContent,
   CircularProgress,
   FormControl,
-  IconButton,
   InputLabel,
-  List,
-  ListItem,
-  ListItemText,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -58,7 +54,7 @@ const JoinExchange = () => {
     const fetchExchange = async () => {
       try {
         setExchangeLoading(true)
-        const fetchedExchange = await Api.exchanges.joinExchange(id)
+        const fetchedExchange = await Api.exchanges.getJoinExchangeInformation(id)
         // const fetchedExchange = await Api.exchanges.get(id)
         console.log('fetchedExchange', fetchedExchange)
         setExchange(fetchedExchange)
@@ -78,7 +74,7 @@ const JoinExchange = () => {
     login: urlBuilder.addPath(routes.login.path).redirect(location.pathname).build(),
     register: urlBuilder.addPath(routes.register.path).redirect(location.pathname).build(),
   }
-  const organizerName = exchange?.participants.find(
+  const organizerName = exchange?.participants?.find(
     (p) => p.user?.uid === exchange?.organizer.uid,
   )?.name
   const userIsAlreadyJoined =
@@ -106,11 +102,19 @@ const JoinExchange = () => {
   )
 
   const handleJoinExchange = async () => {
-    setJoinExchangeLoading(true)
-    setTimeout(() => {
-      console.log('Joining exchange', selectedParticipant)
+    try {
+      setJoinExchangeLoading(true)
+      const updatedExchange = await Api.exchanges.postJoinExchange(id, selectedParticipant)
+      // const fetchedExchange = await Api.exchanges.get(id)
+      console.log('updatedExchange', updatedExchange)
+      setExchange(updatedExchange)
+    } catch (e) {
+      // TODO: Handle error
+      console.log('Error joining exchange', e)
+      // history.push(routes.exchanges.path)
+    } finally {
       setJoinExchangeLoading(false)
-    }, 3000)
+    }
   }
 
   const getExchangeContent = (currentExchange: Exchange) => (
