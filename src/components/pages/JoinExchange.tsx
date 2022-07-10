@@ -1,31 +1,17 @@
 import { ReactNode, useEffect, useState } from 'react'
 import { CalendarToday } from '@mui/icons-material'
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CircularProgress,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  Typography,
-} from '@mui/material'
-import { Link as RouterLink, useHistory, useLocation, useParams } from 'react-router-dom'
-
-import Centered from 'components/shared/Centered'
-import Loader from 'components/shared/Loader'
-import routes from 'constants/routes'
-import Api from 'services/Api'
-import { Exchange } from 'ts/api'
-import { useAuth } from 'context/Auth'
-import URLBuilder from 'utility/URLBuilder'
-import Title from 'components/shared/Title'
+import { Box, Card, CardContent, CircularProgress, Typography } from '@mui/material'
 import { format } from 'date-fns'
-import LoadingButton from 'components/shared/LoadingButton'
-import AppTypography from 'components/shared/AppTypography'
+import { useHistory, useParams } from 'react-router-dom'
+
+import { ROUTES } from 'appConstants'
+import { Centered, Loader, Title } from 'components/common'
+import UserNotPartOfExchange from 'components/exchanges/join/UserNotPartOfExchange'
+import UserNotSignedIn from 'components/exchanges/join/UserNotSignedIn'
+import AllSpotsTakenInExchange from 'components/exchanges/join/AllSpotsTakenInExchange'
+import { useAuth } from 'context/Auth'
+import Api from 'services/Api'
+import { Exchange } from 'ts/types'
 
 type ExchangeParams = {
   id: string

@@ -15,8 +15,9 @@ import { makeStyles } from '@mui/styles'
 import clsx from 'clsx'
 import { Link as RouterLink, LinkProps as RouterLinkProps, useLocation } from 'react-router-dom'
 
-import routes, { Routes } from 'constants/routes'
+import { ROUTES } from 'appConstants'
 import { useAuth } from 'context/Auth'
+import { AppRoutes } from 'ts/types'
 
 interface Props {
   DrawerProps: DrawerPropTypes
@@ -52,8 +53,8 @@ const NavigationDrawer: FC<Props> = ({ DrawerProps, onClose }) => {
       <RouterLink to={to} ref={ref} {...itemProps} />
     ))
 
-  const navItems = Object.keys(routes).map((routeName) => {
-    const route = routes[routeName as keyof Routes]
+  const navItems = Object.keys(ROUTES).map((routeName) => {
+    const route = ROUTES[routeName as keyof AppRoutes]
     if (!route.nav || (route.protectedRoute && !user) || (route.publicOnlyRoute && user)) {
       return null
     }

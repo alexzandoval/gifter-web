@@ -13,12 +13,11 @@ import { Box } from '@mui/system'
 import { format } from 'date-fns'
 import { useHistory, useParams } from 'react-router-dom'
 
-import Centered from 'components/shared/Centered'
-import Loader from 'components/shared/Loader'
-import routes from 'constants/routes'
+import { ROUTES } from 'appConstants'
+import { Centered, Loader } from 'components/common'
 import { useAuth } from 'context/Auth'
 import Api from 'services/Api'
-import { Exchange } from 'ts/api'
+import { Exchange } from 'ts/types'
 
 type ExchangeParams = {
   id: string
@@ -59,7 +58,7 @@ const SingleExchange = () => {
       } catch (e) {
         // TODO: Handle error
         // console.log('Error fetching exchange', e)
-        history.push(routes.exchanges.path)
+        history.push(ROUTES.exchanges.path)
       } finally {
         setExchangeLoading(false)
       }
@@ -75,7 +74,7 @@ const SingleExchange = () => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const deleteWasSuccessful = await Api.exchanges.delete(exchange.id)
         if (deleteWasSuccessful) {
-          history.push(routes.exchanges.path)
+          history.push(ROUTES.exchanges.path)
         }
       } catch (error) {
         // TODO: Handle error

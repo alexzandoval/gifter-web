@@ -10,12 +10,10 @@ import {
 } from '@mui/material'
 import { useHistory, useParams } from 'react-router-dom'
 
-import AddTextButton from 'components/shared/AddTextButton'
-import Centered from 'components/shared/Centered'
-import Loader from 'components/shared/Loader'
-import routes from 'constants/routes'
+import { ROUTES } from 'appConstants'
+import { AddTextButton, Centered, Loader } from 'components/common'
 import Api from 'services/Api'
-import { WishlistWithItems } from 'ts/api'
+import { WishlistWithItems } from 'ts/types'
 
 type WishlistParams = {
   id: string
@@ -41,7 +39,7 @@ const SingleWishlist = () => {
       } catch (e) {
         // TODO: Handle error
         // console.log('Error fetching wishlist', e)
-        history.push(routes.wishlists.path)
+        history.push(ROUTES.wishlists.path)
       } finally {
         setWishlistLoading(false)
       }
@@ -112,7 +110,7 @@ const SingleWishlist = () => {
         setWishlistIsUpdating(true)
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const deleteWasSuccessful = await Api.wishlists.delete(wishlist.id)
-        history.push(routes.wishlists.path)
+        history.push(ROUTES.wishlists.path)
       } catch (error) {
         console.log('Error deleting wishlist', error)
       } finally {

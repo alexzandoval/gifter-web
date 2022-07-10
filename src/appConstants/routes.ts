@@ -1,6 +1,4 @@
-import { FC } from 'react'
 import { Home as HomeIcon, Info as InfoIcon, Science } from '@mui/icons-material'
-import { RouteProps } from 'react-router-dom'
 
 import About from 'components/pages/About'
 import Account from 'components/pages/Account'
@@ -14,42 +12,10 @@ import SingleExchange from 'components/pages/SingleExchange'
 import SingleWishlist from 'components/pages/SingleWishlist'
 import Test from 'components/pages/Test'
 import Wishlists from 'components/pages/Wishlists'
-import { ResourceId } from 'ts/types'
 import JoinExchange from 'components/pages/JoinExchange'
+import { AppRoutes, ResourceId } from 'ts/types'
 
-export type Route = {
-  Component: FC
-  path: string
-  props?: RouteProps
-  publicOnlyRoute?: boolean
-  protectedRoute?: boolean
-  nav?: {
-    label: string
-    Icon?: FC
-  }
-}
-
-export type IdRoute = Route & {
-  id: (id: ResourceId) => string
-}
-
-export type Routes = {
-  home: Route
-  about: Route
-  account: Route
-  singleWishlist: IdRoute
-  wishlists: Route
-  joinExchange: IdRoute
-  singleExchange: IdRoute
-  createExchange: Route
-  exchanges: Route
-  login: Route
-  register: Route
-  test: Route
-  notFound: Route
-}
-
-const routes: Routes = {
+export const ROUTES: AppRoutes = {
   home: {
     path: '/',
     Component: Home,
@@ -138,4 +104,4 @@ const routes: Routes = {
   },
 }
 
-export default routes
+export default ROUTES

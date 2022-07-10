@@ -6,11 +6,11 @@ import { AuthError, UserCredential } from 'firebase/auth'
 import { FieldError, SubmitHandler, useForm } from 'react-hook-form'
 import { useHistory, useLocation } from 'react-router-dom'
 
+import { ROUTES } from 'appConstants'
 import SocialProviderButton from 'components/auth/SocialProviderButton'
-import routes from 'constants/routes'
 import { useAuth } from 'context/Auth'
 import { SocialProvider } from 'ts/enums'
-import { handleAuthError } from 'utility/auth'
+import { handleAuthError } from 'utility'
 
 export interface Props {
   type: 'signIn' | 'signUp'
@@ -62,7 +62,7 @@ const AuthForm: FC<Props> = ({ type }) => {
   const formIsLoading = emailIsLoading || isGoogleLoading || isAppleLoading || isFacebookLoading
 
   const handleToggleSignIn = () => {
-    history.push((isNewSignUp ? routes.login.path : routes.register.path) + search)
+    history.push((isNewSignUp ? ROUTES.login.path : ROUTES.register.path) + search)
   }
 
   const getErrorMessage = (inputErrors: FieldError | undefined, label: string): string => {
@@ -188,6 +188,20 @@ const AuthForm: FC<Props> = ({ type }) => {
             type="submit"
           >
             {isNewSignUp ? 'Sign up with Email' : 'Sign in with Email'}
+          </SocialProviderButton>
+          <SocialProviderButton
+            loading={emailIsLoading}
+            disabled={formIsLoading}
+            provider={SocialProvider.EMAIL}
+            onClick={() =>
+              handleSignInWithEmail({
+                email: 'test@example.com',
+                password: 'password',
+                confirmPassword: 'password',
+              })
+            }
+          >
+            Test Account
           </SocialProviderButton>
         </form>
         <Box>

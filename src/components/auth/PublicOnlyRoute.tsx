@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { Redirect, Route, RouteProps } from 'react-router-dom'
 
-import routes from 'constants/routes'
+import { ROUTES } from 'appConstants'
 import { useAuth } from 'context/Auth'
 import useQuery from 'hooks/useQuery'
 
@@ -14,7 +14,7 @@ const PublicOnlyRoute: FC<RouteProps> = (props) => {
 
   return (
     <Route {...other}>
-      {!user ? children : <Redirect to={redirectUrl || routes.account.path} />}
+      {!user ? children : <Redirect to={redirectUrl || ROUTES.account.path} />}
     </Route>
   )
 }

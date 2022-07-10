@@ -81,6 +81,7 @@ export const AuthContext = createContext<AuthContextType>({
 })
 
 export const AuthContextProvider: FC = ({ children }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const history = useHistory()
   const [user, setUser] = useState<AuthContextType['user']>(null)
   const [authInitialized, setAuthInitialized] = useState<AuthContextType['authInitialized']>(false)
@@ -91,7 +92,9 @@ export const AuthContextProvider: FC = ({ children }) => {
   const logout = async () => {
     await signOut(auth)
     setUser(null)
-    history.replace('/')
+    // FIXME: User data not getting cleared after logout
+    // history.replace('/')
+    window.location.replace('/')
   }
 
   useEffect(() => {

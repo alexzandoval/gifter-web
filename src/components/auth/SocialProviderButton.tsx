@@ -1,10 +1,10 @@
 import { FC } from 'react'
 import { useTheme } from '@mui/material'
 import { Apple, Email, FacebookOutlined } from '@mui/icons-material'
+import { LoadingButton, LoadingButtonProps } from '@mui/lab'
 import { SxProps } from '@mui/system'
 
-import GoogleIcon from 'components/icons/GoogleIcon'
-import LoadingButton, { LoadingButtonProps } from 'components/shared/LoadingButton'
+import { GoogleIcon } from 'icons'
 import { SocialProvider } from 'ts/enums'
 
 interface Props extends LoadingButtonProps {
@@ -63,6 +63,7 @@ const SocialProviderButton: FC<Props> = ({ loading, provider, ...other }) => {
   return (
     <LoadingButton
       loading={loading}
+      loadingPosition="start"
       startIcon={<Icon />}
       variant="contained"
       sx={style}

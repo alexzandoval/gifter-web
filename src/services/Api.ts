@@ -4,11 +4,11 @@ import {
   CreateExchangeDto,
   CreateWishlistDto,
   Exchange,
+  ResourceId,
   Wishlist,
   WishlistItem,
   WishlistWithItems,
-} from 'ts/api'
-import { ResourceId } from 'ts/types'
+} from 'ts/types'
 import URLBuilder from 'utility/URLBuilder'
 
 const urlBuilder = new URLBuilder()

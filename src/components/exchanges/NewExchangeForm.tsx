@@ -11,13 +11,14 @@ import {
   Stepper,
   Typography,
 } from '@mui/material'
+import { LoadingButton } from '@mui/lab'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { useHistory } from 'react-router-dom'
 
-import LoadingButton from 'components/shared/LoadingButton'
-import routes from 'constants/routes'
+import { ROUTES } from 'appConstants'
 import Api from 'services/Api'
-import { isServerValidationError, ucFirst } from 'utility/utility'
+import { isServerValidationError, ucFirst } from 'utility'
+
 import AddParticipants from './steps/AddParticipants'
 import ExchangeRules from './steps/ExchangeRules'
 import ExchangeInformation from './steps/ExchangeInformation'
@@ -44,7 +45,8 @@ export type NewExchangeFormValues = {
   }
 }
 
-const defaultValues: Partial<NewExchangeFormValues> = {
+const defaultValues: NewExchangeFormValues = {
+  organizerName: '',
   participants: [
     {
       name: '',
@@ -187,7 +189,7 @@ const NewExchangeForm: FC = () => {
         participants: data.participants,
         ...data.rules,
       })
-      history.push(routes.singleExchange.id(newExchange.id))
+      history.push(ROUTES.singleExchange.id(newExchange.id))
     } catch (e) {
       if (isServerValidationError(e)) {
         setServerErrors(e.message)
@@ -286,7 +288,7 @@ const NewExchangeForm: FC = () => {
             {isLastStep ? (
               <LoadingButton
                 loading={formIsLoading}
-                disabled={formIsLoading}
+                loadingPosition="start"
                 sx={{ minWidth: 150 }}
                 variant="contained"
                 type="submit"
@@ -296,7 +298,7 @@ const NewExchangeForm: FC = () => {
             ) : (
               <LoadingButton
                 loading={nextStepIsLoading}
-                disabled={nextStepIsLoading}
+                loadingPosition="start"
                 onClick={handleNextStep}
                 sx={{ minWidth: 150 }}
                 variant="contained"

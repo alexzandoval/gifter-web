@@ -22,7 +22,7 @@ import { makeStyles } from '@mui/styles'
 import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom'
 
 import NavigationDrawer from 'components/layout/NavigationDrawer'
-import routes from 'constants/routes'
+import { ROUTES } from 'appConstants'
 import { useAuth } from 'context/Auth'
 import { useColorScheme } from 'context/Theme'
 
@@ -54,8 +54,8 @@ const Header = () => {
   const open = Boolean(anchorEl)
   const { colorScheme, toggleColorScheme } = useColorScheme()
 
-  const isLogin = pathname.startsWith(routes.login.path)
-  const isSignUp = pathname.startsWith(routes.register.path)
+  const isLogin = pathname.startsWith(ROUTES.login.path)
+  const isSignUp = pathname.startsWith(ROUTES.register.path)
 
   const handleAvatarClick = (e: MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget)
@@ -66,17 +66,17 @@ const Header = () => {
   }
 
   const handleProfileClick = () => {
-    history.push(routes.account.path)
+    history.push(ROUTES.account.path)
     handleCloseProfileMenu()
   }
 
   const handleExchangesClick = () => {
-    history.push(routes.exchanges.path)
+    history.push(ROUTES.exchanges.path)
     handleCloseProfileMenu()
   }
 
   const handleWishlistsClick = () => {
-    history.push(routes.wishlists.path)
+    history.push(ROUTES.wishlists.path)
     handleCloseProfileMenu()
   }
 
@@ -123,7 +123,7 @@ const Header = () => {
                   color="inherit"
                   underline="hover"
                   component={RouterLink}
-                  to={routes.login.path + search}
+                  to={ROUTES.login.path + search}
                 >
                   Login
                 </Link>
@@ -135,7 +135,7 @@ const Header = () => {
                   color="inherit"
                   underline="hover"
                   component={RouterLink}
-                  to={routes.register.path + search}
+                  to={ROUTES.register.path + search}
                 >
                   Sign Up
                 </Link>

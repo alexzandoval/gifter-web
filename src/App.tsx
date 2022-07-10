@@ -8,15 +8,16 @@ import ProtectedRoute from 'components/auth/ProtectedRoute'
 import PublicOnlyRoute from 'components/auth/PublicOnlyRoute'
 import PublicRoute from 'components/auth/PublicRoute'
 import Layout from 'components/layout/Layout'
-import routes, { Routes } from 'constants/routes'
+import { ROUTES } from 'appConstants'
 import { AuthContextProvider } from 'context/Auth'
 import { useColorScheme } from 'context/Theme'
 import getTheme from 'styles/theme'
+import { AppRoutes } from 'ts/types'
 
 const App = () => {
   const { colorScheme } = useColorScheme()
-  const appRoutes = Object.keys(routes).map((routeName) => {
-    const route = routes[routeName as keyof Routes]
+  const appRoutes = Object.keys(ROUTES).map((routeName) => {
+    const route = ROUTES[routeName as keyof AppRoutes]
     const { Component, path, props, publicOnlyRoute, protectedRoute } = route
     let RouteComponent: typeof Route | FC<RouteProps> = PublicRoute
     if (protectedRoute) {

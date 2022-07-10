@@ -12,10 +12,10 @@ import {
 } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 
-import routes from 'constants/routes'
+import { ROUTES } from 'appConstants'
 import { useAuth } from 'context/Auth'
 import Api from 'services/Api'
-import { Exchange } from 'ts/api'
+import { Exchange } from 'ts/types'
 import { format } from 'date-fns'
 
 const Exchanges = () => {
@@ -42,7 +42,7 @@ const Exchanges = () => {
         startIcon={<Add />}
         color="inherit"
         component={RouterLink}
-        to={routes.createExchange.path}
+        to={ROUTES.createExchange.path}
       >
         Create new exchange
       </Button>
@@ -61,7 +61,7 @@ const Exchanges = () => {
           )
           return (
             <ListItem key={exchange.id}>
-              <ListItemButton component={RouterLink} to={routes.singleExchange.id(exchange.id)}>
+              <ListItemButton component={RouterLink} to={ROUTES.singleExchange.id(exchange.id)}>
                 <ListItemText
                   primary={exchange.name}
                   primaryTypographyProps={{ variant: 'h6' }}
