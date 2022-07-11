@@ -17,13 +17,6 @@ type ExchangeParams = {
   id: string
 }
 
-// TODO: Cases to handle
-// ✅ 1. User is not logged in => Show exchange information and prompt them to login with redirect to this page
-// ✅ 2. User is logged in and not part of the exchange already => Show Dropper for them to claim their spot, then redirect to Exchange page
-// ✅ 3. User is logged in and already joined => Redirect to exchange page
-// ❌ 4. All participant slots are taken => Show message that exchange is full and to contact the organizer
-// ✅ 5. User is logged in and is the organizer => Redirect to exchange page
-
 const JoinExchange = () => {
   const [exchange, setExchange] = useState<Exchange | null>(null)
   const { id } = useParams<ExchangeParams>()
@@ -109,7 +102,7 @@ const JoinExchange = () => {
         />
       )
     } else {
-      cardContent = <AllSpotsTakenInExchange />
+      cardContent = <AllSpotsTakenInExchange organizerName={organizerName} />
     }
   }
 
