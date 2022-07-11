@@ -4,13 +4,13 @@ import { Box, Button, Divider, TextField, Theme, Typography } from '@mui/materia
 import { makeStyles } from '@mui/styles'
 import { AuthError, UserCredential } from 'firebase/auth'
 import { FieldError, SubmitHandler, useForm } from 'react-hook-form'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 
+import { ROUTES } from 'appConstants'
 import SocialProviderButton from 'components/auth/SocialProviderButton'
-import routes from 'constants/routes'
 import { useAuth } from 'context/Auth'
-import { handleAuthError } from 'utility/auth'
 import { SocialProvider } from 'ts/enums'
+import { handleAuthError } from 'utility'
 
 export interface Props {
   type: 'signIn' | 'signUp'
@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 const AuthForm: FC<Props> = ({ type }) => {
   const classes = useStyles()
   const history = useHistory()
+  const { search } = useLocation()
   const {
     signInWithEmail,
     signUpWithEmail,
@@ -61,7 +62,7 @@ const AuthForm: FC<Props> = ({ type }) => {
   const formIsLoading = emailIsLoading || isGoogleLoading || isAppleLoading || isFacebookLoading
 
   const handleToggleSignIn = () => {
-    history.push(isNewSignUp ? routes.login.path : routes.register.path)
+    history.push((isNewSignUp ? ROUTES.login.path : ROUTES.register.path) + search)
   }
 
   const getErrorMessage = (inputErrors: FieldError | undefined, label: string): string => {
@@ -137,8 +138,8 @@ const AuthForm: FC<Props> = ({ type }) => {
           <TextField
             type="email"
             disabled={formIsLoading}
-            variant="filled"
             label="Email"
+            variant="filled"
             error={Boolean(errors.email)}
             helperText={getErrorMessage(errors.email, 'Email')}
             inputProps={{
@@ -154,8 +155,8 @@ const AuthForm: FC<Props> = ({ type }) => {
           <TextField
             type="password"
             disabled={formIsLoading}
-            variant="filled"
             label="Password"
+            variant="filled"
             error={Boolean(errors.password)}
             helperText={getErrorMessage(errors.password, 'Password')}
             inputProps={{
@@ -169,8 +170,8 @@ const AuthForm: FC<Props> = ({ type }) => {
             <TextField
               type="password"
               disabled={formIsLoading}
-              variant="filled"
               label="Confirm Password"
+              variant="filled"
               error={Boolean(errors.confirmPassword)}
               helperText={getErrorMessage(errors.confirmPassword, 'Confirm Password')}
               inputProps={{
@@ -187,6 +188,20 @@ const AuthForm: FC<Props> = ({ type }) => {
             type="submit"
           >
             {isNewSignUp ? 'Sign up with Email' : 'Sign in with Email'}
+          </SocialProviderButton>
+          <SocialProviderButton
+            loading={emailIsLoading}
+            disabled={formIsLoading}
+            provider={SocialProvider.EMAIL}
+            onClick={() =>
+              handleSignInWithEmail({
+                email: 'test@example.com',
+                password: 'password',
+                confirmPassword: 'password',
+              })
+            }
+          >
+            Test Account
           </SocialProviderButton>
         </form>
         <Box>

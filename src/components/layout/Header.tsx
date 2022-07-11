@@ -21,8 +21,8 @@ import {
 import { makeStyles } from '@mui/styles'
 import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom'
 
-import routes from 'constants/routes'
 import NavigationDrawer from 'components/layout/NavigationDrawer'
+import { ROUTES } from 'appConstants'
 import { useAuth } from 'context/Auth'
 import { useColorScheme } from 'context/Theme'
 
@@ -48,14 +48,14 @@ const Header = () => {
   const classes = useStyles()
   const { user, signOut } = useAuth()
   const history = useHistory()
-  const location = useLocation()
+  const { pathname, search } = useLocation()
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
   const { colorScheme, toggleColorScheme } = useColorScheme()
 
-  const isLogin = location.pathname === routes.login.path
-  const isSignUp = location.pathname === routes.register.path
+  const isLogin = pathname.startsWith(ROUTES.login.path)
+  const isSignUp = pathname.startsWith(ROUTES.register.path)
 
   const handleAvatarClick = (e: MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget)
@@ -66,17 +66,17 @@ const Header = () => {
   }
 
   const handleProfileClick = () => {
-    history.push(routes.account.path)
+    history.push(ROUTES.account.path)
     handleCloseProfileMenu()
   }
 
   const handleExchangesClick = () => {
-    history.push(routes.exchanges.path)
+    history.push(ROUTES.exchanges.path)
     handleCloseProfileMenu()
   }
 
   const handleWishlistsClick = () => {
-    history.push(routes.wishlists.path)
+    history.push(ROUTES.wishlists.path)
     handleCloseProfileMenu()
   }
 
@@ -107,9 +107,14 @@ const Header = () => {
           </Typography>
           <div className={classes.grow} />
           {user ? (
-            <IconButton onClick={handleAvatarClick}>
-              <Avatar sx={{ width: 32, height: 32 }} src={user.photoURL || ''} />
-            </IconButton>
+            <>
+              <Typography>
+                Hello, {user.displayName} {user.email}
+              </Typography>
+              <IconButton onClick={handleAvatarClick}>
+                <Avatar sx={{ width: 32, height: 32 }} src={user.photoURL || ''} />
+              </IconButton>
+            </>
           ) : (
             <>
               {!isLogin && (
@@ -118,7 +123,7 @@ const Header = () => {
                   color="inherit"
                   underline="hover"
                   component={RouterLink}
-                  to={routes.login.path}
+                  to={ROUTES.login.path + search}
                 >
                   Login
                 </Link>
@@ -130,7 +135,7 @@ const Header = () => {
                   color="inherit"
                   underline="hover"
                   component={RouterLink}
-                  to={routes.register.path}
+                  to={ROUTES.register.path + search}
                 >
                   Sign Up
                 </Link>

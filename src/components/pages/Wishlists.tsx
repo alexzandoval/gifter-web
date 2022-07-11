@@ -10,11 +10,10 @@ import {
 } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 
+import { ROUTES } from 'appConstants'
+import { AddTextButton, Loader } from 'components/common'
 import Api from 'services/Api'
-import { Wishlist } from 'ts/api'
-import Loader from 'components/shared/Loader'
-import AddTextButton from 'components/shared/AddTextButton'
-import routes from 'constants/routes'
+import { Wishlist } from 'ts/types'
 
 const Wishlists = () => {
   const [wishlists, setWishlists] = useState<Wishlist[]>([])
@@ -86,7 +85,7 @@ const Wishlists = () => {
         >
           {wishlists.map((wishlist) => (
             <ListItem key={wishlist.id}>
-              <ListItemButton component={RouterLink} to={routes.singleWishlist.id(wishlist.id)}>
+              <ListItemButton component={RouterLink} to={ROUTES.singleWishlist.id(wishlist.id)}>
                 <ListItemText>{wishlist.name}</ListItemText>
               </ListItemButton>
             </ListItem>

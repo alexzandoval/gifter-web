@@ -9,8 +9,15 @@ export default class URLBuilder {
 
   private _queryParamValues: string[]
 
-  constructor(version?: number) {
-    this._baseUrl = `/api/v${version || 1}`
+  constructor(options?: { isApiCall: boolean; version?: number }) {
+    // Default values for options
+    let isApiCall = true
+    let version = 1
+    if (options) {
+      isApiCall = options.isApiCall !== false
+      version = options.version || 1
+    }
+    this._baseUrl = isApiCall ? `/api/v${version}` : ''
     this._url = this._baseUrl
     this._queryParams = []
     this._queryParamValues = []
@@ -24,6 +31,16 @@ export default class URLBuilder {
   public addQueryParam(name: string, value: string): URLBuilder {
     this._queryParams.push(name)
     this._queryParamValues.push(value)
+    return this
+  }
+
+  public redirect(redirectUrl: string): URLBuilder {
+    this.addQueryParam('redirect', redirectUrl)
+    return this
+  }
+
+  public addPath(path: string): URLBuilder {
+    this._url += `${path.startsWith('/') ? '' : '/'}${path}`
     return this
   }
 
@@ -45,10 +62,13 @@ export default class URLBuilder {
     return this
   }
 
+  public joinExchange(id: ResourceId): URLBuilder {
+    this.exchanges().addPath('/join').addId(id)
+    return this
+  }
+
   public build(): string {
     let url = this._url
-    // Reset the url to the base url for the next build operation
-    this._url = this._baseUrl
     if (this._queryParams.length > 0) {
       url += '?'
       this._queryParams.forEach((param, index) => {
@@ -58,6 +78,10 @@ export default class URLBuilder {
         }
       })
     }
+    // Reset the values to the original for the next build operation
+    this._url = this._baseUrl
+    this._queryParams = []
+    this._queryParamValues = []
     return url
   }
 }

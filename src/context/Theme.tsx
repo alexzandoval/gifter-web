@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext, createContext, FC } from 'react'
+import { useEffect, useState, useContext, createContext, FC, PropsWithChildren } from 'react'
 import { PaletteMode, useMediaQuery } from '@mui/material'
 
 interface ColorSchemeType {
@@ -20,7 +20,7 @@ export const ColorSchemeContext = createContext<ColorSchemeType>({
 
 const THEME_LS = 'THEME_LS'
 
-export const ColorSchemeContextProvider: FC = ({ children }) => {
+export const ColorSchemeContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
   const [colorScheme, setColorScheme] = useState<PaletteMode>(ColorScheme.Dark)
 

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
+import { Add } from '@mui/icons-material'
 import {
   Box,
   Button,
-  IconButton,
+  Chip,
   List,
   ListItem,
   ListItemButton,
@@ -11,27 +12,19 @@ import {
 } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 
+import { ROUTES } from 'appConstants'
+import { useAuth } from 'context/Auth'
 import Api from 'services/Api'
-import { Exchange } from 'ts/api'
-import routes from 'constants/routes'
-import { Add } from '@mui/icons-material'
-import NewExchangeDialog from 'components/exchanges/NewExchangeDialog'
+import { Exchange } from 'ts/types'
+import { format } from 'date-fns'
 
 const Exchanges = () => {
   const [exchanges, setExchanges] = useState<Exchange[]>([])
-  const [newExchangeDialogOpen, setNewExchangeDialogOpen] = useState<boolean>(true)
+  const { user } = useAuth()
 
   useEffect(() => {
     Api.exchanges.getAll().then(setExchanges)
   }, [])
-
-  const handleOpenNewExchangeDialog = () => {
-    setNewExchangeDialogOpen(true)
-  }
-
-  const handleCloseNewExchangeDialog = () => {
-    setNewExchangeDialogOpen(false)
-  }
 
   return (
     <>
@@ -44,22 +37,40 @@ const Exchanges = () => {
         }}
       >
         <Typography variant="h1">My Exchanges</Typography>
-        <IconButton size="large" onClick={handleOpenNewExchangeDialog}>
-          <Add />
-        </IconButton>
       </Box>
-      <Button startIcon={<Add />} color="inherit" onClick={handleOpenNewExchangeDialog}>
+      <Button
+        startIcon={<Add />}
+        color="inherit"
+        component={RouterLink}
+        to={ROUTES.createExchange.path}
+      >
         Create new exchange
       </Button>
-      <NewExchangeDialog open={newExchangeDialogOpen} onClose={handleCloseNewExchangeDialog} />
       <List>
-        {exchanges.map((exchange) => (
-          <ListItem key={exchange.id}>
-            <ListItemButton component={RouterLink} to={routes.singleExchange.id(exchange.id)}>
-              <ListItemText>{exchange.name}</ListItemText>
-            </ListItemButton>
-          </ListItem>
-        ))}
+        {exchanges.map((exchange) => {
+          const secondaryText = (
+            <Box component="span" display="flex" flexDirection="column" alignItems="flex-start">
+              {exchange.organizer?.uid === user?.uid && (
+                <Chip size="small" component="span" label="Organizer" />
+              )}
+              {exchange.date && (
+                <Typography component="span">{format(new Date(exchange.date), 'PPP')}</Typography>
+              )}
+              {exchange.budget && <Typography component="span">{`$${exchange.budget}`}</Typography>}
+            </Box>
+          )
+          return (
+            <ListItem key={exchange.id}>
+              <ListItemButton component={RouterLink} to={ROUTES.singleExchange.id(exchange.id)}>
+                <ListItemText
+                  primary={exchange.name}
+                  primaryTypographyProps={{ variant: 'h6' }}
+                  secondary={secondaryText}
+                />
+              </ListItemButton>
+            </ListItem>
+          )
+        })}
       </List>
     </>
   )

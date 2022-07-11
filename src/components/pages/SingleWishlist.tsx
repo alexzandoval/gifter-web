@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react'
+import { Delete, Edit } from '@mui/icons-material'
 import {
   CircularProgress,
   IconButton,
@@ -9,13 +10,10 @@ import {
 } from '@mui/material'
 import { useHistory, useParams } from 'react-router-dom'
 
+import { ROUTES } from 'appConstants'
+import { AddTextButton, Centered, Loader } from 'components/common'
 import Api from 'services/Api'
-import { WishlistWithItems } from 'ts/api'
-import Loader from 'components/shared/Loader'
-import AddTextButton from 'components/shared/AddTextButton'
-import routes from 'constants/routes'
-import Centered from 'components/shared/Centered'
-import { Delete, Edit } from '@mui/icons-material'
+import { WishlistWithItems } from 'ts/types'
 
 type WishlistParams = {
   id: string
@@ -24,6 +22,7 @@ type WishlistParams = {
 const SingleWishlist = () => {
   const [wishlist, setWishlist] = useState<WishlistWithItems | null>(null)
   const [wishlistLoading, setWishlistLoading] = useState<boolean>(true)
+  const [wishlistIsUpdating, setWishlistIsUpdating] = useState<boolean>(false)
   const [inAddMode, setInAddMode] = useState<boolean>(false)
   const [newItemName, setNewItemName] = useState<string>('')
   const [newItemError, setNewItemError] = useState<string>('')
@@ -40,7 +39,7 @@ const SingleWishlist = () => {
       } catch (e) {
         // TODO: Handle error
         // console.log('Error fetching wishlist', e)
-        history.push(routes.wishlists.path)
+        history.push(ROUTES.wishlists.path)
       } finally {
         setWishlistLoading(false)
       }
@@ -94,10 +93,13 @@ const SingleWishlist = () => {
     const value = `test${Math.floor(Math.random() * 100)}`
     if (wishlist) {
       try {
+        setWishlistIsUpdating(true)
         const updatedWishlist = await Api.wishlists.rename(wishlist.id, value)
         setWishlist(updatedWishlist)
       } catch (error) {
         console.log('Error updating wishlist name', error)
+      } finally {
+        setWishlistIsUpdating(false)
       }
     }
   }
@@ -105,10 +107,14 @@ const SingleWishlist = () => {
   const handleDeleteWishlist = async () => {
     if (wishlist) {
       try {
-        const result = await Api.wishlists.delete(wishlist.id)
-        history.push(routes.wishlists.path)
+        setWishlistIsUpdating(true)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const deleteWasSuccessful = await Api.wishlists.delete(wishlist.id)
+        history.push(ROUTES.wishlists.path)
       } catch (error) {
         console.log('Error deleting wishlist', error)
+      } finally {
+        setWishlistIsUpdating(false)
       }
     }
   }
@@ -124,10 +130,10 @@ const SingleWishlist = () => {
           </Centered>
         }
       >
-        <IconButton onClick={handleUpdateWishlistName}>
+        <IconButton onClick={handleUpdateWishlistName} disabled={wishlistIsUpdating}>
           <Edit />
         </IconButton>
-        <IconButton onClick={handleDeleteWishlist}>
+        <IconButton onClick={handleDeleteWishlist} disabled={wishlistIsUpdating}>
           <Delete />
         </IconButton>
         <List>

@@ -1,17 +1,17 @@
-import { Link } from '@mui/material'
-import routes from 'constants/routes'
-import { AuthError, AuthErrorCodes } from 'firebase/auth'
 import { ReactNode } from 'react'
+import { Link } from '@mui/material'
+import { AuthError, AuthErrorCodes } from 'firebase/auth'
 import { Link as RouterLink } from 'react-router-dom'
 
-// eslint-disable-next-line import/prefer-default-export
+import { ROUTES } from 'appConstants'
+
 export const handleAuthError = (authError: AuthError): ReactNode => {
   switch (authError.code) {
     case AuthErrorCodes.EMAIL_EXISTS:
       return (
         <>
           Email is already in use, did you mean to{' '}
-          <Link to={routes.login.path} component={RouterLink}>
+          <Link to={ROUTES.login.path} component={RouterLink}>
             sign in?
           </Link>
           {'\n'}
