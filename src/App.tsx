@@ -13,6 +13,11 @@ import { AuthContextProvider } from 'context/Auth'
 import { useColorScheme } from 'context/Theme'
 import getTheme from 'styles/theme'
 import { AppRoutes } from 'ts/types'
+import { SnackbarProvider } from 'notistack'
+
+// https://github.com/facebook/react/issues/24304
+// Bug with React Types
+const NotistackProvider = SnackbarProvider as any
 
 const App = () => {
   const { colorScheme } = useColorScheme()
@@ -39,14 +44,16 @@ const App = () => {
       {/* TODO v5: remove once migration to emotion is completed */}
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={theme}>
-          <AuthContextProvider>
-            <LocalizationProvider dateAdapter={DateAdapter}>
-              <CssBaseline />
-              <Layout>
-                <Switch>{appRoutes}</Switch>
-              </Layout>
-            </LocalizationProvider>
-          </AuthContextProvider>
+          <NotistackProvider>
+            <AuthContextProvider>
+              <LocalizationProvider dateAdapter={DateAdapter}>
+                <CssBaseline />
+                <Layout>
+                  <Switch>{appRoutes}</Switch>
+                </Layout>
+              </LocalizationProvider>
+            </AuthContextProvider>
+          </NotistackProvider>
         </ThemeProvider>
       </StyledEngineProvider>
     </BrowserRouter>
