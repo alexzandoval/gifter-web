@@ -1,4 +1,4 @@
-import { Home as HomeIcon, Info as InfoIcon, Science } from '@mui/icons-material'
+import { Home as HomeIcon, Info as InfoIcon } from '@mui/icons-material'
 
 import About from 'components/pages/About'
 import Account from 'components/pages/Account'
@@ -10,7 +10,6 @@ import PageNotFound from 'components/pages/PageNotFound'
 import Register from 'components/pages/Register'
 import SingleExchange from 'components/pages/SingleExchange'
 import SingleWishlist from 'components/pages/SingleWishlist'
-import Test from 'components/pages/Test'
 import Wishlists from 'components/pages/Wishlists'
 import JoinExchange from 'components/pages/JoinExchange'
 import { AppRoutes, ResourceId } from 'ts/types'
@@ -88,14 +87,6 @@ export const ROUTES: AppRoutes = {
     path: '/register',
     Component: Register,
     publicOnlyRoute: true,
-  },
-  test: {
-    path: '/test',
-    Component: Test,
-    nav: {
-      label: 'Test',
-      Icon: Science,
-    },
   },
   // 404 route, must be last
   notFound: {

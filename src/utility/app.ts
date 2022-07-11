@@ -6,3 +6,5 @@ export const isServerValidationError = (e: any): e is ServerValidationError =>
   typeof e.statusCode === 'number'
 
 export const ucFirst = (str: string): string => str.charAt(0).toUpperCase() + str.slice(1)
+
+export const isDevelopment = process.env.REACT_APP_ENV === 'development'

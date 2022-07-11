@@ -82,7 +82,6 @@ const UserNotPartOfExchange: FC<Props> = ({ exchange, unclaimedParticipants, onS
         </FormControl>
         <LoadingButton
           loading={joinExchangeLoading}
-          loadingPosition="start"
           disabled={joinExchangeLoading || !selectedParticipant}
           variant="contained"
           onClick={handleJoinExchange}

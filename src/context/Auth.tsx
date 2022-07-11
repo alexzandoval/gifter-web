@@ -23,11 +23,12 @@ import {
 } from 'firebase/auth'
 import { useHistory } from 'react-router-dom'
 
+import { isDevelopment } from 'utility'
 import firebaseApp from '../firebase/config'
 
 const auth = getAuth(firebaseApp)
 
-const { REACT_APP_PROXY, REACT_APP_ENV } = process.env
+const { REACT_APP_PROXY } = process.env
 
 interface AuthContextType {
   user: User | null
@@ -46,7 +47,7 @@ const noAuthProvider = () => {
 
 export const apiAxios = axios.create()
 
-if (REACT_APP_ENV === 'development') {
+if (isDevelopment) {
   /* eslint-disable no-console */
   apiAxios.interceptors.request.use(
     (config) => {

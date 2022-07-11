@@ -288,7 +288,6 @@ const NewExchangeForm: FC = () => {
             {isLastStep ? (
               <LoadingButton
                 loading={formIsLoading}
-                loadingPosition="start"
                 sx={{ minWidth: 150 }}
                 variant="contained"
                 type="submit"
@@ -298,7 +297,6 @@ const NewExchangeForm: FC = () => {
             ) : (
               <LoadingButton
                 loading={nextStepIsLoading}
-                loadingPosition="start"
                 onClick={handleNextStep}
                 sx={{ minWidth: 150 }}
                 variant="contained"

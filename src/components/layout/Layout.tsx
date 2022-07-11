@@ -3,7 +3,6 @@ import { Box, Container, Theme, Toolbar } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 
 import Header from 'components/layout/Header'
-import { Link } from 'react-router-dom'
 
 interface Props {
   children: ReactNode
@@ -27,7 +26,6 @@ const Layout: FC<Props> = ({ children }) => {
       <Header />
       <Container className={classes.content}>
         <Toolbar />
-        <Link to="/exchanges/join/39">Join Exchange</Link>
         {children}
       </Container>
     </Box>

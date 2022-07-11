@@ -18,7 +18,7 @@ import { useLocation } from 'react-router-dom'
 import { ROUTES } from 'appConstants'
 import { useAuth } from 'context/Auth'
 import { AppRoutes } from 'ts/types'
-import { renderLink } from 'utility'
+import { isDevelopment, renderLink } from 'utility'
 
 interface Props {
   DrawerProps: DrawerPropTypes
@@ -41,6 +41,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
 }))
+
+/* ********** */
+const testingRoutes = [{ path: '/exchanges/join/39', label: 'Exchange 39 Join' }]
+/* ********** */
 
 const NavigationDrawer: FC<Props> = ({ DrawerProps, onClose }) => {
   const classes = useStyles()
@@ -70,6 +74,23 @@ const NavigationDrawer: FC<Props> = ({ DrawerProps, onClose }) => {
     )
   })
 
+  /* ********** */
+  const testingNavItems = testingRoutes.map(({ path, label }) => {
+    const link = renderLink(path)
+    return (
+      <ListItem
+        key={path}
+        button
+        component={link}
+        onClick={onClose}
+        selected={path === location.pathname}
+      >
+        <ListItemText primary={label} />
+      </ListItem>
+    )
+  })
+  /* ********** */
+
   return (
     <Drawer
       {...DrawerProps}
@@ -80,7 +101,10 @@ const NavigationDrawer: FC<Props> = ({ DrawerProps, onClose }) => {
       }}
     >
       {isDesktop && <Toolbar />}
-      <List>{navItems}</List>
+      <List>
+        {navItems}
+        {isDevelopment && testingNavItems}
+      </List>
     </Drawer>
   )
 }

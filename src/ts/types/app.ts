@@ -31,7 +31,6 @@ export type AppRoutes = {
   exchanges: Route
   login: Route
   register: Route
-  test: Route
   notFound: Route
 }
 
