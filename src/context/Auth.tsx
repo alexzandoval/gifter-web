@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, createContext, FC } from 'react'
+import { useState, useEffect, useContext, createContext, FC, PropsWithChildren } from 'react'
 import axios from 'axios'
 import {
   createUserWithEmailAndPassword,
@@ -13,8 +13,9 @@ import {
   User,
   UserCredential,
 } from 'firebase/auth'
-import firebaseApp from 'firebase/config'
 import { useHistory } from 'react-router-dom'
+
+import firebaseApp from '../firebase/config'
 
 const auth = getAuth(firebaseApp)
 
@@ -80,7 +81,7 @@ export const AuthContext = createContext<AuthContextType>({
   signUpWithEmail: noAuthProvider,
 })
 
-export const AuthContextProvider: FC = ({ children }) => {
+export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const history = useHistory()
   const [user, setUser] = useState<AuthContextType['user']>(null)
