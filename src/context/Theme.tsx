@@ -1,4 +1,13 @@
-import { useEffect, useState, useContext, createContext, FC, PropsWithChildren } from 'react'
+import {
+  useEffect,
+  useState,
+  useContext,
+  createContext,
+  FC,
+  PropsWithChildren,
+  useCallback,
+  useMemo,
+} from 'react'
 import { PaletteMode, useMediaQuery } from '@mui/material'
 
 interface ColorSchemeType {
@@ -24,7 +33,7 @@ export const ColorSchemeContextProvider: FC<PropsWithChildren> = ({ children }) 
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
   const [colorScheme, setColorScheme] = useState<PaletteMode>(ColorScheme.Dark)
 
-  const toggleColorScheme = () => {
+  const toggleColorScheme = useCallback(() => {
     if (colorScheme === ColorScheme.Light) {
       window.localStorage.setItem(THEME_LS, ColorScheme.Dark)
       setColorScheme(ColorScheme.Dark)
@@ -32,7 +41,7 @@ export const ColorSchemeContextProvider: FC<PropsWithChildren> = ({ children }) 
       window.localStorage.setItem(THEME_LS, ColorScheme.Light)
       setColorScheme(ColorScheme.Light)
     }
-  }
+  }, [colorScheme])
 
   useEffect(() => {
     if (Object.prototype.hasOwnProperty.call(window.localStorage, THEME_LS)) {
@@ -45,7 +54,13 @@ export const ColorSchemeContextProvider: FC<PropsWithChildren> = ({ children }) 
     }
   }, [prefersDarkMode])
 
-  const store = { colorScheme, toggleColorScheme }
+  const store = useMemo(
+    () => ({
+      colorScheme,
+      toggleColorScheme,
+    }),
+    [colorScheme, toggleColorScheme],
+  )
 
   return <ColorSchemeContext.Provider value={store}>{children}</ColorSchemeContext.Provider>
 }

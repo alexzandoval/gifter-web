@@ -1,16 +1,16 @@
-import { FC, ReactNode } from 'react'
+import { FC, PropsWithChildren, ReactElement } from 'react'
 import { CircularProgress } from '@mui/material'
 
-interface Props {
-  children: ReactNode
+interface Props extends PropsWithChildren {
   loading: boolean
-  loader?: ReactNode
+  loader?: ReactElement
 }
 
 const Loader: FC<Props> = ({ children, loading, loader }) => {
   if (loading) {
-    return <>{loader || <CircularProgress size={16} />}</>
+    return loader || <CircularProgress size={16} />
   }
+  // eslint-disable-next-line react/jsx-no-useless-fragment
   return <>{children}</>
 }
 

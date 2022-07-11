@@ -1,4 +1,4 @@
-import { FC, forwardRef } from 'react'
+import { FC } from 'react'
 import {
   Drawer,
   List,
@@ -13,11 +13,12 @@ import {
 } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import clsx from 'clsx'
-import { Link as RouterLink, LinkProps as RouterLinkProps, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 import { ROUTES } from 'appConstants'
 import { useAuth } from 'context/Auth'
 import { AppRoutes } from 'ts/types'
+import { renderLink } from 'utility'
 
 interface Props {
   DrawerProps: DrawerPropTypes
@@ -47,11 +48,6 @@ const NavigationDrawer: FC<Props> = ({ DrawerProps, onClose }) => {
   const theme = useTheme()
   const location = useLocation()
   const isDesktop = useMediaQuery(theme.mixins.drawer.visibleBreakpoint)
-
-  const renderLink = (to: string) =>
-    forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, 'to'>>((itemProps, ref) => (
-      <RouterLink to={to} ref={ref} {...itemProps} />
-    ))
 
   const navItems = Object.keys(ROUTES).map((routeName) => {
     const route = ROUTES[routeName as keyof AppRoutes]
