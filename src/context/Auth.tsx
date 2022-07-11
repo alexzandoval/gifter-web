@@ -1,4 +1,12 @@
-import { useState, useEffect, useContext, createContext, FC, PropsWithChildren } from 'react'
+import {
+  useState,
+  useEffect,
+  useContext,
+  createContext,
+  FC,
+  PropsWithChildren,
+  useMemo,
+} from 'react'
 import axios from 'axios'
 import {
   createUserWithEmailAndPassword,
@@ -86,9 +94,9 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const history = useHistory()
   const [user, setUser] = useState<AuthContextType['user']>(null)
   const [authInitialized, setAuthInitialized] = useState<AuthContextType['authInitialized']>(false)
-  const googleAuthProvider = new GoogleAuthProvider()
-  const facebookAuthProvider = new FacebookAuthProvider()
-  const appleAuthProvider = new OAuthProvider('apple.com')
+  const googleAuthProvider = useMemo(() => new GoogleAuthProvider(), [])
+  const facebookAuthProvider = useMemo(() => new FacebookAuthProvider(), [])
+  const appleAuthProvider = useMemo(() => new OAuthProvider('apple.com'), [])
 
   const logout = async () => {
     await signOut(auth)
@@ -143,18 +151,21 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
     },
   )
 
-  const store = {
-    user,
-    authInitialized,
-    signInWithEmail: async (email: string, password: string) =>
-      signInWithEmailAndPassword(auth, email, password),
-    signInWithGoogle: async () => signInWithPopup(auth, googleAuthProvider),
-    signInWithApple: async () => signInWithPopup(auth, appleAuthProvider),
-    signInWithFacebook: async () => signInWithPopup(auth, facebookAuthProvider),
-    signOut: logout,
-    signUpWithEmail: async (email: string, password: string) =>
-      createUserWithEmailAndPassword(auth, email, password),
-  }
+  const store = useMemo(
+    () => ({
+      user,
+      authInitialized,
+      signInWithEmail: async (email: string, password: string) =>
+        signInWithEmailAndPassword(auth, email, password),
+      signInWithGoogle: async () => signInWithPopup(auth, googleAuthProvider),
+      signInWithApple: async () => signInWithPopup(auth, appleAuthProvider),
+      signInWithFacebook: async () => signInWithPopup(auth, facebookAuthProvider),
+      signOut: logout,
+      signUpWithEmail: async (email: string, password: string) =>
+        createUserWithEmailAndPassword(auth, email, password),
+    }),
+    [googleAuthProvider, appleAuthProvider, facebookAuthProvider, user, authInitialized],
+  )
   return <AuthContext.Provider value={store}>{children}</AuthContext.Provider>
 }
 

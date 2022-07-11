@@ -107,31 +107,29 @@ const JoinExchange = () => {
   }
 
   return (
-    <>
-      <Loader
-        loading={exchangeLoading}
-        loader={
-          <Centered horizontal vertical>
-            <CircularProgress />
-          </Centered>
-        }
-      >
-        {exchange && (
-          <>
-            <Card raised sx={{ maxWidth: 500 }}>
-              <CardContent>
-                <Title mb={3}>
-                  {organizerName || 'You were'} invited you to join {exchange.name}!
-                </Title>
-                <Typography gutterBottom>{exchange.description}</Typography>
-                {cardContent}
-              </CardContent>
-            </Card>
-            {getExchangeInformation(exchange)}
-          </>
-        )}
-      </Loader>
-    </>
+    <Loader
+      loading={exchangeLoading}
+      loader={
+        <Centered horizontal vertical>
+          <CircularProgress />
+        </Centered>
+      }
+    >
+      {exchange && (
+        <>
+          <Card raised sx={{ maxWidth: 500 }}>
+            <CardContent>
+              <Title mb={3}>
+                {organizerName || 'You were'} invited you to join {exchange.name}!
+              </Title>
+              <Typography gutterBottom>{exchange.description}</Typography>
+              {cardContent}
+            </CardContent>
+          </Card>
+          {getExchangeInformation(exchange)}
+        </>
+      )}
+    </Loader>
   )
 }
 

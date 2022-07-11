@@ -26,6 +26,7 @@ module.exports = {
   rules: {
     'import/extensions': 'off',
     'import/prefer-default-export': 'off',
+    'no-case-declarations': 'off',
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': 'error',
     'no-underscore-dangle': 'off',
@@ -33,14 +34,20 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'warn',
     'object-curly-newline': ['error', { ObjectPattern: { multiline: true } }],
     semi: ['error', 'never'],
+    'react/function-component-definition': [
+      'error',
+      {
+        namedComponents: 'arrow-function',
+        unnamedComponents: 'arrow-function',
+      },
+    ],
     'react/prop-types': 'off',
-    'react/require-default-props': 'off',
-    'no-case-declarations': 'off',
-    'react-hooks/rules-of-hooks': 'error',
-    'react-hooks/exhaustive-deps': 'warn',
     'react/jsx-filename-extension': ['warn', { extensions: ['.tsx'] }],
     'react/jsx-props-no-spreading': 'off',
     'react/no-unescaped-entities': 'off',
+    'react/require-default-props': 'off',
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn',
     'react/react-in-jsx-scope': 'off',
     'prettier/prettier': [
       'warn',
