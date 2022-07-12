@@ -18,6 +18,7 @@ import { Centered, Loader } from 'components/common'
 import { useAuth } from 'context/Auth'
 import Api from 'services/Api'
 import { Exchange } from 'ts/types'
+import useNotification from 'hooks/useNotification'
 
 type ExchangeParams = {
   id: string
@@ -47,6 +48,7 @@ const SingleExchange = () => {
   const [exchangeUpdating, setExchangeUpdating] = useState<boolean>(false)
   const history = useHistory()
   const { user } = useAuth()
+  const notify = useNotification()
   const isOrganizer = user?.uid === exchange?.organizer?.uid
 
   useEffect(() => {
@@ -56,16 +58,18 @@ const SingleExchange = () => {
         const fetchedExchange = await Api.exchanges.get(id)
         setExchange(fetchedExchange)
       } catch (e) {
-        // TODO: Handle error
-        // console.log('Error fetching exchange', e)
-        history.push(ROUTES.exchanges.path)
+        // eslint-disable-next-line no-console
+        console.error('Error fetching exchange ::', e)
+        notify.error('Error occurred while getting exchange information, please try again later.', {
+          redirect: ROUTES.exchanges.path,
+        })
       } finally {
         setExchangeLoading(false)
       }
     }
 
     fetchExchange()
-  }, [id, history])
+  }, [id, history, notify])
 
   const handleDeleteExchange = async () => {
     if (exchange) {
@@ -77,9 +81,9 @@ const SingleExchange = () => {
           history.push(ROUTES.exchanges.path)
         }
       } catch (error) {
-        // TODO: Handle error
         // eslint-disable-next-line no-console
-        console.log('Error deleting exchange', error)
+        console.error('Error deleting exchange ::', error)
+        notify.error('Error occurred while deleting exchange, please try again later.')
       } finally {
         setExchangeUpdating(false)
       }

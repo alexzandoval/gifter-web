@@ -12,6 +12,7 @@ import { Link as RouterLink } from 'react-router-dom'
 
 import { ROUTES } from 'appConstants'
 import { AddTextButton, Loader } from 'components/common'
+import useNotification from 'hooks/useNotification'
 import Api from 'services/Api'
 import { Wishlist } from 'ts/types'
 
@@ -22,6 +23,7 @@ const Wishlists = () => {
   const [newWishlistError, setNewWishlistError] = useState<string>('')
   const [wishlistsLoading, setWishlistsLoading] = useState<boolean>(false)
   const [newWishlistIsLoading, setNewWishlistIsLoading] = useState<boolean>(false)
+  const notify = useNotification()
 
   const handleUpdateNewWishlistName = (e: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { value } = e.currentTarget
@@ -63,13 +65,19 @@ const Wishlists = () => {
         setWishlistsLoading(true)
         const fetchedWishlists = await Api.wishlists.getAll()
         setWishlists(fetchedWishlists)
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Error fetching wishlists list ::', e)
+        notify.error('Error occurred while getting your wishlists, please try again later.', {
+          redirect: ROUTES.home.path,
+        })
       } finally {
         setWishlistsLoading(false)
       }
     }
 
     fetchWishlists()
-  }, [])
+  }, [notify])
 
   return (
     <>

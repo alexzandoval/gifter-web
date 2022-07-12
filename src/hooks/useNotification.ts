@@ -1,35 +1,38 @@
-import { OptionsObject, SnackbarMessage, useSnackbar, VariantType } from 'notistack'
 import { useCallback, useMemo } from 'react'
+import { toast, ToastContent, ToastOptions } from 'react-toastify'
+import { useHistory } from 'react-router-dom'
+
+type OptionsWithRedirect = ToastOptions & { redirect?: string }
 
 const useNotification = () => {
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+  const history = useHistory()
 
-  const variantNotification = useCallback(
-    (message: SnackbarMessage, variant: VariantType, options?: OptionsObject) => {
-      enqueueSnackbar(message, { variant, ...options })
+  const toastWithRedirect = useCallback(
+    (message: ToastContent, options?: OptionsWithRedirect) => {
+      let onOpen
+      if (options?.redirect) {
+        onOpen = () => options.redirect && history.push(options.redirect)
+      }
+      return toast(message, { ...options, onOpen })
     },
-    [enqueueSnackbar],
+    [history],
   )
 
   const notify = useMemo(
     () => ({
-      success: (message: SnackbarMessage, options?: OptionsObject) =>
-        variantNotification(message, 'success', options),
-      error: (message: SnackbarMessage, options?: OptionsObject) =>
-        variantNotification(message, 'error', options),
-      warning: (message: SnackbarMessage, options?: OptionsObject) =>
-        variantNotification(message, 'warning', options),
-      info: (message: SnackbarMessage, options?: OptionsObject) =>
-        variantNotification(message, 'info', options),
+      success: (message: ToastContent, options?: OptionsWithRedirect) =>
+        toastWithRedirect(message, { ...options, type: 'success' }),
+      error: (message: ToastContent, options?: OptionsWithRedirect) =>
+        toastWithRedirect(message, { ...options, type: 'error' }),
+      warning: (message: ToastContent, options?: OptionsWithRedirect) =>
+        toastWithRedirect(message, { ...options, type: 'warning' }),
+      info: (message: ToastContent, options?: OptionsWithRedirect) =>
+        toastWithRedirect(message, { ...options, type: 'info' }),
     }),
-    [variantNotification],
+    [toastWithRedirect],
   )
 
-  return {
-    notify,
-    enqueueSnackbar,
-    closeSnackbar,
-  }
+  return notify
 }
 
 export default useNotification

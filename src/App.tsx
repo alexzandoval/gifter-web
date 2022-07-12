@@ -3,9 +3,9 @@ import { ThemeProvider, CssBaseline, StyledEngineProvider } from '@mui/material'
 import { LocalizationProvider } from '@mui/lab'
 import DateAdapter from '@mui/lab/AdapterDateFns'
 import { BrowserRouter, Route, RouteProps, Switch } from 'react-router-dom'
-import { SnackbarProvider } from 'notistack'
+import { ToastContainer } from 'react-toastify'
 
-import { ROUTES } from 'appConstants'
+import { NOTIFICATION_AUTOHIDE_DURATION, ROUTES } from 'appConstants'
 import ProtectedRoute from 'components/auth/ProtectedRoute'
 import PublicOnlyRoute from 'components/auth/PublicOnlyRoute'
 import PublicRoute from 'components/auth/PublicRoute'
@@ -15,9 +15,7 @@ import { useColorScheme } from 'context/Theme'
 import getTheme from 'styles/theme'
 import { AppRoutes } from 'ts/types'
 
-// https://github.com/facebook/react/issues/24304
-// Bug with React Types
-const NotistackProvider = SnackbarProvider as any
+import 'react-toastify/dist/ReactToastify.min.css'
 
 const App: FC = () => {
   const { colorScheme } = useColorScheme()
@@ -44,16 +42,19 @@ const App: FC = () => {
       {/* TODO v5: remove once migration to emotion is completed */}
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={theme}>
-          <NotistackProvider>
-            <AuthContextProvider>
-              <LocalizationProvider dateAdapter={DateAdapter}>
-                <CssBaseline />
-                <Layout>
-                  <Switch>{appRoutes}</Switch>
-                </Layout>
-              </LocalizationProvider>
-            </AuthContextProvider>
-          </NotistackProvider>
+          <AuthContextProvider>
+            <LocalizationProvider dateAdapter={DateAdapter}>
+              <CssBaseline />
+              <Layout>
+                <Switch>{appRoutes}</Switch>
+                <ToastContainer
+                  autoClose={NOTIFICATION_AUTOHIDE_DURATION}
+                  position="bottom-left"
+                  theme={colorScheme}
+                />
+              </Layout>
+            </LocalizationProvider>
+          </AuthContextProvider>
         </ThemeProvider>
       </StyledEngineProvider>
     </BrowserRouter>

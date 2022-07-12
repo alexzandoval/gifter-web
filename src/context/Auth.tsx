@@ -55,7 +55,7 @@ if (isDevelopment) {
       return config
     },
     (error) => {
-      console.error('Error on request', error)
+      console.error('Error on request ::', error)
       return Promise.reject(error.response?.data || error)
     },
   )
@@ -68,7 +68,7 @@ if (isDevelopment) {
       return response
     },
     (error) => {
-      console.error('Error on response', error)
+      console.error('Error on response ::', error)
       return Promise.reject(error.response?.data || error)
     },
   )

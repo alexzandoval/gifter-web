@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { Dispatch, FC, ReactNode, SetStateAction, useState } from 'react'
 import { Box, Button, Divider, TextField, Theme, Typography } from '@mui/material'
 import { makeStyles } from '@mui/styles'
@@ -82,10 +81,10 @@ const AuthForm: FC<Props> = ({ type }) => {
     try {
       setIsLoading(true)
       setError('')
-      const result = await handleSignIn()
-      console.log(result)
+      await handleSignIn()
     } catch (e) {
-      console.log(`Error authenticating with provider`, e)
+      // eslint-disable-next-line no-console
+      console.error(`Error authenticating with provider ::`, e)
       setError(handleAuthError(e as AuthError))
     } finally {
       setIsLoading(false)

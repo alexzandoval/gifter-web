@@ -12,6 +12,7 @@ import AllSpotsTakenInExchange from 'components/exchanges/join/AllSpotsTakenInEx
 import { useAuth } from 'context/Auth'
 import Api from 'services/Api'
 import { Exchange } from 'ts/types'
+import useNotification from 'hooks/useNotification'
 
 type ExchangeParams = {
   id: string
@@ -23,26 +24,27 @@ const JoinExchange = () => {
   const [exchangeLoading, setExchangeLoading] = useState<boolean>(true)
   const history = useHistory()
   const { user } = useAuth()
+  const notify = useNotification()
 
   useEffect(() => {
     const fetchExchange = async () => {
       try {
         setExchangeLoading(true)
         const fetchedExchange = await Api.exchanges.getJoinExchangeInformation(id)
-        // const fetchedExchange = await Api.exchanges.get(id)
-        console.log('fetchedExchange', fetchedExchange)
         setExchange(fetchedExchange)
       } catch (e) {
-        // TODO: Handle error
-        console.log('Error fetching exchange join information', e)
-        // history.push(routes.exchanges.path)
+        // eslint-disable-next-line no-console
+        console.error('Error fetching exchange join information ::', e)
+        notify.error('Error occurred while getting exchange information, please try again later.', {
+          redirect: ROUTES.exchanges.path,
+        })
       } finally {
         setExchangeLoading(false)
       }
     }
 
     fetchExchange()
-  }, [id, history])
+  }, [id, history, notify])
 
   const organizerName = exchange?.participants?.find(
     (p) => p.user?.uid === exchange?.organizer.uid,

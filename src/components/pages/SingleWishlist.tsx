@@ -14,6 +14,7 @@ import { ROUTES } from 'appConstants'
 import { AddTextButton, Centered, Loader } from 'components/common'
 import Api from 'services/Api'
 import { WishlistWithItems } from 'ts/types'
+import useNotification from 'hooks/useNotification'
 
 type WishlistParams = {
   id: string
@@ -29,6 +30,7 @@ const SingleWishlist = () => {
   const [newItemIsLoading, setNewItemIsLoading] = useState<boolean>(false)
   const { id } = useParams<WishlistParams>()
   const history = useHistory()
+  const notify = useNotification()
 
   useEffect(() => {
     const fetchWishlist = async () => {
@@ -37,16 +39,18 @@ const SingleWishlist = () => {
         const fetchedWishlist = await Api.wishlists.get(id)
         setWishlist(fetchedWishlist)
       } catch (e) {
-        // TODO: Handle error
-        // console.log('Error fetching wishlist', e)
-        history.push(ROUTES.wishlists.path)
+        // eslint-disable-next-line no-console
+        console.error('Error fetching wishlist ::', e)
+        notify.error('Error occurred while fetching wishlist, please try again later.', {
+          redirect: ROUTES.wishlists.path,
+        })
       } finally {
         setWishlistLoading(false)
       }
     }
 
     fetchWishlist()
-  }, [id, history])
+  }, [id, history, notify])
 
   const handleUpdateNewItemName = (e: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { value } = e.currentTarget
@@ -97,7 +101,9 @@ const SingleWishlist = () => {
         const updatedWishlist = await Api.wishlists.rename(wishlist.id, value)
         setWishlist(updatedWishlist)
       } catch (error) {
-        console.log('Error updating wishlist name', error)
+        // eslint-disable-next-line no-console
+        console.error('Error updating wishlist name ::', error)
+        notify.error('Error occurred while updating wishlist name, please try again later.')
       } finally {
         setWishlistIsUpdating(false)
       }
@@ -111,8 +117,10 @@ const SingleWishlist = () => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const deleteWasSuccessful = await Api.wishlists.delete(wishlist.id)
         history.push(ROUTES.wishlists.path)
-      } catch (error) {
-        console.log('Error deleting wishlist', error)
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Error deleting wishlist ::', e)
+        notify.error('Error occurred while deleting wishlist, please try again later.')
       } finally {
         setWishlistIsUpdating(false)
       }

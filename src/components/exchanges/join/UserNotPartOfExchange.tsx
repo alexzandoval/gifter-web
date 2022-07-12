@@ -11,6 +11,7 @@ import {
 } from '@mui/material'
 
 import { AppTypography } from 'components/common'
+import useNotification from 'hooks/useNotification'
 import Api from 'services/Api'
 import { Exchange, Participant } from 'ts/types'
 
@@ -23,6 +24,7 @@ interface Props {
 const UserNotPartOfExchange: FC<Props> = ({ exchange, unclaimedParticipants, onSubmit }) => {
   const [selectedParticipant, setSelectedParticipant] = useState<string>('')
   const [joinExchangeLoading, setJoinExchangeLoading] = useState<boolean>(false)
+  const notify = useNotification()
 
   const organizerName = exchange.participants.find(
     (p) => p.user?.uid === exchange.organizer.uid,
@@ -36,14 +38,11 @@ const UserNotPartOfExchange: FC<Props> = ({ exchange, unclaimedParticipants, onS
     try {
       setJoinExchangeLoading(true)
       const updatedExchange = await Api.exchanges.postJoinExchange(exchange.id, selectedParticipant)
-      // const fetchedExchange = await Api.exchanges.get(id)
-      console.log('updatedExchange', updatedExchange)
       onSubmit(updatedExchange)
     } catch (e) {
-      // TODO: Handle error
-      console.log('Error joining exchange', e)
-      // history.push(ROUTES.exchanges.path)
-      // onError(e)
+      // eslint-disable-next-line no-console
+      console.error('Error joining exchange ::', e)
+      notify.error('Error occurred while joining exchange, please try again later.')
     } finally {
       setJoinExchangeLoading(false)
     }
