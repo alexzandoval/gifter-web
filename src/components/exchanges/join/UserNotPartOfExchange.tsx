@@ -39,6 +39,9 @@ const UserNotPartOfExchange: FC<Props> = ({ exchange, unclaimedParticipants, onS
       setJoinExchangeLoading(true)
       const updatedExchange = await Api.exchanges.postJoinExchange(exchange.id, selectedParticipant)
       onSubmit(updatedExchange)
+      notify.success(
+        `Successfully joined ${organizerName ? `${organizerName}'s` : 'the'} exchange!`,
+      )
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error('Error joining exchange ::', e)

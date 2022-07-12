@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { InputAdornment, TextField, Typography } from '@mui/material'
-import { DatePicker } from '@mui/lab'
+import { DatePicker } from '@mui/x-date-pickers'
 import { Controller, useFormContext } from 'react-hook-form'
 
 import { NewExchangeFormValues } from '../NewExchangeForm'

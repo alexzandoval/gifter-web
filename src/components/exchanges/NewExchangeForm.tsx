@@ -13,9 +13,9 @@ import {
 } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
-import { useHistory } from 'react-router-dom'
 
 import { ROUTES } from 'appConstants'
+import useNotification from 'hooks/useNotification'
 import Api from 'services/Api'
 import { isServerValidationError, ucFirst } from 'utility'
 
@@ -77,7 +77,7 @@ const NewExchangeForm: FC = () => {
   const [serverErrors, setServerErrors] = useState<string[]>([])
   const [showServerErrors, setShowServerErrors] = useState<boolean>(false)
   const [nextStepIsLoading, setNextStepIsLoading] = useState<boolean>(false)
-  const history = useHistory()
+  const notify = useNotification()
   const reactHookForm = useForm({ defaultValues })
   const { clearErrors, handleSubmit, setError, trigger, watch } = reactHookForm
   const participants = watch('participants')
@@ -189,7 +189,7 @@ const NewExchangeForm: FC = () => {
         participants: data.participants,
         ...data.rules,
       })
-      history.push(ROUTES.singleExchange.id(newExchange.id))
+      notify.success('Exchange created!', { redirect: ROUTES.singleExchange.id(newExchange.id) })
     } catch (e) {
       if (isServerValidationError(e)) {
         setServerErrors(e.message)

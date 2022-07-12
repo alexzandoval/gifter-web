@@ -23,7 +23,9 @@ import {
 } from 'firebase/auth'
 import { useHistory } from 'react-router-dom'
 
+import { ROUTES } from 'appConstants'
 import { isDevelopment } from 'utility'
+
 import firebaseApp from '../firebase/config'
 
 const auth = getAuth(firebaseApp)
@@ -103,8 +105,8 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
     await signOut(auth)
     setUser(null)
     // FIXME: User data not getting cleared after logout
-    // history.replace('/')
-    window.location.replace('/')
+    // history.replace(ROUTES.login.path)
+    window.location.replace(ROUTES.login.path)
   }
 
   useEffect(() => {

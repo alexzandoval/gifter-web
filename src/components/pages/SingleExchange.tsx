@@ -75,10 +75,11 @@ const SingleExchange = () => {
     if (exchange) {
       try {
         setExchangeUpdating(true)
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const deleteWasSuccessful = await Api.exchanges.delete(exchange.id)
         if (deleteWasSuccessful) {
-          history.push(ROUTES.exchanges.path)
+          notify.success('Exchange was successfully deleted.', { redirect: ROUTES.exchanges.path })
+        } else {
+          notify.error('Delete was not successful. Please try again later.')
         }
       } catch (error) {
         // eslint-disable-next-line no-console
@@ -92,7 +93,7 @@ const SingleExchange = () => {
 
   // TODO Implement
   const handleEditExchange = async () => {
-    throw new Error('Not implemented')
+    notify.error('Not implemented')
   }
 
   let description = null

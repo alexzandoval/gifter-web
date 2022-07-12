@@ -43,7 +43,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 }))
 
 /* ********** */
-const testingRoutes = [{ path: '/exchanges/join/39', label: 'Exchange 39 Join' }]
+const testingRoutes = [
+  { path: '/exchanges/join/39', label: 'Exchange 39 Join' },
+  { path: '/exchanges/join/43', label: 'Exchange 43 Join' },
+]
 /* ********** */
 
 const NavigationDrawer: FC<Props> = ({ DrawerProps, onClose }) => {
