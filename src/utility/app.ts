@@ -7,4 +7,10 @@ export const isServerValidationError = (e: any): e is ServerValidationError =>
 
 export const ucFirst = (str: string): string => str.charAt(0).toUpperCase() + str.slice(1)
 
+export const allowOnlyNumber = (value: string): string =>
+  value
+    .replace(/[^0-9]/g, '')
+    .replace(/^0+/, '')
+    .slice(0, 5)
+
 export const isDevelopment = process.env.REACT_APP_ENV === 'development'

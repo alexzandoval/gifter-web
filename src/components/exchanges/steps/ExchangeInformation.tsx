@@ -3,6 +3,8 @@ import { InputAdornment, TextField, Typography } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import { Controller, useFormContext } from 'react-hook-form'
 
+import { allowOnlyNumber } from 'utility'
+
 import { NewExchangeFormValues } from '../NewExchangeForm'
 
 // const marks = [
@@ -29,12 +31,6 @@ const ExchangeInformation: FC = () => {
     register,
     formState: { errors },
   } = useFormContext<NewExchangeFormValues>()
-
-  const allowOnlyNumber = (value: string): string =>
-    value
-      .replace(/[^0-9]/g, '')
-      .replace(/^0+/, '')
-      .slice(0, 5)
 
   // TODO: Add styling for titles
   return (
