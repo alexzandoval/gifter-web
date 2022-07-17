@@ -117,14 +117,11 @@ const Api = {
     removeParticipantsFromExchange: async (
       exchangeId: ResourceId,
       participantIds: number[],
-    ): Promise<boolean> => {
+    ): Promise<Exchange> => {
       const result = await apiAxios.delete<Exchange>(urlBuilder.participants(exchangeId).build(), {
-        data: participantIds,
+        data: { participantIds },
       })
-      if (result.status === 200) {
-        return true
-      }
-      return false
+      return result.data
     },
     updateParticipants: async (
       exchangeId: ResourceId,

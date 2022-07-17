@@ -1,5 +1,13 @@
 import { useEffect, useState } from 'react'
-import { Button, CircularProgress, List, ListItem, ListItemText, Typography } from '@mui/material'
+import {
+  Button,
+  CircularProgress,
+  List,
+  ListItem,
+  ListItemText,
+  TextField,
+  Typography,
+} from '@mui/material'
 import { Box } from '@mui/system'
 import { useHistory, useParams } from 'react-router-dom'
 
@@ -20,6 +28,7 @@ const SingleExchange = () => {
   const { id } = useParams<ExchangeParams>()
   const [exchangeLoading, setExchangeLoading] = useState<boolean>(true)
   const [exchangeUpdating, setExchangeUpdating] = useState<boolean>(false)
+  const [testParticipants, setTestParticipants] = useState<string>('')
   const history = useHistory()
   const { user } = useAuth()
   const notify = useNotification()
@@ -66,8 +75,32 @@ const SingleExchange = () => {
   }
 
   // TODO Implement
-  const handleEditExchange = async () => {
-    notify.error('Not implemented')
+  const handleUpdateParticipants = async () => {
+    const result = await Api.participants.updateParticipants(
+      exchange?.id || 1,
+      JSON.parse(testParticipants),
+    )
+    console.log('handleUpdateParticipants', result)
+    setExchange(result)
+  }
+
+  const handleAddParticipants = async () => {
+    const result = await Api.participants.addParticipantsToExchange(
+      exchange?.id || 1,
+      JSON.parse(testParticipants),
+    )
+    console.log('handleAddParticipants', result)
+    setExchange(result)
+  }
+
+  const handleRemoveParticipants = async () => {
+    console.log(JSON.parse(testParticipants))
+    const result = await Api.participants.removeParticipantsFromExchange(
+      exchange?.id || 1,
+      JSON.parse(testParticipants),
+    )
+    console.log('handleRemoveParticipants', result)
+    setExchange(result)
   }
 
   return (
@@ -101,10 +134,25 @@ const SingleExchange = () => {
           )
         })}
       </List>
+      <TextField value={testParticipants} onChange={(e) => setTestParticipants(e.target.value)} />
       {isOrganizer && (
         <Box sx={{ display: 'flex', justifyContent: 'space-around', maxWidth: 300 }}>
-          <Button onClick={handleEditExchange} variant="contained" disabled={exchangeUpdating}>
-            Edit
+          <Button onClick={handleAddParticipants} variant="contained" disabled={exchangeUpdating}>
+            Add
+          </Button>
+          <Button
+            onClick={handleRemoveParticipants}
+            variant="contained"
+            disabled={exchangeUpdating}
+          >
+            Remove
+          </Button>
+          <Button
+            onClick={handleUpdateParticipants}
+            variant="contained"
+            disabled={exchangeUpdating}
+          >
+            Update
           </Button>
           <Button
             onClick={handleDeleteExchange}
