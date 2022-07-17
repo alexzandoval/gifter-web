@@ -67,6 +67,11 @@ export default class URLBuilder {
     return this
   }
 
+  public participants(id: ResourceId): URLBuilder {
+    this.exchanges(id).addPath('/participants')
+    return this
+  }
+
   public build(): string {
     let url = this._url
     if (this._queryParams.length > 0) {

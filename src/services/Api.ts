@@ -5,6 +5,7 @@ import {
   CreateWishlistDto,
   Exchange,
   ResourceId,
+  UpdateParticipantDto,
   Wishlist,
   WishlistItem,
   WishlistWithItems,
@@ -99,6 +100,39 @@ const Api = {
           participants,
           ...rules,
         },
+      )
+      return result.data
+    },
+  },
+  participants: {
+    addParticipantsToExchange: async (
+      exchangeId: ResourceId,
+      participantNames: string[],
+    ): Promise<Exchange> => {
+      const result = await apiAxios.post<Exchange>(urlBuilder.participants(exchangeId).build(), {
+        participantNames,
+      })
+      return result.data
+    },
+    removeParticipantsFromExchange: async (
+      exchangeId: ResourceId,
+      participantIds: number[],
+    ): Promise<boolean> => {
+      const result = await apiAxios.delete<Exchange>(urlBuilder.participants(exchangeId).build(), {
+        data: participantIds,
+      })
+      if (result.status === 200) {
+        return true
+      }
+      return false
+    },
+    updateParticipants: async (
+      exchangeId: ResourceId,
+      participants: UpdateParticipantDto[],
+    ): Promise<Exchange> => {
+      const result = await apiAxios.patch<Exchange>(
+        urlBuilder.participants(exchangeId).build(),
+        participants,
       )
       return result.data
     },

@@ -7,9 +7,12 @@ export interface User {
   photoUrl: string
 }
 
-export interface Participant {
+export interface UpdateParticipantDto {
   id: number
   name: string
+}
+
+export interface Participant extends UpdateParticipantDto {
   exchangeId: number
   excludedDraws: Participant[]
   user: User
