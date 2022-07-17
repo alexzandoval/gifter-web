@@ -3,7 +3,7 @@ import { Link } from '@mui/material'
 import { AuthError, AuthErrorCodes } from 'firebase/auth'
 import { Link as RouterLink } from 'react-router-dom'
 
-import { ROUTES } from 'appConstants'
+import { AUTH_PROVIDERS, ROUTES } from 'appConstants'
 
 export const handleAuthError = (authError: AuthError): ReactNode => {
   switch (authError.code) {
@@ -29,6 +29,27 @@ export const handleAuthError = (authError: AuthError): ReactNode => {
       return 'Your account has been disabled, please contact support.'
     case AuthErrorCodes.POPUP_BLOCKED:
       return 'Popup was blocked, please allow popups for this site in order to sign in.'
+    case AuthErrorCodes.NEED_CONFIRMATION:
+      const availableProviders = (
+        authError.customData as any
+      )?._tokenResponse?.verifiedProvider?.map((provider: string) => {
+        // eslint-disable-next-line no-restricted-syntax, @typescript-eslint/no-unused-vars
+        for (const [_key, PROVIDER] of Object.entries(AUTH_PROVIDERS)) {
+          if (PROVIDER.ID === provider) return PROVIDER.NAME
+        }
+        return null
+      })
+      if (availableProviders?.length > 0) {
+        return (
+          <>
+            This account is already linked with the following providers:{' '}
+            {availableProviders.join(', ')}.
+            <br />
+            Sign in with one of them to continue.
+          </>
+        )
+      }
+      return 'This account is already linked with another provider. Sign in with it to continue.'
     default:
       return 'Something went wrong, try again later.'
   }

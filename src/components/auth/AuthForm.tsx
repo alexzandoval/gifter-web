@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   submitErrorText: {
     marginBottom: theme.spacing(2),
+    color: theme.palette.error.main,
   },
 }))
 

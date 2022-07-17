@@ -23,7 +23,7 @@ import {
 } from 'firebase/auth'
 import { useHistory } from 'react-router-dom'
 
-import { ROUTES } from 'appConstants'
+import { AUTH_PROVIDERS, ROUTES } from 'appConstants'
 import { isDevelopment } from 'utility'
 
 import firebaseApp from '../firebase/config'
@@ -99,7 +99,7 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [authInitialized, setAuthInitialized] = useState<AuthContextType['authInitialized']>(false)
   const googleAuthProvider = useMemo(() => new GoogleAuthProvider(), [])
   const facebookAuthProvider = useMemo(() => new FacebookAuthProvider(), [])
-  const appleAuthProvider = useMemo(() => new OAuthProvider('apple.com'), [])
+  const appleAuthProvider = useMemo(() => new OAuthProvider(AUTH_PROVIDERS.APPLE.ID), [])
 
   const logout = async () => {
     await signOut(auth)
