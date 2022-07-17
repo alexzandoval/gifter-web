@@ -1,4 +1,5 @@
-import { FC, useState } from 'react'
+/* eslint-disable react/jsx-no-duplicate-props */
+import { FC, useEffect, useMemo, useState } from 'react'
 import {
   Box,
   Button,
@@ -20,15 +21,23 @@ import { allowOnlyNumber, isServerValidationError } from 'utility'
 import Api from 'services/Api'
 import { LoadingButton } from '@mui/lab'
 import useNotification from 'hooks/useNotification'
+import clsx from 'clsx'
 
 interface Props {
   exchange: Exchange
   onUpdate?: (exchange: Exchange) => void
 }
 
+const textfieldPadding = { padding: '0.5rem' }
+
 const useStyles = makeStyles((theme: Theme) => ({
+  header: {
+    fontSize: '2rem',
+  },
+  textfieldPadding,
   subheader: {
     color: theme.palette.text.secondary,
+    marginTop: theme.spacing(1),
   },
   propertyHeader: {
     fontWeight: 'bold',
@@ -47,25 +56,33 @@ export type UpdateExchangeFormValues = {
   numberOfDraws: Exchange['numberOfDraws']
 }
 
+const getDefaultValues = (exchange: Exchange): UpdateExchangeFormValues => ({
+  name: exchange.name,
+  description: exchange.description,
+  budget: exchange.budget,
+  date: exchange.date,
+  numberOfDraws: exchange.numberOfDraws,
+})
+
 const ExchangeInformationSummary: FC<Props> = ({ exchange, onUpdate }) => {
   const classes = useStyles()
+  const defaultValues = useMemo(() => getDefaultValues(exchange), [exchange])
   const [isEdit, setIsEdit] = useState<boolean>(false)
   const [updateIsLoading, setUpdateIsLoading] = useState<boolean>(false)
   const notify = useNotification()
-
-  const defaultValues: UpdateExchangeFormValues = {
-    name: exchange.name,
-    description: exchange.description,
-    budget: exchange.budget,
-    date: exchange.date,
-    numberOfDraws: exchange.numberOfDraws,
-  }
   const {
     control,
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({ defaultValues })
+
+  useEffect(() => {
+    if (!isEdit) {
+      reset(defaultValues)
+    }
+  }, [isEdit, defaultValues, reset])
 
   let date = null
   let description = null
@@ -102,9 +119,13 @@ const ExchangeInformationSummary: FC<Props> = ({ exchange, onUpdate }) => {
   const name = isEdit ? (
     <TextField
       defaultValue={defaultValues.name}
-      variant="standard"
+      variant="outlined"
+      fullWidth
       error={Boolean(errors.name)}
       helperText={errors.name?.message}
+      InputProps={{
+        classes: { input: clsx(classes.header, classes.textfieldPadding) },
+      }}
       inputProps={{
         ...register('name', {
           required: 'Please enter a name for your exchange.',
@@ -112,14 +133,21 @@ const ExchangeInformationSummary: FC<Props> = ({ exchange, onUpdate }) => {
       }}
     />
   ) : (
-    <AppTypography variant="h4">{exchange.name}</AppTypography>
+    <AppTypography variant="h2" className={classes.header}>
+      {exchange.name}
+    </AppTypography>
   )
 
   if (exchange.date || isEdit) {
     date = (
-      <AppTypography className={classes.subheader}>
-        Exchange happening on{' '}
-        {isEdit ? (
+      <Box display="flex" flexDirection="row" mt={1}>
+        <AppTypography className={classes.subheader}>
+          Exchange happening on{' '}
+          {!isEdit && exchange.date && (
+            <AppTypography bold>{format(new Date(exchange.date), 'MMMM d, yyyy')}</AppTypography>
+          )}
+        </AppTypography>
+        {isEdit && (
           <Controller
             name="date"
             control={control}
@@ -128,16 +156,18 @@ const ExchangeInformationSummary: FC<Props> = ({ exchange, onUpdate }) => {
               <DatePicker
                 {...field}
                 minDate={new Date()}
-                renderInput={(params) => <TextField variant="standard" {...params} />}
+                renderInput={(params) => (
+                  <TextField
+                    variant="outlined"
+                    sx={{ '.MuiInputBase-input': textfieldPadding, ml: 1 }}
+                    {...params}
+                  />
+                )}
               />
             )}
           />
-        ) : (
-          exchange.date && (
-            <AppTypography bold>{format(new Date(exchange.date), 'MMMM d, yyyy')}</AppTypography>
-          )
         )}
-      </AppTypography>
+      </Box>
     )
   }
   if (exchange.description || isEdit) {
@@ -147,12 +177,16 @@ const ExchangeInformationSummary: FC<Props> = ({ exchange, onUpdate }) => {
         {isEdit ? (
           <TextField
             defaultValue={defaultValues.description}
-            variant="standard"
+            variant="outlined"
             multiline
+            fullWidth
+            InputProps={{
+              classes: { root: classes.textfieldPadding },
+            }}
             inputProps={register('description')}
           />
         ) : (
-          <AppTypography>{exchange.description}</AppTypography>
+          <AppTypography sx={{ whiteSpace: 'pre-line' }}>{exchange.description}</AppTypography>
         )}
       </Box>
     )
@@ -169,11 +203,14 @@ const ExchangeInformationSummary: FC<Props> = ({ exchange, onUpdate }) => {
             render={({ field }) => (
               <TextField
                 {...field}
-                variant="standard"
+                variant="outlined"
                 onChange={(e) => field.onChange(allowOnlyNumber(e.target.value))}
                 sx={{ width: 125 }}
                 type="text"
-                InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }}
+                InputProps={{
+                  startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                  classes: { input: classes.textfieldPadding },
+                }}
               />
             )}
           />

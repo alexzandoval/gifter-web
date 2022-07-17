@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { ThemeProvider, CssBaseline, StyledEngineProvider } from '@mui/material'
-import { LocalizationProvider } from '@mui/lab'
-import DateAdapter from '@mui/lab/AdapterDateFns'
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { BrowserRouter, Route, RouteProps, Switch } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 
@@ -43,7 +43,7 @@ const App: FC = () => {
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={theme}>
           <AuthContextProvider>
-            <LocalizationProvider dateAdapter={DateAdapter}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
               <CssBaseline />
               <Layout>
                 <Switch>{appRoutes}</Switch>
