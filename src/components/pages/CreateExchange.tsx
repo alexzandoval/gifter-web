@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material'
 
-import NewExchangeForm from 'components/exchanges/NewExchangeForm'
+import NewExchangeForm from '@Components/exchanges/NewExchangeForm'
 
 const Home = () => (
   <>

@@ -2,7 +2,22 @@
   "compilerOptions": {
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "baseUrl": "./src",
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["*"],
+      "@Assets/*": ["assets/*"],
+      "@Components/*": ["components/*"],
+      "@Constants": ["constants"],
+      "@Context/*": ["context/*"],
+      "@Enums": ["ts/enums"],
+      "@Firebase/*": ["firebase/*"],
+      "@Hooks/*": ["hooks/*"],
+      "@Icons": ["icons"],
+      "@Services/*": ["services/*"],
+      "@Styles/*": ["styles/*"],
+      "@Types": ["ts/types"],
+      "@Utility": ["utility"]
+    },
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

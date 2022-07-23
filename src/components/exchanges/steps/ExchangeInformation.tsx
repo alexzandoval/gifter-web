@@ -3,7 +3,7 @@ import { InputAdornment, TextField, Typography } from '@mui/material'
 import { DatePicker } from '@mui/x-date-pickers'
 import { Controller, useFormContext } from 'react-hook-form'
 
-import { allowOnlyNumber } from 'utility'
+import { allowOnlyNumber } from '@Utility'
 
 import { NewExchangeFormValues } from '../NewExchangeForm'
 

@@ -11,13 +11,13 @@ import {
 import { Box } from '@mui/system'
 import { useHistory, useParams } from 'react-router-dom'
 
-import { ROUTES } from 'appConstants'
-import { Centered, Loader } from 'components/common'
-import { useAuth } from 'context/Auth'
-import Api from 'services/Api'
-import { Exchange } from 'ts/types'
-import useNotification from 'hooks/useNotification'
-import ExchangeInformationSummary from 'components/exchanges/utility/ExchangeInformationSummary'
+import { ROUTES } from '@Constants'
+import { Centered, Loader } from '@Components/common'
+import ExchangeInformationSummary from '@Components/exchanges/utility/ExchangeInformationSummary'
+import { useAuth } from '@Context/Auth'
+import Api from '@Services/Api'
+import { Exchange } from '@Types'
+import useNotification from '@Hooks/useNotification'
 
 type ExchangeParams = {
   id: string

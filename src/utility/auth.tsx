@@ -3,7 +3,7 @@ import { Link } from '@mui/material'
 import { AuthError, AuthErrorCodes } from 'firebase/auth'
 import { Link as RouterLink } from 'react-router-dom'
 
-import { AUTH_PROVIDERS, ROUTES } from 'appConstants'
+import { AUTH_PROVIDERS, ROUTES } from '@Constants'
 
 export const handleAuthError = (authError: AuthError): ReactNode => {
   switch (authError.code) {

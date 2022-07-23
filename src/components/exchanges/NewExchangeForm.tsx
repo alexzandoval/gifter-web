@@ -14,10 +14,10 @@ import {
 import { LoadingButton } from '@mui/lab'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 
-import { ROUTES } from 'appConstants'
-import useNotification from 'hooks/useNotification'
-import Api from 'services/Api'
-import { isServerValidationError, ucFirst } from 'utility'
+import { ROUTES } from '@/constants'
+import useNotification from '@Hooks/useNotification'
+import Api from '@Services/Api'
+import { isServerValidationError, ucFirst } from '@Utility'
 
 import AddParticipants from './steps/AddParticipants'
 import ExchangeRules from './steps/ExchangeRules'

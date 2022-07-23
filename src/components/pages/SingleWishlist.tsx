@@ -10,11 +10,11 @@ import {
 } from '@mui/material'
 import { useHistory, useParams } from 'react-router-dom'
 
-import { ROUTES } from 'appConstants'
-import { AddTextButton, Centered, Loader } from 'components/common'
-import Api from 'services/Api'
-import { WishlistWithItems } from 'ts/types'
-import useNotification from 'hooks/useNotification'
+import { ROUTES } from '@Constants'
+import { AddTextButton, Centered, Loader } from '@Components/common'
+import useNotification from '@Hooks/useNotification'
+import Api from '@Services/Api'
+import { WishlistWithItems } from '@Types'
 
 type WishlistParams = {
   id: string

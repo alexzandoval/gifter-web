@@ -10,10 +10,10 @@ import {
   Typography,
 } from '@mui/material'
 
-import { AppTypography } from 'components/common'
-import useNotification from 'hooks/useNotification'
-import Api from 'services/Api'
-import { Exchange, Participant } from 'ts/types'
+import { AppTypography } from '@Components/common'
+import useNotification from '@Hooks/useNotification'
+import Api from '@Services/Api'
+import { Exchange, Participant } from '@Types'
 
 interface Props {
   exchange: Exchange

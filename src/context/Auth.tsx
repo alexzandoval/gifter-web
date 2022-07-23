@@ -23,10 +23,9 @@ import {
 } from 'firebase/auth'
 import { useHistory } from 'react-router-dom'
 
-import { AUTH_PROVIDERS, ROUTES } from 'appConstants'
-import { isDevelopment } from 'utility'
-
-import firebaseApp from '../firebase/config'
+import { AUTH_PROVIDERS, ROUTES } from '@Constants'
+import firebaseApp from '@Firebase/config'
+import { isDevelopment } from '@Utility'
 
 const auth = getAuth(firebaseApp)
 

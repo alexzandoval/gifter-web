@@ -1,9 +1,9 @@
 import { FC } from 'react'
 import { Redirect, Route, RouteProps } from 'react-router-dom'
 
-import { ROUTES } from 'appConstants'
-import { useAuth } from 'context/Auth'
-import useQuery from 'hooks/useQuery'
+import { ROUTES } from '@Constants'
+import { useAuth } from '@Context/Auth'
+import useQuery from '@Hooks/useQuery'
 
 const PublicOnlyRoute: FC<RouteProps> = (props) => {
   const { user, authInitialized } = useAuth()

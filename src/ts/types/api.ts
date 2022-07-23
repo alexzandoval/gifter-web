@@ -1,4 +1,5 @@
-import { ExclusionParticipant, Rules } from 'components/exchanges/NewExchangeForm'
+// TODO Move type definitions
+import { ExclusionParticipant, Rules } from '@Components/exchanges/NewExchangeForm'
 
 export interface User {
   uid: string

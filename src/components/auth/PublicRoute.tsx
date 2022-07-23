@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { Route, RouteProps } from 'react-router-dom'
 
-import { useAuth } from 'context/Auth'
+import { useAuth } from '@Context/Auth'
 
 const PublicRoute: FC<RouteProps> = (props) => {
   const { authInitialized } = useAuth()

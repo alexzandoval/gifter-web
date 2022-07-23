@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from '@mui/material'
 import { Link as RouterLink, useLocation } from 'react-router-dom'
 
-import { ROUTES } from 'appConstants'
+import { ROUTES } from '@/constants'
 import { AppTypography } from 'components/common'
 import { URLBuilder } from 'utility'
 

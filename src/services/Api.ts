@@ -1,5 +1,5 @@
 import { ExclusionParticipant, Rules } from 'components/exchanges/NewExchangeForm'
-import { apiAxios } from 'context/Auth'
+import { apiAxios } from '@Context/Auth'
 import {
   CreateExchangeDto,
   CreateWishlistDto,
@@ -9,8 +9,8 @@ import {
   Wishlist,
   WishlistItem,
   WishlistWithItems,
-} from 'ts/types'
-import URLBuilder from 'utility/URLBuilder'
+} from '@Types'
+import { URLBuilder } from '@Utility'
 
 const urlBuilder = new URLBuilder()
 

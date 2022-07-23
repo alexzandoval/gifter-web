@@ -21,10 +21,10 @@ import {
 import { makeStyles } from '@mui/styles'
 import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom'
 
-import NavigationDrawer from 'components/layout/NavigationDrawer'
-import { ROUTES } from 'appConstants'
-import { useAuth } from 'context/Auth'
-import { useColorScheme } from 'context/Theme'
+import NavigationDrawer from '@Components/layout/NavigationDrawer'
+import { ROUTES } from '@Constants'
+import { useAuth } from '@Context/Auth'
+import { useColorScheme } from '@Context/Theme'
 
 const useStyles = makeStyles((theme: Theme) => ({
   appBar: {

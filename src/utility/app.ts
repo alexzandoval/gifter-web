@@ -1,4 +1,4 @@
-import { ServerValidationError } from 'ts/types'
+import { ServerValidationError } from '@Types'
 
 export const isServerValidationError = (e: any): e is ServerValidationError =>
   typeof e.error === 'string' &&

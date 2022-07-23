@@ -1,4 +1,4 @@
-import { ResourceId } from 'ts/types'
+import { ResourceId } from '@Types'
 
 export default class URLBuilder {
   private _baseUrl: string

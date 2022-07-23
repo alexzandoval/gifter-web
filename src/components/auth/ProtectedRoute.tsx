@@ -1,9 +1,9 @@
 import { FC, useEffect, useState } from 'react'
 import { Redirect, Route, RouteProps, useLocation } from 'react-router-dom'
 
-import { ROUTES } from 'appConstants'
-import { useAuth } from 'context/Auth'
-import { URLBuilder } from 'utility'
+import { ROUTES } from '@Constants'
+import { useAuth } from '@Context/Auth'
+import { URLBuilder } from '@Utility'
 
 const urlBuilder = new URLBuilder({ isApiCall: false })
 
