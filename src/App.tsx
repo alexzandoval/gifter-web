@@ -4,6 +4,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { BrowserRouter, Route, RouteProps, Switch } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 import { NOTIFICATION_AUTOHIDE_DURATION, ROUTES } from 'appConstants'
 import ProtectedRoute from 'components/auth/ProtectedRoute'
@@ -16,6 +18,8 @@ import getTheme from 'styles/theme'
 import { AppRoutes } from 'ts/types'
 
 import 'react-toastify/dist/ReactToastify.min.css'
+
+const queryClient = new QueryClient()
 
 const App: FC = () => {
   const { colorScheme } = useColorScheme()
@@ -43,17 +47,20 @@ const App: FC = () => {
       <StyledEngineProvider injectFirst>
         <ThemeProvider theme={theme}>
           <AuthContextProvider>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <CssBaseline />
-              <Layout>
-                <Switch>{appRoutes}</Switch>
-                <ToastContainer
-                  autoClose={NOTIFICATION_AUTOHIDE_DURATION}
-                  position="bottom-left"
-                  theme={colorScheme}
-                />
-              </Layout>
-            </LocalizationProvider>
+            <QueryClientProvider client={queryClient}>
+              <ReactQueryDevtools />
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <CssBaseline />
+                <Layout>
+                  <Switch>{appRoutes}</Switch>
+                  <ToastContainer
+                    autoClose={NOTIFICATION_AUTOHIDE_DURATION}
+                    position="bottom-left"
+                    theme={colorScheme}
+                  />
+                </Layout>
+              </LocalizationProvider>
+            </QueryClientProvider>
           </AuthContextProvider>
         </ThemeProvider>
       </StyledEngineProvider>
