@@ -18,7 +18,7 @@ import { ROUTES } from '@Constants'
 import { Centered, Loader } from '@Components/common'
 import { useAuth } from '@Context/Auth'
 import useNotification from '@Hooks/useNotification'
-import Api from '@Services/Api'
+import { ExchangeService } from '@Services'
 import { Exchange } from '@Types'
 
 const Exchanges = () => {
@@ -31,7 +31,7 @@ const Exchanges = () => {
     const fetchExchanges = async () => {
       try {
         setExchangesLoading(true)
-        const fetchedExchanges = await Api.exchanges.getAll()
+        const fetchedExchanges = await ExchangeService.getAll()
         setExchanges(fetchedExchanges)
       } catch (e) {
         // eslint-disable-next-line no-console

@@ -19,7 +19,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
 import { AppTypography } from '@Components/common'
 import useNotification from '@Hooks/useNotification'
-import Api from '@Services/Api'
+import { ExchangeService } from '@Services'
 import { Exchange } from '@Types'
 import { allowOnlyNumber, isServerValidationError } from '@Utility'
 
@@ -92,7 +92,7 @@ const ExchangeInformationSummary: FC<Props> = ({ exchange, onUpdate }) => {
   const onSubmit: SubmitHandler<UpdateExchangeFormValues> = async (data) => {
     setUpdateIsLoading(true)
     try {
-      const updatedExchange = await Api.exchanges.update({
+      const updatedExchange = await ExchangeService.update({
         ...exchange,
         name: data.name,
         budget: data.budget ? Number(data.budget) : undefined,

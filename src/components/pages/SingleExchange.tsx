@@ -15,7 +15,7 @@ import { ROUTES } from '@Constants'
 import { Centered, Loader } from '@Components/common'
 import ExchangeInformationSummary from '@Components/exchanges/utility/ExchangeInformationSummary'
 import { useAuth } from '@Context/Auth'
-import Api from '@Services/Api'
+import { ExchangeService, ParticipantService, WishlistService } from '@Services'
 import { Exchange } from '@Types'
 import useNotification from '@Hooks/useNotification'
 
@@ -38,7 +38,7 @@ const SingleExchange = () => {
     const fetchExchange = async () => {
       try {
         setExchangeLoading(true)
-        const fetchedExchange = await Api.exchanges.get(id)
+        const fetchedExchange = await ExchangeService.get(id)
         setExchange(fetchedExchange)
       } catch (e) {
         // eslint-disable-next-line no-console
@@ -58,7 +58,7 @@ const SingleExchange = () => {
     if (exchange) {
       try {
         setExchangeUpdating(true)
-        const deleteWasSuccessful = await Api.exchanges.delete(exchange.id)
+        const deleteWasSuccessful = await WishlistService.delete(exchange.id)
         if (deleteWasSuccessful) {
           notify.success('Exchange was successfully deleted.', { redirect: ROUTES.exchanges.path })
         } else {
@@ -76,7 +76,7 @@ const SingleExchange = () => {
 
   // TODO Implement
   const handleUpdateParticipants = async () => {
-    const result = await Api.participants.updateParticipants(
+    const result = await ParticipantService.updateParticipants(
       exchange?.id || 1,
       JSON.parse(testParticipants),
     )
@@ -85,7 +85,7 @@ const SingleExchange = () => {
   }
 
   const handleAddParticipants = async () => {
-    const result = await Api.participants.addParticipantsToExchange(
+    const result = await ParticipantService.addParticipantsToExchange(
       exchange?.id || 1,
       JSON.parse(testParticipants),
     )
@@ -95,7 +95,7 @@ const SingleExchange = () => {
 
   const handleRemoveParticipants = async () => {
     console.log(JSON.parse(testParticipants))
-    const result = await Api.participants.removeParticipantsFromExchange(
+    const result = await ParticipantService.removeParticipantsFromExchange(
       exchange?.id || 1,
       JSON.parse(testParticipants),
     )

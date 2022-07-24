@@ -11,7 +11,7 @@ import UserNotSignedIn from '@Components/exchanges/join/UserNotSignedIn'
 import AllSpotsTakenInExchange from '@Components/exchanges/join/AllSpotsTakenInExchange'
 import { useAuth } from '@Context/Auth'
 import useNotification from '@Hooks/useNotification'
-import Api from '@Services/Api'
+import { ExchangeService } from '@Services'
 import { Exchange } from '@Types'
 
 type ExchangeParams = {
@@ -30,7 +30,7 @@ const JoinExchange = () => {
     const fetchExchange = async () => {
       try {
         setExchangeLoading(true)
-        const fetchedExchange = await Api.exchanges.getJoinExchangeInformation(id)
+        const fetchedExchange = await ExchangeService.getJoinExchangeInformation(id)
         setExchange(fetchedExchange)
       } catch (e) {
         // eslint-disable-next-line no-console
