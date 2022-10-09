@@ -14,3 +14,5 @@ export const allowOnlyNumber = (value: string): string =>
     .slice(0, 5)
 
 export const isDevelopment = process.env.REACT_APP_ENV === 'development'
+
+export const isNullOrUndefined = (value: any): boolean => value === null || value === undefined

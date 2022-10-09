@@ -17,11 +17,12 @@ import clsx from 'clsx'
 import { format } from 'date-fns'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
+import { useAuth } from '@Context/Auth'
 import { AppTypography } from '@Components/common'
 import useNotification from '@Hooks/useNotification'
 import { ExchangeService } from '@Services'
 import { Exchange } from '@Types'
-import { allowOnlyNumber, isServerValidationError } from '@Utility'
+import { allowOnlyNumber, isNullOrUndefined, isServerValidationError } from '@Utility'
 
 interface Props {
   exchange: Exchange
@@ -66,8 +67,9 @@ const getDefaultValues = (exchange: Exchange): UpdateExchangeFormValues => ({
 
 const ExchangeInformationSummary: FC<Props> = ({ exchange, onUpdate }) => {
   const classes = useStyles()
+  const { user } = useAuth()
   const defaultValues = useMemo(() => getDefaultValues(exchange), [exchange])
-  const [isEdit, setIsEdit] = useState<boolean>(false)
+  const [inEditMode, setInEditMode] = useState<boolean>(false)
   const [updateIsLoading, setUpdateIsLoading] = useState<boolean>(false)
   const notify = useNotification()
   const {
@@ -75,21 +77,22 @@ const ExchangeInformationSummary: FC<Props> = ({ exchange, onUpdate }) => {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm({ defaultValues })
 
   useEffect(() => {
-    if (!isEdit) {
+    if (!inEditMode) {
       reset(defaultValues)
     }
-  }, [isEdit, defaultValues, reset])
+  }, [inEditMode, defaultValues, reset])
 
   let date = null
   let description = null
   let budget = null
   let numberOfDraws = null
 
-  const onSubmit: SubmitHandler<UpdateExchangeFormValues> = async (data) => {
+  const onUpdateExchange: SubmitHandler<UpdateExchangeFormValues> = async (data) => {
     setUpdateIsLoading(true)
     try {
       const updatedExchange = await ExchangeService.update({
@@ -101,7 +104,7 @@ const ExchangeInformationSummary: FC<Props> = ({ exchange, onUpdate }) => {
         numberOfDraws: data.numberOfDraws,
       })
       if (onUpdate) onUpdate(updatedExchange)
-      setIsEdit(false)
+      setInEditMode(false)
       notify.success('Exchange updated!')
     } catch (e) {
       notify.error('Something went wrong while updating Exchange. Please try again.')
@@ -116,7 +119,7 @@ const ExchangeInformationSummary: FC<Props> = ({ exchange, onUpdate }) => {
     }
   }
 
-  const name = isEdit ? (
+  const name = inEditMode ? (
     <TextField
       defaultValue={defaultValues.name}
       variant="outlined"
@@ -138,16 +141,16 @@ const ExchangeInformationSummary: FC<Props> = ({ exchange, onUpdate }) => {
     </AppTypography>
   )
 
-  if (exchange.date || isEdit) {
+  if (exchange.date || inEditMode) {
     date = (
       <Box display="flex" flexDirection="row" mt={1}>
         <AppTypography className={classes.subheader}>
           Exchange happening on{' '}
-          {!isEdit && exchange.date && (
+          {!inEditMode && exchange.date && (
             <AppTypography bold>{format(new Date(exchange.date), 'MMMM d, yyyy')}</AppTypography>
           )}
         </AppTypography>
-        {isEdit && (
+        {inEditMode && (
           <Controller
             name="date"
             control={control}
@@ -170,11 +173,11 @@ const ExchangeInformationSummary: FC<Props> = ({ exchange, onUpdate }) => {
       </Box>
     )
   }
-  if (exchange.description || isEdit) {
+  if (exchange.description || inEditMode) {
     description = (
       <Box className={classes.informationSection}>
         <AppTypography className={classes.propertyHeader}>Description</AppTypography>
-        {isEdit ? (
+        {inEditMode ? (
           <TextField
             defaultValue={defaultValues.description}
             variant="outlined"
@@ -191,11 +194,11 @@ const ExchangeInformationSummary: FC<Props> = ({ exchange, onUpdate }) => {
       </Box>
     )
   }
-  if (exchange.budget || isEdit) {
+  if (exchange.budget || inEditMode) {
     budget = (
       <Box className={classes.informationSection}>
         <AppTypography className={classes.propertyHeader}>Gift Budget</AppTypography>
-        {isEdit ? (
+        {inEditMode ? (
           <Controller
             name="budget"
             defaultValue={defaultValues.budget}
@@ -220,14 +223,19 @@ const ExchangeInformationSummary: FC<Props> = ({ exchange, onUpdate }) => {
       </Box>
     )
   }
-  if (exchange.numberOfDraws || isEdit) {
+  if (!isNullOrUndefined(exchange.numberOfDraws) || inEditMode) {
+    const currentNumberOfDraws = watch('numberOfDraws')
     numberOfDraws = (
       <Box className={classes.informationSection}>
         <AppTypography className={classes.propertyHeader}>Number of Draws</AppTypography>
         <AppTypography className={classes.subheader}>
-          This is the number of people you will need to buy a gift for:
+          {+currentNumberOfDraws === 0
+            ? 'You will not be drawing names for this exchange.'
+            : `You will be buying a gift for ${currentNumberOfDraws} ${
+                currentNumberOfDraws > 1 ? 'people.' : 'person.'
+              }`}
         </AppTypography>
-        {isEdit ? (
+        {inEditMode && (
           <Controller
             name="numberOfDraws"
             control={control}
@@ -245,14 +253,12 @@ const ExchangeInformationSummary: FC<Props> = ({ exchange, onUpdate }) => {
               </RadioGroup>
             )}
           />
-        ) : (
-          <AppTypography>{exchange.numberOfDraws}</AppTypography>
         )}
       </Box>
     )
   }
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onUpdateExchange)}>
       {name}
       {date}
       {(description || budget || numberOfDraws) && (
@@ -263,17 +269,27 @@ const ExchangeInformationSummary: FC<Props> = ({ exchange, onUpdate }) => {
       {description}
       {budget}
       {numberOfDraws}
-      <Button
-        variant="contained"
-        disabled={updateIsLoading}
-        onClick={() => setIsEdit((prev) => !prev)}
-      >
-        {isEdit ? 'Cancel Edit' : 'Edit'}
-      </Button>
-      {isEdit && (
-        <LoadingButton variant="contained" type="submit" loading={updateIsLoading}>
-          Update
-        </LoadingButton>
+      {user && user.uid === exchange.organizer.uid && (
+        <>
+          <Button
+            sx={{ margin: '4px' }}
+            variant="contained"
+            disabled={updateIsLoading}
+            onClick={() => setInEditMode((prev) => !prev)}
+          >
+            {inEditMode ? 'Cancel Edit' : 'Edit'}
+          </Button>
+          {inEditMode && (
+            <LoadingButton
+              sx={{ margin: '4px' }}
+              variant="contained"
+              type="submit"
+              loading={updateIsLoading}
+            >
+              Update Exchange
+            </LoadingButton>
+          )}
+        </>
       )}
     </form>
   )
