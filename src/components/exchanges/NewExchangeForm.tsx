@@ -14,10 +14,10 @@ import {
 import { LoadingButton } from '@mui/lab'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 
-import { ROUTES } from 'appConstants'
-import useNotification from 'hooks/useNotification'
-import Api from 'services/Api'
-import { isServerValidationError, ucFirst } from 'utility'
+import { ROUTES } from '@/constants'
+import useNotification from '@Hooks/useNotification'
+import { ExchangeService } from '@Services'
+import { isServerValidationError, ucFirst } from '@Utility'
 
 import AddParticipants from './steps/AddParticipants'
 import ExchangeRules from './steps/ExchangeRules'
@@ -135,7 +135,7 @@ const NewExchangeForm: FC = () => {
           try {
             setNextStepIsLoading(true)
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const result = await Api.exchanges.checkExclusions(participants, rules)
+            const result = await ExchangeService.checkExclusions(participants, rules)
             isValidDraw = result.isValid
             if (!isValidDraw) {
               throw new Error('Invalid draw')
@@ -180,7 +180,7 @@ const NewExchangeForm: FC = () => {
   const onSubmit: SubmitHandler<NewExchangeFormValues> = async (data) => {
     setFormIsLoading(true)
     try {
-      const newExchange = await Api.exchanges.create({
+      const newExchange = await ExchangeService.create({
         name: data.information.name,
         budget: data.information.budget ? Number(data.information.budget) : undefined,
         date: data.information.date || undefined,

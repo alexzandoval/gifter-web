@@ -12,16 +12,16 @@ import {
 } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 import { DatePicker } from '@mui/x-date-pickers'
-import { format } from 'date-fns'
-
-import { Exchange } from 'ts/types'
-import { AppTypography } from 'components/common'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
-import { allowOnlyNumber, isServerValidationError } from 'utility'
-import Api from 'services/Api'
 import { LoadingButton } from '@mui/lab'
-import useNotification from 'hooks/useNotification'
 import clsx from 'clsx'
+import { format } from 'date-fns'
+import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+
+import { AppTypography } from '@Components/common'
+import useNotification from '@Hooks/useNotification'
+import { ExchangeService } from '@Services'
+import { Exchange } from '@Types'
+import { allowOnlyNumber, isServerValidationError } from '@Utility'
 
 interface Props {
   exchange: Exchange
@@ -92,7 +92,7 @@ const ExchangeInformationSummary: FC<Props> = ({ exchange, onUpdate }) => {
   const onSubmit: SubmitHandler<UpdateExchangeFormValues> = async (data) => {
     setUpdateIsLoading(true)
     try {
-      const updatedExchange = await Api.exchanges.update({
+      const updatedExchange = await ExchangeService.update({
         ...exchange,
         name: data.name,
         budget: data.budget ? Number(data.budget) : undefined,

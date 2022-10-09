@@ -10,11 +10,11 @@ import {
 } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 
-import { ROUTES } from 'appConstants'
-import { AddTextButton, Loader } from 'components/common'
-import useNotification from 'hooks/useNotification'
-import Api from 'services/Api'
-import { Wishlist } from 'ts/types'
+import { ROUTES } from '@Constants'
+import { AddTextButton, Loader } from '@Components/common'
+import useNotification from '@Hooks/useNotification'
+import { WishlistService } from '@Services'
+import { Wishlist } from '@Types'
 
 const Wishlists = () => {
   const [wishlists, setWishlists] = useState<Wishlist[]>([])
@@ -51,7 +51,7 @@ const Wishlists = () => {
     }
     try {
       setNewWishlistIsLoading(true)
-      const newWishlist = await Api.wishlists.create({ name: newWishlistName })
+      const newWishlist = await WishlistService.create({ name: newWishlistName })
       setWishlists((prev) => [...prev, newWishlist])
     } finally {
       handleLeaveAddMode()
@@ -63,7 +63,7 @@ const Wishlists = () => {
     const fetchWishlists = async () => {
       try {
         setWishlistsLoading(true)
-        const fetchedWishlists = await Api.wishlists.getAll()
+        const fetchedWishlists = await WishlistService.getAll()
         setWishlists(fetchedWishlists)
       } catch (e) {
         // eslint-disable-next-line no-console

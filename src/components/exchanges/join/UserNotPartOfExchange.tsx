@@ -10,10 +10,10 @@ import {
   Typography,
 } from '@mui/material'
 
-import { AppTypography } from 'components/common'
-import useNotification from 'hooks/useNotification'
-import Api from 'services/Api'
-import { Exchange, Participant } from 'ts/types'
+import { AppTypography } from '@Components/common'
+import useNotification from '@Hooks/useNotification'
+import { ExchangeService } from '@Services'
+import { Exchange, Participant } from '@Types'
 
 interface Props {
   exchange: Exchange
@@ -37,7 +37,10 @@ const UserNotPartOfExchange: FC<Props> = ({ exchange, unclaimedParticipants, onS
   const handleJoinExchange = async () => {
     try {
       setJoinExchangeLoading(true)
-      const updatedExchange = await Api.exchanges.postJoinExchange(exchange.id, selectedParticipant)
+      const updatedExchange = await ExchangeService.postJoinExchange(
+        exchange.id,
+        selectedParticipant,
+      )
       onSubmit(updatedExchange)
       notify.success(
         `Successfully joined ${organizerName ? `${organizerName}'s` : 'the'} exchange!`,

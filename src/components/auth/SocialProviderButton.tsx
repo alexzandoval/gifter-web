@@ -4,8 +4,8 @@ import { Apple, Email, FacebookOutlined } from '@mui/icons-material'
 import { LoadingButton, LoadingButtonProps } from '@mui/lab'
 import { SxProps } from '@mui/system'
 
-import { GoogleIcon } from 'icons'
-import { SocialProvider } from 'ts/enums'
+import { GoogleIcon } from '@Icons'
+import { SocialProvider } from '@Enums'
 
 interface Props extends LoadingButtonProps {
   loading?: boolean

@@ -1,5 +1,6 @@
-import { AppTypography } from 'components/common'
 import { FC } from 'react'
+
+import { AppTypography } from '@Components/common'
 
 interface Props {
   organizerName?: string

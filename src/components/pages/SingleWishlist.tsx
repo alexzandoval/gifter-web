@@ -10,11 +10,11 @@ import {
 } from '@mui/material'
 import { useHistory, useParams } from 'react-router-dom'
 
-import { ROUTES } from 'appConstants'
-import { AddTextButton, Centered, Loader } from 'components/common'
-import Api from 'services/Api'
-import { WishlistWithItems } from 'ts/types'
-import useNotification from 'hooks/useNotification'
+import { ROUTES } from '@Constants'
+import { AddTextButton, Centered, Loader } from '@Components/common'
+import useNotification from '@Hooks/useNotification'
+import { WishlistService } from '@Services'
+import { WishlistWithItems } from '@Types'
 
 type WishlistParams = {
   id: string
@@ -36,7 +36,7 @@ const SingleWishlist = () => {
     const fetchWishlist = async () => {
       try {
         setWishlistLoading(true)
-        const fetchedWishlist = await Api.wishlists.get(id)
+        const fetchedWishlist = await WishlistService.get(id)
         setWishlist(fetchedWishlist)
       } catch (e) {
         // eslint-disable-next-line no-console
@@ -79,7 +79,7 @@ const SingleWishlist = () => {
     try {
       if (wishlist) {
         setNewItemIsLoading(true)
-        const newItem = await Api.wishlists.addItem(wishlist.id, newItemName)
+        const newItem = await WishlistService.addItem(wishlist.id, newItemName)
         setWishlist((prevWishlist) =>
           prevWishlist ? { ...prevWishlist, items: [...prevWishlist.items, newItem] } : null,
         )
@@ -98,7 +98,7 @@ const SingleWishlist = () => {
     if (wishlist) {
       try {
         setWishlistIsUpdating(true)
-        const updatedWishlist = await Api.wishlists.rename(wishlist.id, value)
+        const updatedWishlist = await WishlistService.rename(wishlist.id, value)
         setWishlist(updatedWishlist)
       } catch (error) {
         // eslint-disable-next-line no-console
@@ -115,7 +115,7 @@ const SingleWishlist = () => {
       try {
         setWishlistIsUpdating(true)
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const deleteWasSuccessful = await Api.wishlists.delete(wishlist.id)
+        const deleteWasSuccessful = await WishlistService.delete(wishlist.id)
         history.push(ROUTES.wishlists.path)
       } catch (e) {
         // eslint-disable-next-line no-console

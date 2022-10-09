@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material'
 
-import { useAuth } from 'context/Auth'
+import { useAuth } from '@Context/Auth'
 
 const Account = () => {
   const { user } = useAuth()

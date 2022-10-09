@@ -5,11 +5,11 @@ import { AuthError, UserCredential } from 'firebase/auth'
 import { FieldError, SubmitHandler, useForm } from 'react-hook-form'
 import { useHistory, useLocation } from 'react-router-dom'
 
-import { ROUTES } from 'appConstants'
-import SocialProviderButton from 'components/auth/SocialProviderButton'
-import { useAuth } from 'context/Auth'
-import { SocialProvider } from 'ts/enums'
-import { handleAuthError } from 'utility'
+import { ROUTES } from '@Constants'
+import SocialProviderButton from '@Components/auth/SocialProviderButton'
+import { useAuth } from '@Context/Auth'
+import { SocialProvider } from '@Enums'
+import { handleAuthError } from '@Utility'
 
 export interface Props {
   type: 'signIn' | 'signUp'

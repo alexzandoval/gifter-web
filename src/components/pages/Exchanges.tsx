@@ -14,12 +14,12 @@ import {
 import { format } from 'date-fns'
 import { Link as RouterLink } from 'react-router-dom'
 
-import { ROUTES } from 'appConstants'
-import { Centered, Loader } from 'components/common'
-import { useAuth } from 'context/Auth'
-import useNotification from 'hooks/useNotification'
-import Api from 'services/Api'
-import { Exchange } from 'ts/types'
+import { ROUTES } from '@Constants'
+import { Centered, Loader } from '@Components/common'
+import { useAuth } from '@Context/Auth'
+import useNotification from '@Hooks/useNotification'
+import { ExchangeService } from '@Services'
+import { Exchange } from '@Types'
 
 const Exchanges = () => {
   const [exchangesLoading, setExchangesLoading] = useState<boolean>(true)
@@ -31,7 +31,7 @@ const Exchanges = () => {
     const fetchExchanges = async () => {
       try {
         setExchangesLoading(true)
-        const fetchedExchanges = await Api.exchanges.getAll()
+        const fetchedExchanges = await ExchangeService.getAll()
         setExchanges(fetchedExchanges)
       } catch (e) {
         // eslint-disable-next-line no-console

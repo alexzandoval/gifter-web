@@ -15,10 +15,10 @@ import { makeStyles } from '@mui/styles'
 import clsx from 'clsx'
 import { useLocation } from 'react-router-dom'
 
-import { ROUTES } from 'appConstants'
-import { useAuth } from 'context/Auth'
-import { AppRoutes } from 'ts/types'
-import { isDevelopment, renderLink } from 'utility'
+import { ROUTES } from '@Constants'
+import { useAuth } from '@Context/Auth'
+import { AppRoutes } from '@Types'
+import { isDevelopment, renderLink } from '@Utility'
 
 interface Props {
   DrawerProps: DrawerPropTypes

@@ -4,15 +4,15 @@ import { Box, Card, CardContent, CircularProgress, Typography } from '@mui/mater
 import { format } from 'date-fns'
 import { useHistory, useParams } from 'react-router-dom'
 
-import { ROUTES } from 'appConstants'
-import { Centered, Loader, Title } from 'components/common'
-import UserNotPartOfExchange from 'components/exchanges/join/UserNotPartOfExchange'
-import UserNotSignedIn from 'components/exchanges/join/UserNotSignedIn'
-import AllSpotsTakenInExchange from 'components/exchanges/join/AllSpotsTakenInExchange'
-import { useAuth } from 'context/Auth'
-import Api from 'services/Api'
-import { Exchange } from 'ts/types'
-import useNotification from 'hooks/useNotification'
+import { ROUTES } from '@Constants'
+import { Centered, Loader, Title } from '@Components/common'
+import UserNotPartOfExchange from '@Components/exchanges/join/UserNotPartOfExchange'
+import UserNotSignedIn from '@Components/exchanges/join/UserNotSignedIn'
+import AllSpotsTakenInExchange from '@Components/exchanges/join/AllSpotsTakenInExchange'
+import { useAuth } from '@Context/Auth'
+import useNotification from '@Hooks/useNotification'
+import { ExchangeService } from '@Services'
+import { Exchange } from '@Types'
 
 type ExchangeParams = {
   id: string
@@ -30,7 +30,7 @@ const JoinExchange = () => {
     const fetchExchange = async () => {
       try {
         setExchangeLoading(true)
-        const fetchedExchange = await Api.exchanges.getJoinExchangeInformation(id)
+        const fetchedExchange = await ExchangeService.getJoinExchangeInformation(id)
         setExchange(fetchedExchange)
       } catch (e) {
         // eslint-disable-next-line no-console

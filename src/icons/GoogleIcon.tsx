@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { SvgIcon, SvgIconProps } from '@mui/material'
 
-import { ReactComponent as GoogleLogo } from 'assets/images/googleLogo.svg'
+import { ReactComponent as GoogleLogo } from '@Assets/images/googleLogo.svg'
 
 const GoogleIcon: FC<SvgIconProps> = (props) => (
   <SvgIcon {...props}>

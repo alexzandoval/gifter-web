@@ -2,10 +2,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import reportWebVitals from 'reportWebVitals'
-import 'styles/index.css'
+import '@Styles/index.css'
 
 import App from 'App'
-import { ColorSchemeContextProvider } from 'context/Theme'
+import { ColorSchemeContextProvider } from '@Context/Theme'
 
 const container = document.getElementById('root')!
 const root = createRoot(container)
